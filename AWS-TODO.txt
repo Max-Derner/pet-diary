@@ -1,0 +1,17 @@
+TODO
+
+# These first two items should already be done, and have been marked as such
+-[Y] Set up AWS account
+-[Y] Set up MFA on root account
+
+-[N] create admin IAM group
+-[N] create admin policy, and assign to group
+-[N] create admin role, and assign to group
+-[N] fill in "My access" at the bottom of this page with your
+
+-[N] install AWS CLI
+-[N] configure AWS CLI
+
+-[N] install AWS SAM
+
+My access -> fill me in!

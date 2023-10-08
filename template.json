@@ -1,0 +1,57 @@
+{
+    "Transform": "AWS::Serverless-2016-10-31",
+    "Resources": {
+        "PetTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": "pet-table",
+                "AttributeDefinitions": [
+                    {"AttributeName": "name", "AttributeType": "S"},
+                    {"AttributeName": "sort-key", "AttributeType": "S"},
+                    {"AttributeName": "breed", "AttributeType": "S"},
+                    {"AttributeName": "dob", "AttributeType": "N"},
+                    {"AttributeName": "gender", "AttributeType": "S"},
+                    {"AttributeName": "colour", "AttributeType": "S"},
+                    {"AttributeName": "microchip-number", "AttributeType": "N"},
+                    {"AttributeName": "date-time", "AttributeType": "N"},
+                    {"AttributeName": "medicine-name", "AttributeType": "S"},
+                    {"AttributeName": "medicine-type", "AttributeType": "S"},
+                    {"AttributeName": "description", "AttributeType": "S"},
+                    {"AttributeName": "next-due", "AttributeType": "S"}
+                ],
+                "KeySchema": [
+                    {"AttributeName": "name", "KeyType": "HASH"},
+                    {"AttributeName":"sort-key", "KeyType": "RANGE"},
+                    {"AttributeName": "breed", "KeyType": "RANGE"},
+                    {"AttributeName": "dob", "KeyType": "RANGE"},
+                    {"AttributeName": "gender", "KeyType": "RANGE"},
+                    {"AttributeName": "colour", "KeyType": "RANGE"},
+                    {"AttributeName": "microchip-number", "KeyType": "RANGE"},
+                    {"AttributeName": "date-time", "KeyType": "RANGE"},
+                    {"AttributeName": "medicine-name", "KeyType": "RANGE"},
+                    {"AttributeName": "medicine-type", "KeyType": "RANGE"},
+                    {"AttributeName": "description", "KeyType": "RANGE"},
+                    {"AttributeName": "next-due", "KeyType": "RANGE"}
+                ],
+                "GlobalSecondaryIndexes": [
+                    {
+                        "IndexName": "medicine-name",
+                        "KeySchema": [
+                            {"AttributeName": "name", "KeyType": "HASH"},
+                            {"AttributeName":"sort-key", "KeyType": "RANGE"}
+                        ],
+                        "Projection": {"ProjectionType": "ALL"}
+                    },
+                    {
+                        "IndexName": "medicine-type",
+                        "KeySchema": [
+                            {"AttributeName": "name", "KeyType": "HASH"},
+                            {"AttributeName":"sort-key", "KeyType": "RANGE"}
+                        ],
+                        "Projection": {"ProjectionType": "ALL"}
+                    }
+                ]
+            }
+        }
+    }
+}

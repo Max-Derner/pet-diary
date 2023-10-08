@@ -5,4 +5,5 @@
 
 ### __cloud_report__
 The command `make cloud_report` uses a phony target and will not create a file for you.  
-Instead, this will validate the SAM template at `pet-diary/template.json`, and then run checkov against the same file for find security flaws.
+Instead, this will validate the SAM template at `pet-diary/template.json`, and then run checkov against the same file for find security flaws.  
+If you are using this project outside the region eu-west-2, then you need to change the Makefile to specify the region you are in.  

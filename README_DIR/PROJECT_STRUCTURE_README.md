@@ -13,6 +13,8 @@ This file currently only allows the user to run checks against the SAM template 
 
 #### __template.json__
 This file is the AWS SAM template. SAM stands for Serverless Application Model, and it describes the cloud infrastructure.  
+Why is it a `.json` file and not a `.yaml` file like all the cool kids?  
+Well Python has native support for parsing `.json` files, meaning I can find table names, and what's constituting my composite key in Dynamo without needing to import some extra library.  
 * [template.json](../template.json)
 
 #### __requirements.txt__

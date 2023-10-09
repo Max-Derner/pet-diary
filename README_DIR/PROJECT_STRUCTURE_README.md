@@ -2,7 +2,7 @@
 
 ## __contents__
 * [Makefile](#makefile)
-* [template.json](#templatejson)
+* [template.yaml](#templateyaml)
 * [requirements.txt](#requirementstxt)
 * [.gitignore](#gitignore)
 
@@ -11,11 +11,11 @@ This file currently only allows the user to run checks against the SAM template 
 * [Makefile README](./MAKEFILES_README.md)  
 * [Makefile](../Makefile)
 
-#### __template.json__
+#### __template.yaml__
 This file is the AWS SAM template. SAM stands for Serverless Application Model, and it describes the cloud infrastructure.  
-Why is it a `.json` file and not a `.yaml` file like all the cool kids?  
-Well Python has native support for parsing `.json` files, meaning I can find table names, and what's constituting my composite key in Dynamo without needing to import some extra library.  
-* [template.json](../template.json)
+Why is it a `.yaml` and not a `.json`? Well, most people do it in yaml, meaning that there's more support readily available in things like stackoverflow. YAML also support comments, so you can comment out the bits that add additional costs if you fancy it, and i can leave comments telling you where to do that.  
+I did give consideration to using `.json` as there is native Python support for parsing JSON files, and I figured it would be nice to be able to parse the file for things like table names. I may just produce a make command that attempts to report on that stuff for you though.  
+* [template.yaml](../template.yaml)
 
 #### __requirements.txt__
 This file details the Python requirements and should be installed after setting up the Python virtual environment, as detailed in the setup README.

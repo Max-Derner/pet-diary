@@ -1,0 +1,67 @@
+Transform: AWS::Serverless-2016-10-31  # Is SAM template
+
+Resources:
+  PetTable:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      TableName: pet-table
+      AttributeDefinitions: 
+        -   AttributeName: name
+            AttributeType: S
+        -   AttributeName: sort-key
+            AttributeType: S
+        -   AttributeName: medicine-name
+            AttributeType: S
+        -   AttributeName: medicine-type
+            AttributeType: S
+      KeySchema: 
+        -   AttributeName: name
+            KeyType: HASH
+        -   AttributeName: sort-key
+            KeyType: RANGE
+      GlobalSecondaryIndexes: 
+        -   IndexName: medicine-name
+            KeySchema: 
+              -   AttributeName: medicine-name
+                  KeyType: HASH
+              -   AttributeName: name
+                  KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+                ReadCapacityUnits: 5  # Gives ThrottlingException
+                WriteCapacityUnits: 5 # if exceeded
+        -   IndexName: medicine-type
+            KeySchema: 
+              -   AttributeName: medicine-type
+                  KeyType: HASH
+              -   AttributeName: name
+                  KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+                ReadCapacityUnits: 5  # Gives ThrottlingException
+                WriteCapacityUnits: 5 # if exceeded
+      BillingMode: PROVISIONED
+      ProvisionedThroughput: 
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+      # Anything below this point costs money
+      PointInTimeRecoverySpecification: 
+          PointInTimeRecoveryEnabled: true  # costs $0.23772 per GB-month
+      SSESpecification: 
+        KMSMasterKeyId: !GetAtt KMSDynamoKey.Arn
+        SSEEnabled: true
+        SSEType: KMS
+
+  KMSDynamoKey:
+    Type: AWS::KMS::Key
+    Properties: 
+      Description: For symmetric encryption of the DynamoDB table pet-table
+      Enabled: true
+      EnableKeyRotation: true
+      KeySpec: SYMMETRIC_DEFAULT
+      KeyUsage:  ENCRYPT_DECRYPT
+      MultiRegion: false
+      Origin: AWS_KMS
+      PendingWindowInDays: 30

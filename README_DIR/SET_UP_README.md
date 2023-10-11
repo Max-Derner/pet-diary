@@ -21,11 +21,4 @@ If nothing comes up for you, you will need o install Python.
 For Linux users you can install it with the following `sudo apt update && sudo apt install python3 -y`  
 That command will first update your known packages, and if successful will then install Python 3 and bypass the user input of having to confirm this is the package you want.  
 
-To set up the virtual environment type `python3 -m venv pet-diary-venv`  
-You can now activate your venv by typing `. ./pet-diary-venv/bin/activate`  
-You will want to do this when running any of the Python files.  
-If this is your first time setting up the venv, you will need to install the requirements too. To do this, run `pip install -r requirements.txt`  
-To deactivate the venv simply type `deactivate`  
-
-
-
+To set up the virtual environment see the [pdt entry in the Project Structure section](./PROJECT_STRUCTURE_README.md#pdt) of the READMEs

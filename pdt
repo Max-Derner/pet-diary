@@ -1,0 +1,77 @@
+#! /bin/bash
+
+# Hello! Welcome to the Pet Diary Tooling or pdt for short!
+# This tooling is designed to make the development process a bit easier.
+# This script can 
+#
+#
+
+source ./tooling.sh
+
+pdt-help() {
+    echo "Hi, you've found the help thingy-ma-bob!"
+    echo
+    echo "Usage: pdt [COMMAND]"
+    echo
+    echo "COMMANDS"
+    echo
+    echo "    aws-login"
+    echo "        This logs you in via SSO using the variables set up in configure-vars"
+    echo
+    echo "    sam-check"
+    echo "        This will run checks against your sam-template"
+    echo
+    echo "    sam-deploy"
+    echo "        This will deploy you application"
+    echo
+    echo "    sam-destroy"
+    echo "        This will tear down the application leaving nothing in AWS"
+    echo
+    echo "    python-lint"
+    echo "        This will lint your Python code using flake8,"
+    echo "        it will start in the current directory and exclude the venv"
+    echo
+    echo "    python-test"
+    echo "        This will run pytest against the tests/ directory in very verbose mode"
+    echo
+    echo "    configure-vars"
+    echo "        This will parse your AWS config file and let you choose which"
+    echo "        profile and region you wish to use when running functions"
+    echo "        which require AWS usage (e.g. sam-deploy)"
+    echo
+    echo "    configure-venv"
+    echo "        This will set up your virtual environment for you,"
+    echo "        it is the reccomended way to do so"
+}
+
+
+pdt() {
+    case "$1" in
+        "aws-login")
+            aws-login
+            ;;
+        "sam-check")
+            sam-check
+            ;;
+        "sam-deploy")
+            sam-deploy
+            ;;
+        "sam-destroy")
+            sam-destroy
+            ;;
+        "python-lint")
+            python-lint
+            ;;
+        "configure-vars")
+            configure-vars
+            ;;
+        "configure-venv")
+            configure-venv
+            ;;
+        *)
+            pdt-help
+            ;;
+    esac
+}
+
+pdt "$1"

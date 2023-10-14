@@ -3,3 +3,4 @@ pet-diary-venv/
 .vscode
 freezer/
 .pdt-config
+**/__pycache__/

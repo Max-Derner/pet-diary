@@ -62,6 +62,9 @@ pdt() {
         "python-lint")
             python-lint
             ;;
+        "python-test")
+            python-test
+            ;;
         "configure-vars")
             configure-vars
             ;;

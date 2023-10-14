@@ -3,3 +3,4 @@ boto3
 botocore
 boto3_type_annotations
 pytest
+pydantic

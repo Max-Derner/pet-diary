@@ -5,7 +5,9 @@ from app.supporting_cast.logger import (
     _get_debug_output_formatter,
     _get_console_output_formatter,
     _get_stream_handler,
-    _get_file_handler
+    _get_file_handler,
+    get_partial_logger,
+    get_full_logger
 )
 
 
@@ -53,3 +55,13 @@ def tests_get_file_handler(level, mode):
     assert file_handler.formatter == formatter
     assert file_handler.mode == mode
     assert file_handler.baseFilename == abspath(filename)
+
+
+def tests_get_partial_logger():
+    logger = get_partial_logger()
+    assert isinstance(logger, logging.Logger)
+
+
+def tests_get_full_logger():
+    logger = get_full_logger()
+    assert isinstance(logger, logging.Logger)

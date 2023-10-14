@@ -151,7 +151,7 @@ def _set_up_logger(logger: logging.Logger,
         create_console_file_handler=create_console_file_handler,
         create_debug_file_handler=create_debug_file_handler
         )
-    _add_handlers(handlers=handlers)
+    _add_handlers(logger=logger, handlers=handlers)
     if give_init_message:
         logger.info(config_message)
 
@@ -178,6 +178,7 @@ def get_full_logger() -> logging.Logger:
             create_debug_file_handler=True,
             give_init_message=True
         )
+    return logger
 
 
 def get_partial_logger() -> logging.Logger:
@@ -190,3 +191,4 @@ def get_partial_logger() -> logging.Logger:
             create_debug_file_handler=False,
             give_init_message=False
         )
+    return logger

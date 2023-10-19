@@ -17,13 +17,9 @@ class MedicationRecordFactory(AbstractRecordFactory):
             date_prescribed: datetime,
             name_of_medicine: str,
             type_of_medicine: str,
-            next_due: Optional[datetime],
-            sort_key_timestamp: Optional[int] = None
+            next_due: Optional[datetime]
     ) -> Dict[str, Union[str, float]]:
-        if sort_key_timestamp is None:
-            sort_key = f"medication#{type_of_medicine}#{utc_timestamp_now()}"
-        else:
-            sort_key = f"medication#{type_of_medicine}#{sort_key_timestamp}"
+        sort_key = f"medication#{type_of_medicine}#{utc_timestamp_now()}"
         medicine_record = {
             "name": name,
             "sort_key": sort_key,
@@ -33,13 +29,3 @@ class MedicationRecordFactory(AbstractRecordFactory):
             "next_due": next_due.timestamp() if next_due is not None else None
         }
         return medicine_record
-
-    def _convert_model_to_record(self, model: MedicationRecordModel):
-        return self.produce_record(
-            name=model.name,
-            sort_key_timestamp=float(model.sort_key.split('#')[-1]),
-            date_prescribed=datetime.fromtimestamp(model.date_time),
-            type_of_medicine=model.medicine_type,
-            name_of_medicine=model.medicine_name,
-            next_due=datetime.fromtimestamp(model.next_due) if model.next_due is not None else None  # noqa: E501
-        )

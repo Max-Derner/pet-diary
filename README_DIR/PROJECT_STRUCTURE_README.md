@@ -53,7 +53,7 @@ The `.env` file is simply there to be appended to your virtual environments acti
 #### __app/__
 You may be surprised to find out that all of the application's code is housed within the `app/` directory
 * [app/](../app/)
-* [app README]
+* [app README](./APP_README.md)
 
 #### __tests/__
 You may also be surprised to find out that the `tests/` directory contains all of the tests for the files that are found in the `app/` directory.

@@ -13,9 +13,6 @@ class AbstractRecordFactory():
     def produce_record(self) -> Dict:
         raise NotImplementedError()
 
-    def _convert_model_to_record(self) -> Dict:
-        raise NotImplementedError()
-
     def validate_record(self, record: Dict) -> bool:
         try:
             self.model.model_validate(
@@ -36,4 +33,4 @@ class AbstractRecordFactory():
                 )
         except ValidationError:
             return None
-        return self._convert_model_to_record(model=coerced)
+        return coerced.model_dump()

@@ -29,13 +29,3 @@ class DetailsRecordFactory(AbstractRecordFactory):
             "microchip_number": microchip_number
         }
         return details_record
-
-    def _convert_model_to_record(self, model: DetailsRecordModel):
-        return self.produce_record(
-            name=model.name,
-            date_of_birth=datetime.fromtimestamp(model.dob),
-            colour=model.colour,
-            gender=model.gender,
-            breed=model.breed,
-            microchip_number=model.microchip_number
-        )

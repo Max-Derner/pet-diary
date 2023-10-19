@@ -1,6 +1,7 @@
 from typing import Dict, Union
 from pydantic import ValidationError, BaseModel
 
+
 class AbstractRecordFactory():
     model: BaseModel
 

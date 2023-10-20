@@ -24,7 +24,7 @@ Resources:
             KeySchema: 
               -   AttributeName: medicine-name
                   KeyType: HASH
-              -   AttributeName: name
+              -   AttributeName: sort-key
                   KeyType: RANGE
             Projection: 
               ProjectionType: ALL
@@ -35,7 +35,7 @@ Resources:
             KeySchema: 
               -   AttributeName: medicine-type
                   KeyType: HASH
-              -   AttributeName: name
+              -   AttributeName: sort-key
                   KeyType: RANGE
             Projection: 
               ProjectionType: ALL

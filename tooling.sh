@@ -9,10 +9,24 @@ get-aws-region() {
     cat .pdt-config | grep -E 'REGION:' | sed -e 's/REGION://g'
 }
 
+_aws_exports() {
+    AVAILABLE_PROFILES=$(cat ~/.aws/config | grep -F '[profile' | sed -e 's/\[profile //g' -e 's/\]//g')
+    PS3='Profile selection: '
+    select AWS_PROFILE in $AVAILABLE_PROFILES; do
+        if [ -n "$AWS_PROFILE" ]; then break; fi
+    done
+    CONFIG_SNIPPET=$(cat ~/.aws/config | grep -A 20 -F "[profile ${AWS_PROFILE}]")
+    AWS_ACCOUNT_ID=$(echo "$CONFIG_SNIPPET" | grep -F 'sso_account_id = ' | sed -e 's/sso_account_id = //g' -e 's/ *$//g')
+    echo "Exporting AWS_PROFILE as: $AWS_PROFILE"
+    echo "Exporting AWS_ACCOUNT_ID as: $AWS_ACCOUNT_ID"
+    export AWS_PROFILE
+    export AWS_ACCOUNT_ID
+}
+
 aws-login() {
-    AWS_PROFILE=$(get-aws-profile)
-    echo "Logging into AWS CLI as ${AWS_PROFILE}"
-    aws sso login --profile "${AWS_PROFILE}"
+    _aws_exports
+    echo "Logging into AWS CLI"
+    aws sso login
 }
 
 sam-check() {

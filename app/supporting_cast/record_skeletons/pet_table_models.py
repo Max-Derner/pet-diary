@@ -6,26 +6,27 @@
 #  | name (partition key)   | str                         | All                                             | # noqa: E501
 #  | sort_key (sort key)    | str                         | All                                             | # noqa: E501
 #  | breed                  | str                         | Details                                         | # noqa: E501
-#  | dob                    | float as posix timestamp    | Details                                         | # noqa: E501
+#  | dob                    | Decimal as posix timestamp  | Details                                         | # noqa: E501
 #  | gender                 | str                         | Details                                         | # noqa: E501
 #  | colour                 | str                         | Details                                         | # noqa: E501
 #  | microchip_number       | int                         | Details                                         | # noqa: E501
-#  | date_time              | float as posix timestamp    | Medication, Illness, Observation, Appointment   | # noqa: E501
+#  | date_time              | Decimal as posix timestamp  | Medication, Illness, Observation, Appointment   | # noqa: E501
 #  | medicine_name          | str                         | Medication                                      | # noqa: E501
 #  | medicine_type          | str                         | Medication                                      | # noqa: E501
 #  | ailment                | str                         | Illness                                         | # noqa: E501
 #  | description            | str                         | Illness, Observation, Appointment               | # noqa: E501
-#  | next_due               | float as posix timestamp    | Medication                                      | # noqa: E501
+#  | next_due               | Decimal as posix timestamp  | Medication                                      | # noqa: E501
 #  +------------------------+-----------------------------+-------------------------------------------------+ # noqa: E501
 
 from pydantic import BaseModel
+from decimal import Decimal
 
 
 class DetailsRecordModel(BaseModel):
     name: str
     sort_key: str
     breed: str
-    dob: float
+    dob: Decimal
     gender: str
     colour: str
     microchip_number: int
@@ -34,16 +35,17 @@ class DetailsRecordModel(BaseModel):
 class MedicationRecordModel(BaseModel):
     name: str
     sort_key: str
-    date_time: float
+    date_time: Decimal
     medicine_name: str
     medicine_type: str
-    next_due: float
+    repeat: bool
+    next_due: Decimal
 
 
 class IllnessRecordModel(BaseModel):
     name: str
     sort_key: str
-    date_time: float
+    date_time: Decimal
     ailment: str
     description: str
 
@@ -51,12 +53,12 @@ class IllnessRecordModel(BaseModel):
 class ObservationRecordModel(BaseModel):
     name: str
     sort_key: str
-    date_time: float
+    date_time: Decimal
     description: str
 
 
 class AppointmentRecordModel(BaseModel):
     name: str
     sort_key: str
-    date_time: float
+    date_time: Decimal
     description: str

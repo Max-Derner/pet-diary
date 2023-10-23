@@ -2,6 +2,7 @@ from typing import Dict, Union
 from app.supporting_cast.record_skeletons.abstract_record import AbstractRecordFactory  # noqa: E501
 from app.supporting_cast.record_skeletons.pet_table_models import DetailsRecordModel  # noqa: E501
 from datetime import datetime
+from decimal import Decimal
 
 
 class DetailsRecordFactory(AbstractRecordFactory):
@@ -18,11 +19,11 @@ class DetailsRecordFactory(AbstractRecordFactory):
             gender: str,
             breed: str,
             microchip_number: int
-    ) -> Dict[str, Union[str, float, int]]:
+    ) -> Dict[str, Union[str, Decimal, int]]:
         details_record = {
             "name": name,
             "sort_key": "details",
-            "dob": date_of_birth.timestamp(),
+            "dob": Decimal(date_of_birth.timestamp()),
             "colour": colour,
             "gender": gender,
             "breed": breed,

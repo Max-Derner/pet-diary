@@ -1,5 +1,6 @@
 from typing import Dict, Union
 from pydantic import ValidationError, BaseModel
+from decimal import Decimal
 
 
 class AbstractRecordFactory():

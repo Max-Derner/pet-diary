@@ -6,6 +6,7 @@ from app.supporting_cast.record_skeletons.medication_record import MedicationRec
 from app.supporting_cast.record_skeletons.observation_record import ObservationRecordFactory  # noqa: E501
 from app.supporting_cast.record_skeletons.appointment_record import AppointmentRecordFactory  # noqa: E501
 from datetime import datetime
+from decimal import Decimal
 
 RECORD_SKELETON_MODULE = 'app.supporting_cast.record_skeletons'
 
@@ -15,7 +16,7 @@ class TestsIllnessRecordFactory(TestCase):
     correct_illness_record = {
         'name': 'me',
         'sort_key': 'illness#stinky-butt#123456.789',
-        'date_time': 1697238000.0,
+        'date_time': Decimal(1697238000.0),
         'ailment': 'stinky-butt',
         'description': 'Butt so stinky, it makes everyone in the room cry',
         }
@@ -72,7 +73,7 @@ class TestsDetailsRecordFactory(TestCase):
         'sort_key': 'details',
         'breed': 'person',
         'colour': 'regular',
-        'dob': -5177087925.0,
+        'dob': Decimal(-5177087925.0),
         'gender': 'yes',
         'microchip_number': 1,
         }
@@ -131,19 +132,20 @@ class TestsMedicationRecordFactory(TestCase):
     correct_medication_record = {
         'name': 'me',
         'sort_key': 'medication#non-poisonous#123456.789',
-        'date_time': 1701475200.0,
+        'date_time': Decimal(1701475200.0),
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'medicine_type': 'non-poisonous',
-        'next_due': 1704153600.0,
+        'repeat': True,
+        'next_due': Decimal(1704153600.0),
         }
 
     also_correct_medication_record = {
         'name': 'me',
         'sort_key': 'medication#non-poisonous#123456.789',
-        'date_time': 1701475200.0,
+        'date_time': Decimal(1701475200.0),
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
+        'repeat': False,
         'medicine_type': 'non-poisonous',
-        'next_due': None,
         }
 
     nearly_correct_medication_record = {
@@ -152,15 +154,17 @@ class TestsMedicationRecordFactory(TestCase):
         'date_time': '1701475200.0',
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'medicine_type': 'non-poisonous',
+        'repeat': 'True',
         'next_due': '1704153600.0',
         }
 
     invalid_medication_record = {
         'name': 'me',
         'sort_key': 'medication#non-poisonous#123456.789',
-        'date_time': 1701475200.0,
+        'date_time': Decimal(1701475200.0),
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'medicine_type': 'non-poisonous',
+        'repeat': 'yes',
         'next_due': 'never!',
         }
 
@@ -216,7 +220,7 @@ class TestsObservationRecordFactory(TestCase):
     correct_observation_record = {
         'name': 'me',
         'sort_key': 'observation#123456.789',
-        'date_time': 1697238000.0,
+        'date_time': Decimal(1697238000.0),
         'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
         }
 
@@ -267,7 +271,7 @@ class TestsAppointmentRecordFactory(TestCase):
     correct_appointment_record = {
         'name': 'me',
         'sort_key': 'appointment#123456.789',
-        'date_time': 1697238000.0,
+        'date_time': Decimal(1697238000.0),
         'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
         }
 

@@ -3,6 +3,7 @@ from app.supporting_cast.record_skeletons.abstract_record import AbstractRecordF
 from datetime import datetime
 from typing import Dict, Union
 from supporting_cast.misc import utc_timestamp_now
+from decimal import Decimal
 
 
 class ObservationRecordFactory(AbstractRecordFactory):
@@ -16,12 +17,12 @@ class ObservationRecordFactory(AbstractRecordFactory):
             name: str,
             date_time: datetime,
             description: str
-            ) -> Dict[str, Union[str, float]]:
+            ) -> Dict[str, Union[str, Decimal]]:
         sort_key = f"observation#{utc_timestamp_now()}"
         illness_record = {
             "name": name,
             "sort_key": sort_key,
-            "date_time": date_time.timestamp(),
+            "date_time": Decimal(date_time.timestamp()),
             "description": description
         }
         return illness_record

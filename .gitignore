@@ -4,3 +4,4 @@ pet-diary-venv/
 freezer/
 .pdt-config
 **/__pycache__/
+logging_output/

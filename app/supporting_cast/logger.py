@@ -170,6 +170,7 @@ def get_output_directories() -> List[str]:
 
 def get_full_logger() -> logging.Logger:
     logger: logging.Logger = logging.getLogger('full_logger')
+    logger.setLevel(level=logging.DEBUG)
     if not logger.hasHandlers():
         _set_up_logger(
             logger=logger,
@@ -183,6 +184,7 @@ def get_full_logger() -> logging.Logger:
 
 def get_partial_logger() -> logging.Logger:
     logger: logging.Logger = logging.getLogger('partial_logger')
+    logger.setLevel(level=logging.DEBUG)
     if not logger.hasHandlers():
         _set_up_logger(
             logger=logger,

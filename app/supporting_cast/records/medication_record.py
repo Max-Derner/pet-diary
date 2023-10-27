@@ -1,6 +1,6 @@
 from typing import Dict, Optional, Union
-from app.supporting_cast.record_skeletons.abstract_record import AbstractRecordFactory  # noqa: E501
-from app.supporting_cast.record_skeletons.pet_table_models import MedicationRecordModel  # noqa: E501
+from app.supporting_cast.records.abstract_record import AbstractRecordFactory  # noqa: E501
+from app.supporting_cast.records.pet_table_models import MedicationRecordModel  # noqa: E501
 from app.supporting_cast.misc import utc_timestamp_now
 from datetime import datetime
 from decimal import Decimal
@@ -15,7 +15,7 @@ class MedicationRecordFactory(AbstractRecordFactory):
     def produce_record(
             self,
             name: str,
-            date_prescribed: datetime,
+            administered: datetime,
             name_of_medicine: str,
             type_of_medicine: str,
             next_due: Optional[datetime]
@@ -24,7 +24,7 @@ class MedicationRecordFactory(AbstractRecordFactory):
         medicine_record = {
             "name": name,
             "sort_key": sort_key,
-            "date_time": Decimal(date_prescribed.timestamp()),
+            "date_time": Decimal(administered.timestamp()),
             "medicine_name": name_of_medicine,
             "medicine_type": type_of_medicine,
             "repeat": True if next_due is not None else False
@@ -32,3 +32,12 @@ class MedicationRecordFactory(AbstractRecordFactory):
         if next_due is not None:
             medicine_record['next_due'] = Decimal(next_due.timestamp())
         return medicine_record
+
+    def _extra_record_validation(self, record: Dict) -> bool:
+        valid = True
+        if (repeat := record.get('repeat')) is None:
+            valid = False
+        if repeat and record.get('next_due') is None:
+            # Record must have next_due attribute if repeat is True
+            valid = False
+        return valid

@@ -2,21 +2,30 @@
 
 # Hello! Welcome to the Pet Diary Tooling or pdt for short!
 # This tooling is designed to make the development process a bit easier.
-# This script can 
-#
-#
 
 source ./tooling.sh
 
 pdt-help() {
+    echo " ____  ____ _____ "
+    echo "|  _ \|  _ \_   _|"
+    echo "| |_) | | | || |  "
+    echo "|  __/| |_| || |  "
+    echo "|_|   |____/ |_|  "
+    echo
+    echo "Pet Diary Tooling"
+    echo
     echo "Hi, you've found the help thingy-ma-bob!"
+    echo "Enter the command 'pdt' if you wish to see this message again."
+    echo "You will also see this message anytime you fail to spell a pdt"
+    echo "command correctly too."
     echo
     echo "Usage: pdt [COMMAND]"
     echo
-    echo "COMMANDS"
+    echo "COMMANDS:"
     echo
     echo "    aws-login"
-    echo "        This logs you in via SSO using the variables set up in configure-vars"
+    echo "        This logs you in via SSO using the variables set up in"
+    echo "	  configure-vars"
     echo
     echo "    sam-check"
     echo "        This will run checks against your sam-template"
@@ -32,7 +41,8 @@ pdt-help() {
     echo "        it will start in the current directory and exclude the venv"
     echo
     echo "    python-test"
-    echo "        This will run pytest against the tests/ directory in very verbose mode"
+    echo "        This will run pytest against the tests/ directory in very"
+    echo "        verbose mode"
     echo
     echo "    configure-vars"
     echo "        This will parse your AWS config file and let you choose which"

@@ -18,6 +18,7 @@
 #  | next_due               | Decimal as posix timestamp  | Medication                                      | # noqa: E501
 #  +------------------------+-----------------------------+-------------------------------------------------+ # noqa: E501
 
+from typing import Optional
 from pydantic import BaseModel
 from decimal import Decimal
 
@@ -39,7 +40,7 @@ class MedicationRecordModel(BaseModel):
     medicine_name: str
     medicine_type: str
     repeat: bool
-    next_due: Decimal
+    next_due: Optional[Decimal] = None
 
 
 class IllnessRecordModel(BaseModel):

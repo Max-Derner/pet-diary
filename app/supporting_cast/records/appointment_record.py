@@ -1,5 +1,9 @@
-from app.supporting_cast.record_skeletons.pet_table_models import AppointmentRecordModel  # noqa: E501
-from app.supporting_cast.record_skeletons.abstract_record import AbstractRecordFactory  # noqa: E501
+from app.supporting_cast.records.pet_table_models import (
+    AppointmentRecordModel
+)
+from app.supporting_cast.records.abstract_record import (
+    AbstractRecordFactory
+)
 from datetime import datetime
 from typing import Dict, Optional, Union
 from decimal import Decimal
@@ -16,13 +20,9 @@ class AppointmentRecordFactory(AbstractRecordFactory):
             self,
             name: str,
             date_time: datetime,
-            description: str,
-            sort_key_timestamp: Optional[float] = None
+            description: str
             ) -> Dict[str, Union[str, Decimal]]:
-        if sort_key_timestamp is None:
-            sort_key = f"appointment#{utc_timestamp_now()}"
-        else:
-            sort_key = f"appointment#{sort_key_timestamp}"
+        sort_key = f"appointment#{utc_timestamp_now()}"
         illness_record = {
             "name": name,
             "sort_key": sort_key,

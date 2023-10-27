@@ -1,6 +1,10 @@
 from typing import Dict, Union
-from app.supporting_cast.record_skeletons.abstract_record import AbstractRecordFactory  # noqa: E501
-from app.supporting_cast.record_skeletons.pet_table_models import DetailsRecordModel  # noqa: E501
+from app.supporting_cast.records.abstract_record import (
+    AbstractRecordFactory
+)
+from app.supporting_cast.records.pet_table_models import (
+    DetailsRecordModel
+)
 from datetime import datetime
 from decimal import Decimal
 

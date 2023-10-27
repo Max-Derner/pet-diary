@@ -23,6 +23,13 @@ _aws_exports() {
     export AWS_ACCOUNT_ID
 }
 
+_verify_venv_active() {
+    if [ -z "${VIRTUAL_ENV}" ];
+        then echo "Activate the venv than try again";
+        return 1;
+    fi
+}
+
 aws-login() {
     _aws_exports
     echo "Logging into AWS CLI"
@@ -30,6 +37,7 @@ aws-login() {
 }
 
 sam-check() {
+    _verify_venv_active
     AWS_REGION=$(get-aws-region)
     echo "Validating SAM template as if region is ${AWS_REGION}"
 	sam validate \
@@ -39,15 +47,16 @@ sam-check() {
     echo "Checking SAM template for security faults"
     checkov \
     --compact \
-    -f ./template.yaml
+    -f "${VIRTUAL_ENV}/../template.yaml"
 }
 
 sam-deploy() {
+    _verify_venv_active
     AWS_REGION=$(get-aws-region)
     AWS_PROFILE=$(get-aws-profile)
     echo "Deploying application into the $AWS_REGION region, using the $AWS_PROFILE profile"
     sam deploy \
-    --template template.yaml \
+    --template "{VIRTUAL_ENV}/../template.yaml" \
     --stack-name pet-diary-stack \
     --region "$AWS_REGION" \
     --profile "$AWS_PROFILE"
@@ -64,13 +73,15 @@ sam-destroy() {
 }
 
 python-lint() {
+    _verify_venv_active
     echo "linting Python"
-    flake8 \
+    flake8 "${VIRTUAL_ENV}/.."\
     --exclude 'pet-diary-venv/**' ./
 }
 
 python-test() {
-    pytest ./tests -vv
+    _verify_venv_active
+    pytest "${VIRTUAL_ENV}/../tests" -vv
 }
 
 configure-vars() {

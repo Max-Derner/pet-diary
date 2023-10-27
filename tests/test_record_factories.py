@@ -1,14 +1,14 @@
 from unittest.mock import Mock, patch
 from unittest import TestCase
-from app.supporting_cast.records.illness_record import IllnessRecordFactory  # noqa: E501
-from app.supporting_cast.records.details_record import DetailsRecordFactory  # noqa: E501
-from app.supporting_cast.records.medication_record import MedicationRecordFactory  # noqa: E501
-from app.supporting_cast.records.observation_record import ObservationRecordFactory  # noqa: E501
-from app.supporting_cast.records.appointment_record import AppointmentRecordFactory  # noqa: E501
+from app.support.records.illness_record import IllnessRecordFactory
+from app.support.records.details_record import DetailsRecordFactory
+from app.support.records.medication_record import MedicationRecordFactory
+from app.support.records.observation_record import ObservationRecordFactory
+from app.support.records.appointment_record import AppointmentRecordFactory
 from datetime import datetime, timedelta
 from decimal import Decimal
 
-RECORDS_MODULE = 'app.supporting_cast.records'
+RECORDS_MODULE = 'app.support.records'
 
 
 class TestsIllnessRecordFactory(TestCase):

@@ -1,7 +1,7 @@
 import logging
 import pytest
 from os.path import abspath
-from app.supporting_cast.logger import (
+from app.support.logger import (
     _get_debug_output_formatter,
     _get_console_output_formatter,
     _get_stream_handler,
@@ -44,7 +44,7 @@ def tests_get_stream_handler(level):
                                          (logging.CRITICAL, 'w')])
 def tests_get_file_handler(level, mode):
     formatter = logging.Formatter()
-    filename = 'some_file_name.smth'
+    filename = 'logging_output/some_test_file.smth'
     file_handler = _get_file_handler(level=level,
                                      filename=filename,
                                      mode=mode,

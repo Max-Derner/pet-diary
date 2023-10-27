@@ -1,7 +1,7 @@
 from unittest.mock import patch, Mock
 from datetime import datetime
 from decimal import Decimal
-from app.supporting_cast.data_access_layer.put_records import (
+from app.support.data_access_layer.put_records import (
     put_appointment_record,
     put_details_record,
     put_illness_record,
@@ -10,8 +10,8 @@ from app.supporting_cast.data_access_layer.put_records import (
 )
 
 
-PUT_RECORDS_PACKAGE = 'app.supporting_cast.data_access_layer.put_records'
-RECORDS_PACKAGE = 'app.supporting_cast.records'
+PUT_RECORDS_PACKAGE = 'app.support.data_access_layer.put_records'
+RECORDS_PACKAGE = 'app.support.records'
 
 
 @patch(f'{RECORDS_PACKAGE}.appointment_record.utc_timestamp_now')

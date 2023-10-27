@@ -5,3 +5,4 @@ boto3_type_annotations
 pytest
 pydantic
 flake8
+bandit

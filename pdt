@@ -40,6 +40,11 @@ pdt-help() {
     echo "        This will lint your Python code using flake8,"
     echo "        it will start in the current directory and exclude the venv"
     echo
+    echo "    python-security-check"
+    echo "        This will run Bandit on the app/ directory. Bandit scans your"
+    echo "        Python code for secuirty issues, it does not check any"
+    echo "        imported or installed libraries for secuirty flaws though."
+    echo
     echo "    python-test"
     echo "        This will run pytest against the tests/ directory in very"
     echo "        verbose mode"
@@ -52,6 +57,14 @@ pdt-help() {
     echo "    configure-venv"
     echo "        This will set up your virtual environment for you,"
     echo "        it is the reccomended way to do so"
+    echo
+    echo "    full-security-check"
+    echo "        This will run each of the security checks consecutively and"
+    echo "        can be redirected into a text file to form a security audit"
+    echo "        report."
+    echo "        The included security checks are:"
+    echo "            - Bandit (for Python code)"
+    echo "            - Checkov (for SAM template)"
 }
 
 
@@ -75,11 +88,17 @@ pdt() {
         "python-test")
             python-test
             ;;
+        "python-security-check")
+            python-security-check
+            ;;
         "configure-vars")
             configure-vars
             ;;
         "configure-venv")
             configure-venv
+            ;;
+        "full-security-check")
+            full-security-check
             ;;
         *)
             pdt-help

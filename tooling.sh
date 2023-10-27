@@ -36,14 +36,33 @@ aws-login() {
     aws sso login
 }
 
+_delimit() {
+    echo "================================================================================"
+    echo
+}
+
+full-security-check() {
+    _verify_venv_active
+    python-security-check
+    _delimit
+    _sam-security-check
+}
+
 sam-check() {
     _verify_venv_active
+    _sam-validate-template
+    _sam-security-check
+}
+
+_sam-validate-template() {
     AWS_REGION=$(get-aws-region)
     echo "Validating SAM template as if region is ${AWS_REGION}"
 	sam validate \
     --region "$AWS_REGION" \
     --lint
+}
 
+_sam-security-check() {
     echo "Checking SAM template for security faults"
     checkov \
     --compact \
@@ -77,6 +96,15 @@ python-lint() {
     echo "linting Python"
     flake8 "${VIRTUAL_ENV}/.."\
     --exclude 'pet-diary-venv/**' ./
+}
+
+python-security-check() {
+    echo "Checking app/ for Python security issues"
+    bandit \
+    -x __pycache__ \
+    -v \
+    -r "${VIRTUAL_ENV}/../app/"
+
 }
 
 python-test() {

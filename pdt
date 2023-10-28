@@ -105,12 +105,12 @@ pdt() {
         "full-security-check")
             full-security-check
             ;;
-        .+)
+        "help")
             pdt-help
-            return 1  # Just to point out that you done biffed it
             ;;
         *)
             pdt-help
+            return 1  # Just to point out that you done biffed it
             ;;
     esac
 }

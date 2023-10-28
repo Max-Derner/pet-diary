@@ -1,14 +1,15 @@
 [Welcome Page](../README.md)
 
 ## __contents__
-* [template.yaml](#templateyaml)
-* [requirements.txt](#requirementstxt)
-* [.gitignore](#gitignore)
-* [pdt](#pdt)
-* [tooling.sh](#toolingsh)
-* [.env](#env)
 * [app/](#app)
+* [.env](#env)
+* [.gitignore](#gitignore)
+* [grype-install.sh](#gyrpeinstallsh)
+* [pdt](#pdt)
+* [requirements.txt](#requirementstxt)
+* [template.yaml](#templateyaml)
 * [tests/](#tests)
+* [tooling.sh](#toolingsh)
 
 
 #### __template.yaml__
@@ -58,3 +59,8 @@ You may be surprised to find out that all of the application's code is housed wi
 #### __tests/__
 You may also be surprised to find out that the `tests/` directory contains all of the tests for the files that are found in the `app/` directory.
 * [tests/](../tests/)
+
+#### __grype-install.sh__
+This script is what installs Grype for you. If you search for Anchore Grype and look up the install methods, you will find that the recommended way to install Grype is to run the command `curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin`. Now lots of people get a bit funny about piping curl commands directly into something to execute the curled script (myself included). So as an alternative, I have curled the script and dumped it into this file so it can be reviewed before running the install script.  
+Grype is used in some of the security checks, it's a solution for 3rd dependency checking.
+* [grype-install.sh](../grype-install.sh)

@@ -1,3 +1,4 @@
+# Dev tools
 checkov
 boto3
 botocore
@@ -6,3 +7,5 @@ pytest
 pydantic
 flake8
 bandit
+# Security fixes
+setuptools == 65.5.1

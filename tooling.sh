@@ -42,16 +42,22 @@ _delimit() {
 }
 
 full-security-check() {
+    EXIT_STATUS=0
     _verify_venv_active
-    python-security-check
     _delimit
-    _sam-security-check
+    python-security-check || EXIT_STATUS="$?"
+    _delimit
+    _sam-security-check || EXIT_STATUS="$?"
+    _delimit
+    third-party-security-check || EXIT_STATUS="$?"
+    return "$EXIT_STATUS"
 }
 
 sam-check() {
     _verify_venv_active
     _sam-validate-template
     _sam-security-check
+    return "$?"  # ensures function returns same code _sam-security-check exits with
 }
 
 _sam-validate-template() {
@@ -63,10 +69,11 @@ _sam-validate-template() {
 }
 
 _sam-security-check() {
-    echo "Checking SAM template for security faults"
+    echo "Checking SAM template for security faults with Checkov"
     checkov \
     --compact \
     -f "${VIRTUAL_ENV}/../template.yaml"
+    return "$?"  # ensures function returns same code checkov exits with
 }
 
 sam-deploy() {
@@ -100,12 +107,11 @@ python-lint() {
 }
 
 python-security-check() {
-    echo "Checking app/ for Python security issues"
+    echo "Checking app/ for Python security issues with Bandit"
     bandit \
     -x __pycache__ \
-    -v \
     -r "${VIRTUAL_ENV}/../app/"
-
+    return "$?"  # ensures function returns same code bandit exits with
 }
 
 python-test() {
@@ -174,7 +180,7 @@ configure-venv() {
     pip install -r ./requirements.txt
     # Check venv configuration
     echo "Checking venv configuration"
-    if grep -F "$(cat .env)" <./pet-diary-venv/bin/activate 1>/dev/null; then
+    if [ -n "$(grep -o -F "$(cat .env)" <./pet-diary-venv/bin/activate)" ]; then
         echo "Looks like you're all set up"
     else
         echo "Amending pet-diary-venv/bin/activate"
@@ -185,4 +191,18 @@ configure-venv() {
     deactivate
     source ./pet-diary-venv/bin/activate 1>/dev/null
     echo "Complete, enjoy your new venv"
+}
+
+
+third-party-security-check () {
+    _verify_venv_active
+    echo "Scanning project for 3rd party dependency issues using Grype"
+    grype dir:"${VIRTUAL_ENV}/.." -q
+    return "$?"  # ensures function returns same code grype exits with
+}
+
+install-anchore-security-tools () {
+    _verify_venv_active
+    echo "Installing Grype"
+    cat "${VIRTUAL_ENV}/../install-scripts/grype-install.sh" | sudo sh -s -- -b /usr/local/bin
 }

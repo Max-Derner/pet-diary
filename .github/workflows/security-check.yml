@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Sourcing pdt tooling.sh
+    - name: Installing Grype
       run: |
-        . ./pdt help
+        . ./pdt install-anchore-security-tools
     - name: Running security report
       run: |
-        pdt full-security-check
+        . ./pdt full-security-check

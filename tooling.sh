@@ -3,10 +3,10 @@
 # This is the tooling used by pdt
 
 get-aws-profile() {
-    cat .pdt-config | grep -E 'PROFILE:' | sed -e 's/PROFILE://g'
+    grep -E 'PROFILE:' <.pdt-config | sed -e 's/PROFILE://g'
 }
 get-aws-region() {
-    cat .pdt-config | grep -E 'REGION:' | sed -e 's/REGION://g'
+    grep -E 'REGION:' <.pdt-config| sed -e 's/REGION://g'
 }
 
 _aws_exports() {
@@ -94,8 +94,9 @@ sam-destroy() {
 python-lint() {
     _verify_venv_active
     echo "linting Python"
-    flake8 "${VIRTUAL_ENV}/.."\
-    --exclude 'pet-diary-venv/**' ./
+    flake8 \
+    --exclude 'pet-diary-venv/**' \
+    "${VIRTUAL_ENV}/.."
 }
 
 python-security-check() {
@@ -173,10 +174,7 @@ configure-venv() {
     pip install -r ./requirements.txt
     # Check venv configuration
     echo "Checking venv configuration"
-    LINES_IN_DOT_ENV=$(cat .env | wc -l)
-    LAST_LINES_IN_BIN_ACTIVATE=$(cat ./pet-diary-venv/bin/activate | tail -n"$LINES_IN_DOT_ENV")
-    DIFFERENCE=$(diff <(cat .env) <(echo "$EQUIVALENT_LINES_IN_BIN_ACTIVATE"))
-    if [ -z "$DIFFERENCE" ]; then
+    if grep -F "$(cat .env)" <./pet-diary-venv/bin/activate 1>/dev/null; then
         echo "Looks like you're all set up"
     else
         echo "Amending pet-diary-venv/bin/activate"

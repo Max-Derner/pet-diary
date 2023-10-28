@@ -10,12 +10,12 @@ get-aws-region() {
 }
 
 _aws_exports() {
-    AVAILABLE_PROFILES=$(cat ~/.aws/config | grep -F '[profile' | sed -e 's/\[profile //g' -e 's/\]//g')
+    AVAILABLE_PROFILES=$(grep -F '[profile' <~/.aws/config | sed -e 's/\[profile //g' -e 's/\]//g')
     PS3='Profile selection: '
     select AWS_PROFILE in $AVAILABLE_PROFILES; do
         if [ -n "$AWS_PROFILE" ]; then break; fi
     done
-    CONFIG_SNIPPET=$(cat ~/.aws/config | grep -A 20 -F "[profile ${AWS_PROFILE}]")
+    CONFIG_SNIPPET=$(grep -A 20 -F "[profile ${AWS_PROFILE}]" <~/.aws/config)
     AWS_ACCOUNT_ID=$(echo "$CONFIG_SNIPPET" | grep -F 'sso_account_id = ' | sed -e 's/sso_account_id = //g' -e 's/ *$//g')
     echo "Exporting AWS_PROFILE as: $AWS_PROFILE"
     echo "Exporting AWS_ACCOUNT_ID as: $AWS_ACCOUNT_ID"
@@ -178,7 +178,7 @@ configure-venv() {
         echo "Looks like you're all set up"
     else
         echo "Amending pet-diary-venv/bin/activate"
-        cat .env | sudo tee -a ./pet-diary-venv/bin/activate 1>/dev/null
+        sudo tee -a ./pet-diary-venv/bin/activate <.env 1>/dev/null
     fi
     # restart venv
     echo "Restarting virtual environment"

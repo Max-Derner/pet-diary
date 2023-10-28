@@ -53,6 +53,9 @@ pdt-help() {
     echo "    configure-venv"
     echo "        This will set up your virtual environment for you, it is the reccomended way to do so"
     echo
+    echo "    install-anchore-security-tools"
+    echo "        This will install the security tooling needed for 3rd party dependency checking"
+    echo
     echo "    third-party-security-check"
     echo "        This will run Grype against the project directory, which will find 3rd party security issues. These"
     echo "        3rd party issues will be in imported and installed libraries and such"

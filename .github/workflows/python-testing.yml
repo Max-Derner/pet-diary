@@ -36,7 +36,7 @@ jobs:
         flake8 --exclude 'pet-diary-venv/**' ./ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Set up PYTHONPATH
       run: |
-        source ./env
+        source ./.env
     - name: Test with pytest
       run: |
         pytest

@@ -204,5 +204,5 @@ third-party-security-check () {
 install-anchore-security-tools () {
     _verify_venv_active
     echo "Installing Grype"
-    cat "${VIRTUAL_ENV}/../install-scripts/grype-install.sh" | sudo sh -s -- -b /usr/local/bin
+    cat "${VIRTUAL_ENV}/../installation-files/grype-install.sh" | sudo sh -s -- -b /usr/local/bin
 }

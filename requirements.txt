@@ -7,5 +7,7 @@ pytest
 pydantic
 flake8
 bandit
+moto
+
 # Security fixes
 setuptools == 65.5.1

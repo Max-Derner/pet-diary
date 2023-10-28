@@ -107,6 +107,7 @@ pdt() {
             ;;
         *)
             pdt-help
+            return 1  # Just to point out that you done biffed it
             ;;
     esac
 }

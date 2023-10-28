@@ -1,0 +1,14 @@
+name: SecurityCheck
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Sourcing pdt tooling.sh
+      run: |
+        . ./pdt
+    - name: Running security report
+      run: |
+        pdt full-security-check

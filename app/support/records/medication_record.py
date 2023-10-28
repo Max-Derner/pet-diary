@@ -1,7 +1,7 @@
 from typing import Dict, Optional, Union
-from app.supporting_cast.records.abstract_record import AbstractRecordFactory  # noqa: E501
-from app.supporting_cast.records.pet_table_models import MedicationRecordModel  # noqa: E501
-from app.supporting_cast.misc import utc_timestamp_now
+from app.support.records.abstract_record import AbstractRecordFactory
+from app.support.records.pet_table_models import MedicationRecordModel
+from app.support.misc import utc_timestamp_now
 from datetime import datetime
 from decimal import Decimal
 

@@ -1,27 +1,13 @@
 from datetime import datetime
 from typing import Dict, Optional
-from app.supporting_cast.logger import get_full_logger
-from app.supporting_cast.data_access_layer.helpers import (
-    get_pet_table_resource
-)
-from app.supporting_cast.records.abstract_record import (
-    AbstractRecordFactory
-)
-from app.supporting_cast.records.details_record import (
-    DetailsRecordFactory
-)
-from app.supporting_cast.records.appointment_record import (
-    AppointmentRecordFactory
-)
-from app.supporting_cast.records.illness_record import (
-    IllnessRecordFactory
-)
-from app.supporting_cast.records.medication_record import (
-    MedicationRecordFactory
-)
-from app.supporting_cast.records.observation_record import (
-    ObservationRecordFactory
-)
+from app.support.logger import get_full_logger
+from app.support.data_access_layer.helpers import get_pet_table_resource
+from app.support.records.abstract_record import AbstractRecordFactory
+from app.support.records.details_record import DetailsRecordFactory
+from app.support.records.appointment_record import AppointmentRecordFactory
+from app.support.records.illness_record import IllnessRecordFactory
+from app.support.records.medication_record import MedicationRecordFactory
+from app.support.records.observation_record import ObservationRecordFactory
 
 
 logger = get_full_logger()

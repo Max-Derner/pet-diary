@@ -1,13 +1,9 @@
-from app.supporting_cast.records.pet_table_models import (
-    AppointmentRecordModel
-)
-from app.supporting_cast.records.abstract_record import (
-    AbstractRecordFactory
-)
+from app.support.records.pet_table_models import AppointmentRecordModel
+from app.support.records.abstract_record import AbstractRecordFactory
 from datetime import datetime
-from typing import Dict, Optional, Union
+from typing import Dict, Union
 from decimal import Decimal
-from supporting_cast.misc import utc_timestamp_now
+from support.misc import utc_timestamp_now
 
 
 class AppointmentRecordFactory(AbstractRecordFactory):

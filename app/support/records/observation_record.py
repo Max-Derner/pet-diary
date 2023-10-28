@@ -1,8 +1,8 @@
-from app.supporting_cast.records.pet_table_models import ObservationRecordModel  # noqa: E501
-from app.supporting_cast.records.abstract_record import AbstractRecordFactory  # noqa: E501
+from app.support.records.pet_table_models import ObservationRecordModel
+from app.support.records.abstract_record import AbstractRecordFactory
 from datetime import datetime
 from typing import Dict, Union
-from supporting_cast.misc import utc_timestamp_now
+from app.support.misc import utc_timestamp_now
 from decimal import Decimal
 
 

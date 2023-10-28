@@ -9,7 +9,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Installing Grype
       run: |
-        . ./pdt install-anchore-security-tools
+        cat ./install-scripts/grype-install.sh | sudo sh -s -- -b /usr/local/bin
     - name: Running security report
       run: |
         . ./pdt full-security-check

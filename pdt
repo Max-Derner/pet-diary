@@ -105,6 +105,9 @@ pdt() {
         "full-security-check")
             full-security-check
             ;;
+        "install-anchore-security-tools")
+            install-anchore-security-tools
+            ;;
         "help")
             pdt-help
             ;;

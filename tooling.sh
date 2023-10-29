@@ -207,7 +207,7 @@ install-anchore-security-tools () {
     if [ -n "$(which grype)" ]; then
         echo "Grype install detected in $(which grype)"
         echo "Looks like you're already set up"
-    else;
+    else
         echo "Installing Grype"
         cat "${VIRTUAL_ENV}/../grype-install.sh" | sudo sh -s -- -b /usr/local/bin
     fi

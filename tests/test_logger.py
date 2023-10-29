@@ -2,13 +2,17 @@ import logging
 import pytest
 from os.path import abspath
 from app.support.logger import (
+    _ARTEFACTS_DIR,
+    _ROOT_DIR_PATH,
     _get_debug_output_formatter,
     _get_console_output_formatter,
     _get_stream_handler,
     _get_file_handler,
+    get_output_directories,
     get_partial_logger,
     get_full_logger
 )
+from support.file_interactors import ensure_directories_present
 
 
 def tests_get_debug_output_formatter():
@@ -44,9 +48,13 @@ def tests_get_stream_handler(level):
                                          (logging.CRITICAL, 'w')])
 def tests_get_file_handler(level, mode):
     formatter = logging.Formatter()
-    filename = 'logging_output/some_test_file.smth'
+    _FILE_NAME_FOR_TESTING = 'some_test_file.smth'
+    _RELATIVE_CONSOLE_OUTPUT_FILE_PATH = f'{_ARTEFACTS_DIR}/{_FILE_NAME_FOR_TESTING}'  # noqa: E501
+    _FULL_CONSOLE_OUTPUT_FILE_PATH = f'{_ROOT_DIR_PATH}/{_RELATIVE_CONSOLE_OUTPUT_FILE_PATH}'  # noqa: E501
+    output_directories = get_output_directories()
+    ensure_directories_present(directories=output_directories)
     file_handler = _get_file_handler(level=level,
-                                     filename=filename,
+                                     filename=_FULL_CONSOLE_OUTPUT_FILE_PATH,
                                      mode=mode,
                                      formatter=formatter)
     assert isinstance(file_handler, logging.FileHandler), \
@@ -54,7 +62,7 @@ def tests_get_file_handler(level, mode):
     assert file_handler.level == level, 'level was not set correctly'
     assert file_handler.formatter == formatter
     assert file_handler.mode == mode
-    assert file_handler.baseFilename == abspath(filename)
+    assert file_handler.baseFilename == abspath(_FULL_CONSOLE_OUTPUT_FILE_PATH)
 
 
 def tests_get_partial_logger():

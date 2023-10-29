@@ -19,7 +19,7 @@ jobs:
         . ./pdt configure-venv
     - name: Installing Grype
       run: |
-        . ./pdt install-anchore-security-tools
+        . ./pdt activate && . ./pdt install-anchore-security-tools
     - name: Running security report
       run: |
-        . ./pdt full-security-check
+        . ./pdt activate && . ./pdt full-security-check

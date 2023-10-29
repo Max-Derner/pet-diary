@@ -19,4 +19,4 @@ jobs:
         . ./pdt configure-venv
     - name: Analysing the code with Flake8
       run: |
-        . ./pdt python-lint
+        . ./pdt activate && . ./pdt python-lint

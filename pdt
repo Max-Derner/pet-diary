@@ -22,6 +22,9 @@ pdt-help() {
     echo
     echo "COMMANDS:"
     echo
+    echo "    activate"
+    echo "        This is just a shortcut for activating your Python Virtual Environment"
+    echo
     echo "    aws-login"
     echo "        This logs you in via SSO using the variables set up in configure-vars"
     echo
@@ -72,6 +75,9 @@ pdt-help() {
 
 pdt() {
     case "$1" in
+        "activate")
+            . ./pet-diary-venv/bin/activate
+            ;;
         "aws-login")
             aws-login
             ;;

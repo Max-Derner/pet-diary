@@ -3,7 +3,7 @@ name: Security Check
 on: [push]
 
 jobs:
-  build:
+  Security_Report:
     runs-on: ubuntu-latest
     strategy:
       matrix:

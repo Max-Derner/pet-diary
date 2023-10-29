@@ -23,18 +23,17 @@ def tests_put_appointment_record(get_pet_table_resource: Mock,
     pet_table.put_item = put_item
     get_pet_table_resource.return_value = pet_table
     utc_timestamp_now.return_value = 123456.789
+    date_time = datetime(year=2999, month=9, day=21)
     expected_item = {
         'name': 'me',
         'sort_key': 'appointment#123456.789',
-        'date_time': Decimal(32494863600),
+        'date_time': Decimal(date_time.timestamp()),
         'description': 'Got to get vaccinated against millennium bug'
         }
 
     put_appointment_record(
         pet_name='me',
-        appointment_time=datetime(year=2999,
-                                  month=9,
-                                  day=21),
+        appointment_time=date_time,
         description='Got to get vaccinated against millennium bug'
     )
 
@@ -47,10 +46,11 @@ def tests_put_details_record(get_pet_table_resource: Mock):
     put_item = Mock()
     pet_table.put_item = put_item
     get_pet_table_resource.return_value = pet_table
+    dob = datetime(year=1812, month=12, day=23)
     expected_item = {
         'name': 'me',
         'sort_key': 'details',
-        'dob': Decimal(-4955212725),
+        'dob': Decimal(dob.timestamp()),
         'colour': 'bit peaky',
         'gender': 'yes',
         'breed': 'not yet',
@@ -58,9 +58,7 @@ def tests_put_details_record(get_pet_table_resource: Mock):
         }
 
     put_details_record(pet_name='me',
-                       date_of_birth=datetime(year=1812,
-                                              month=12,
-                                              day=23),
+                       date_of_birth=dob,
                        colour='bit peaky',
                        gender='yes',
                        breed='not yet',
@@ -78,19 +76,18 @@ def tests_put_illness_record(get_pet_table_resource: Mock,
     pet_table.put_item = put_item
     get_pet_table_resource.return_value = pet_table
     utc_timestamp_now.return_value = 123456.789
+    observed_time = datetime(year=1207, month=1, day=1)
     expected_item = {
         'name': 'me',
         'sort_key': 'illness#stinky butt#123456.789',
         'ailment': 'stinky butt',
-        'date_time': Decimal(-24077951925),
+        'date_time': Decimal(observed_time.timestamp()),
         'description': 'butt is so stinky, neighbours have complained'}
 
     put_illness_record(
         pet_name='me',
         ailment='stinky butt',
-        observed_time=datetime(year=1207,
-                               month=1,
-                               day=1),
+        observed_time=observed_time,
         description='butt is so stinky, neighbours have complained'
     )
 
@@ -106,19 +103,24 @@ def tests_put_medication_record(get_pet_table_resource: Mock,
     pet_table.put_item = put_item
     get_pet_table_resource.return_value = pet_table
     utc_timestamp_now.return_value = 123456.789
+    time_of_administration = datetime(
+        year=2023,
+        month=10,
+        day=24,
+        hour=18,
+        minute=24
+    )
     expected_item = {
         'name': 'me',
         'sort_key': 'medication#good kind#123456.789',
-        'date_time': Decimal('1698102000'),
+        'date_time': Decimal(time_of_administration.timestamp()),
         'medicine_name': 'feel-better-aloxin',
         'medicine_type': 'good kind',
         'repeat': False
         }
 
     put_medication_record(pet_name='me',
-                          time_of_administration=datetime(year=2023,
-                                                          month=10,
-                                                          day=24),
+                          time_of_administration=time_of_administration,
                           name_of_medicine='feel-better-aloxin',
                           type_of_medication='good kind')
 
@@ -134,24 +136,28 @@ def tests_put_medication_record_alt(get_pet_table_resource: Mock,
     pet_table.put_item = put_item
     get_pet_table_resource.return_value = pet_table
     utc_timestamp_now.return_value = 123456.789
+    time_of_administration = datetime(
+        year=2023,
+        month=10,
+        day=24,
+        hour=18,
+        minute=24
+    )
+    next_due = datetime(year=2024, month=1, day=24)
     expected_item = {
         'name': 'me',
         'sort_key': 'medication#good kind#123456.789',
-        'date_time': Decimal(1698102000),
+        'date_time': Decimal(time_of_administration.timestamp()),
         'medicine_name': 'feel-better-aloxin',
         'medicine_type': 'good kind',
         'repeat': True,
-        'next_due': Decimal(1706054400)}
+        'next_due': Decimal(next_due.timestamp())}
 
     put_medication_record(pet_name='me',
-                          time_of_administration=datetime(year=2023,
-                                                          month=10,
-                                                          day=24),
+                          time_of_administration=time_of_administration,
                           name_of_medicine='feel-better-aloxin',
                           type_of_medication='good kind',
-                          next_due=datetime(year=2024,
-                                            month=1,
-                                            day=24))
+                          next_due=next_due)
 
     put_item.assert_called_once_with(Item=expected_item)
 
@@ -165,17 +171,16 @@ def tests_put_observation_record(get_pet_table_resource: Mock,
     pet_table.put_item = put_item
     get_pet_table_resource.return_value = pet_table
     utc_timestamp_now.return_value = 123456.789
+    observed = datetime(year=2023, month=10, day=23)
     expected_item = {
         'name': 'me',
         'sort_key': 'observation#123456.789',
-        'date_time': Decimal(1698015600),
+        'date_time': Decimal(observed.timestamp()),
         'description': 'Broke venv, get very upset wth self'
         }
 
     put_observation_record(pet_name='me',
-                           observed=datetime(year=2023,
-                                             month=10,
-                                             day=23),
+                           observed=observed,
                            description='Broke venv, get very upset wth self')
 
     put_item.assert_called_once_with(Item=expected_item)

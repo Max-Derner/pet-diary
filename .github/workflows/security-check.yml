@@ -19,10 +19,7 @@ jobs:
         . ./pdt configure-venv
     - name: Installing Grype
       run: |
-        cat ./installation-files/grype-install.sh | sudo sh -s -- -b /usr/local/bin
-    - name: Install SAM CLI
-      run: |
-        ./installation-files/aws-sam/install
+        . ./pdt install-anchore-security-tools
     - name: Running security report
       run: |
         . ./pdt full-security-check

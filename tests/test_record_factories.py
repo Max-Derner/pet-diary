@@ -13,10 +13,12 @@ RECORDS_MODULE = 'app.support.records'
 
 class TestsIllnessRecordFactory(TestCase):
 
+    date_time = datetime(year=2023, month=10, day=14)
+
     correct_illness_record = {
         'name': 'me',
         'sort_key': 'illness#stinky-butt#123456.789',
-        'date_time': Decimal(1697238000.0),
+        'date_time': Decimal(date_time.timestamp()),
         'ailment': 'stinky-butt',
         'description': 'Butt so stinky, it makes everyone in the room cry',
         }
@@ -24,7 +26,7 @@ class TestsIllnessRecordFactory(TestCase):
     nearly_correct_illness_record = {
         'name': 'me',
         'sort_key': 'illness#stinky-butt#123456.789',
-        'date_time': '1697238000.0',
+        'date_time': f'{Decimal(date_time.timestamp())}',  # it's a string!
         'ailment': 'stinky-butt',
         'description': 'Butt so stinky, it makes everyone in the room cry',
         }
@@ -45,9 +47,7 @@ class TestsIllnessRecordFactory(TestCase):
         actual_record = illness_factory.produce_record(
             name='me',
             ailment='stinky-butt',
-            date_time=datetime(year=2023,
-                               month=10,
-                               day=14),
+            date_time=self.date_time,
             description="Butt so stinky, it makes everyone in the room cry"
         )
 
@@ -76,9 +76,7 @@ class TestsIllnessRecordFactory(TestCase):
         record = illness_factory.produce_record(
             name='me',
             ailment='stinky-butt',
-            date_time=datetime(year=2023,
-                               month=10,
-                               day=14),
+            date_time=self.date_time,
             description="Butt so stinky, it makes everyone in the room cry"
         )
 
@@ -89,12 +87,14 @@ class TestsIllnessRecordFactory(TestCase):
 
 class TestsDetailsRecordFactory(TestCase):
 
+    date_of_birth = datetime(year=1805, month=12, day=12)
+
     correct_details_record = {
         'name': 'me',
         'sort_key': 'details',
         'breed': 'person',
         'colour': 'regular',
-        'dob': Decimal(-5177087925.0),
+        'dob': Decimal(date_of_birth.timestamp()),
         'gender': 'yes',
         'microchip_number': 1,
         }
@@ -104,7 +104,7 @@ class TestsDetailsRecordFactory(TestCase):
         'sort_key': 'details',
         'breed': 'person',
         'colour': 'regular',
-        'dob': '-5177087925.0',
+        'dob': f'{Decimal(date_of_birth.timestamp())}',  # it's a string!
         'gender': 'yes',
         'microchip_number': '1',
         }
@@ -124,9 +124,7 @@ class TestsDetailsRecordFactory(TestCase):
 
         actual_record = details_factory.produce_record(
             name='me',
-            date_of_birth=datetime(year=1805,
-                                   month=12,
-                                   day=12),
+            date_of_birth=self.date_of_birth,
             colour='regular',
             gender='yes',
             breed='person',
@@ -157,9 +155,7 @@ class TestsDetailsRecordFactory(TestCase):
         details_factory = DetailsRecordFactory()
         record = details_factory.produce_record(
             name='me',
-            date_of_birth=datetime(year=1207,
-                                   month=12,
-                                   day=23),
+            date_of_birth=self.date_of_birth,
             colour='good',
             gender='yes',
             breed='people',
@@ -173,20 +169,24 @@ class TestsDetailsRecordFactory(TestCase):
 
 class TestsMedicationRecordFactory(TestCase):
 
+    administered = datetime(year=2023, month=12, day=2)
+
+    next_due = datetime(year=2024, month=1, day=2)
+
     correct_medication_record = {
         'name': 'me',
         'sort_key': 'medication#non-poisonous#123456.789',
-        'date_time': Decimal(1701475200.0),
+        'date_time': Decimal(administered.timestamp()),
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'medicine_type': 'non-poisonous',
         'repeat': True,
-        'next_due': Decimal(1704153600.0),
+        'next_due': Decimal(next_due.timestamp()),
         }
 
     also_correct_medication_record = {
         'name': 'me',
         'sort_key': 'medication#non-poisonous#123456.789',
-        'date_time': Decimal(1701475200.0),
+        'date_time': Decimal(administered.timestamp()),
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'repeat': False,
         'medicine_type': 'non-poisonous',
@@ -195,7 +195,7 @@ class TestsMedicationRecordFactory(TestCase):
     nearly_correct_medication_record = {
         'name': 'me',
         'sort_key': 'medication#non-poisonous#123456.789',
-        'date_time': '1701475200.0',
+        'date_time': f'{Decimal(administered.timestamp())}',  # it's a string!
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'medicine_type': 'non-poisonous',
         'repeat': 'True',
@@ -205,7 +205,7 @@ class TestsMedicationRecordFactory(TestCase):
     invalid_medication_record = {
         'name': 'me',
         'sort_key': 'medication#non-poisonous#123456.789',
-        'date_time': Decimal(1701475200.0),
+        'date_time': Decimal(administered.timestamp()),
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'medicine_type': 'non-poisonous',
         'repeat': 'yes',
@@ -297,17 +297,19 @@ class TestsMedicationRecordFactory(TestCase):
 
 class TestsObservationRecordFactory(TestCase):
 
+    date_time = datetime(year=2023, month=10, day=14)
+
     correct_observation_record = {
         'name': 'me',
         'sort_key': 'observation#123456.789',
-        'date_time': Decimal(1697238000.0),
+        'date_time': Decimal(date_time.timestamp()),
         'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
         }
 
     nearly_correct_observation_record = {
         'name': 'me',
         'sort_key': 'observation#123456.789',
-        'date_time': '1697238000.0',
+        'date_time': f'{Decimal(date_time.timestamp())}',  # it's a string!
         'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
         }
 
@@ -325,9 +327,7 @@ class TestsObservationRecordFactory(TestCase):
 
         actual_record = observation_factory.produce_record(
             name='me',
-            date_time=datetime(year=2023,
-                               month=10,
-                               day=14),
+            date_time=self.date_time,
             description="I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine"  # noqa: E501
         )
 
@@ -355,9 +355,7 @@ class TestsObservationRecordFactory(TestCase):
         observation_factory = ObservationRecordFactory()
         record = observation_factory.produce_record(
             name='me',
-            date_time=datetime(year=2023,
-                               month=10,
-                               day=25),
+            date_time=self.date_time,
             description="Observed burping in the vicinity of his wife. Wife disappointed"  # noqa: E501
         )
 
@@ -368,17 +366,19 @@ class TestsObservationRecordFactory(TestCase):
 
 class TestsAppointmentRecordFactory(TestCase):
 
+    date_time = datetime(year=2023, month=10, day=14)
+
     correct_appointment_record = {
         'name': 'me',
         'sort_key': 'appointment#123456.789',
-        'date_time': Decimal(1697238000.0),
+        'date_time': Decimal(date_time.timestamp()),
         'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
         }
 
     nearly_correct_appointment_record = {
         'name': 'me',
         'sort_key': 'appointment#123456.789',
-        'date_time': '1697238000.0',
+        'date_time': f'{Decimal(date_time.timestamp())}',  # it's a string!
         'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
         }
 
@@ -395,9 +395,7 @@ class TestsAppointmentRecordFactory(TestCase):
         appointment = AppointmentRecordFactory()
         actual_record = appointment.produce_record(
             name='me',
-            date_time=datetime(year=2023,
-                               month=10,
-                               day=14),
+            date_time=self.date_time,
             description="Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole"  # noqa: E501
         )
         assert actual_record == self.correct_appointment_record

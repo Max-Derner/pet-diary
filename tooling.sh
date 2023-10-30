@@ -44,7 +44,7 @@ aws-add-test-profile() {
         echo "There was no aws config file found at ~/.aws/config"
         echo "If you have specified a different location for the config, then I trust you to fix this yourself"
         return 1
-    else [ -z "$(grep -o \-F "$TEST_PROFILE_HEADER" <~/.aws/config)" ]; then
+    elif [ -z "$(grep -o \-F "$TEST_PROFILE_HEADER" <~/.aws/config)" ]; then
         echo "Test profile not found, adding now"
         cat "${VIRTUAL_ENV}/../aws-test-profile" >> ~/.aws/config
     else

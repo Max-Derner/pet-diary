@@ -32,9 +32,6 @@ jobs:
         python-version: ["3.8", "3.9", "3.10"]
     steps:
     - uses: actions/checkout@v3
-    - name: Add testing profile to ~/.aws/config
-      run: |
-        . ./pdt activate 1>/dev/null && aws-add-test-profile
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -42,6 +39,9 @@ jobs:
     - name: Install venv
       run: |
         . ./pdt configure-venv
+    - name: Add testing profile to ~/.aws/config
+      run: |
+        . ./pdt activate 1>/dev/null && aws-add-test-profile
     - name: Run Pytest
       run: |
         . ./pdt activate 1>/dev/null && python-test

@@ -41,6 +41,8 @@ jobs:
         . ./pdt configure-venv
     - name: Add testing profile to ~/.aws/config
       run: |
+        echo "ENV"
+        env
         . ./pdt activate 1>/dev/null && aws-add-test-profile
     - name: Run Pytest
       run: |

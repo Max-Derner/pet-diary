@@ -56,6 +56,8 @@ _delimit() {
 full-security-check() {
     EXIT_STATUS=0
     _verify_venv_active
+    echo -e "\tGenerating Security Report"
+    echo -e "\t\t$(date)"
     _delimit
     python-security-check || EXIT_STATUS="$?"
     _delimit

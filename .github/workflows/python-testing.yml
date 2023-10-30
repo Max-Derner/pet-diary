@@ -23,7 +23,7 @@ jobs:
         . ./pdt configure-venv
     - name: Analysing the code with Flake8
       run: |
-        . ./pdt activate && . ./pdt python-lint
+        . ./pdt activate 1>/dev/null && . ./pdt python-lint
   Unit_Tests:
     needs: Linting
     runs-on: ubuntu-latest
@@ -41,4 +41,4 @@ jobs:
         . ./pdt configure-venv
     - name: Run Pytest
       run: |
-        . ./pdt activate && . ./pdt python-test
+        . ./pdt activate 1>/dev/null && . ./pdt python-test

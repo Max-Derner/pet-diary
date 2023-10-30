@@ -19,4 +19,4 @@ jobs:
         . ./pdt activate && . ./pdt install-anchore-security-tools
     - name: Running security report
       run: |
-        . ./pdt activate && . ./pdt full-security-check
+        . ./pdt activate 1>/dev/null && . ./pdt full-security-check

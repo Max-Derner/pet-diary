@@ -40,12 +40,21 @@ aws-add-test-profile() {
     _verify_venv_active
     echo "Checking aws config for test profile"
     TEST_PROFILE_HEADER='profile only-unit-tests!'
-    if [ -z "$(grep -o \-F "$TEST_PROFILE_HEADER" <~/.aws/config)" ]; then
+    if [ ! -e ~/.aws/config ]; then
+        echo "There was no aws config file found at ~/.aws/config"
+        echo "If you have specified a different location for the config, then I trust you to fix this yourself"
+        return 1
+    else [ -z "$(grep -o \-F "$TEST_PROFILE_HEADER" <~/.aws/config)" ]; then
         echo "Test profile not found, adding now"
         cat "${VIRTUAL_ENV}/../aws-test-profile" >> ~/.aws/config
     else
         echo "Testing profile found already"
     fi
+}
+
+_aws-force-config-and-test-profile() {
+    echo "Creating config file with test profile."
+    cat "${VIRTUAL_ENV}/../aws-test-profile" >> ~/.aws/config
 }
 
 _delimit() {

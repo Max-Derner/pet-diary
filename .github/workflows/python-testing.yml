@@ -23,7 +23,7 @@ jobs:
         . ./pdt configure-venv
     - name: Analysing the code with Flake8
       run: |
-        . ./pdt activate 1>/dev/null && . ./pdt python-lint
+        . ./pdt activate 1>/dev/null && python-lint
   Unit_Tests:
     needs: Linting
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Add testing profile to ~/.aws/config
       run: |
-        . ./pdt aws-add-test-profile
+        . ./pdt activate 1>/dev/null && aws-add-test-profile
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -44,4 +44,4 @@ jobs:
         . ./pdt configure-venv
     - name: Run Pytest
       run: |
-        . ./pdt activate 1>/dev/null && . ./pdt python-test
+        . ./pdt activate 1>/dev/null && python-test

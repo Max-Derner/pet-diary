@@ -53,6 +53,8 @@ aws-add-test-profile() {
 }
 
 _aws-force-config-and-test-profile() {
+    echo "Creating parent directory '~/.aws'"
+    mkdir ~/.aws
     echo "Creating config file with test profile."
     cat "${VIRTUAL_ENV}/../aws-test-profile" >> ~/.aws/config
 }

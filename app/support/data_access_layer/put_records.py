@@ -20,8 +20,8 @@ def put_appointment_record(pet_name: str,
     factory = AppointmentRecordFactory()
     logger.info("Producing record")
     record = factory.produce_record(
-        name=pet_name,
-        date_time=appointment_time,
+        pet_name=pet_name,
+        appointment_time=appointment_time,
         description=description
     )
     _validate_record_then_put_in_pet_table(
@@ -40,7 +40,7 @@ def put_details_record(pet_name: str,
     factory: DetailsRecordFactory = DetailsRecordFactory()
     logger.info("Producing record")
     record = factory.produce_record(
-        name=pet_name,
+        pet_name=pet_name,
         date_of_birth=date_of_birth,
         colour=colour,
         gender=gender,
@@ -61,9 +61,9 @@ def put_illness_record(pet_name: str,
     factory = IllnessRecordFactory()
     logger.info("Producing record")
     record = factory.produce_record(
-        name=pet_name,
+        pet_name=pet_name,
         ailment=ailment,
-        date_time=observed_time,
+        observed_time=observed_time,
         description=description
     )
     _validate_record_then_put_in_pet_table(
@@ -75,16 +75,16 @@ def put_illness_record(pet_name: str,
 def put_medication_record(pet_name: str,
                           time_of_administration: datetime,
                           name_of_medicine: str,
-                          type_of_medication: str,
+                          type_of_medicine: str,
                           next_due: Optional[datetime] = None):
     logger.info("Getting Record Factory")
     factory = MedicationRecordFactory()
     logger.info("Producing record")
     record = factory.produce_record(
-        name=pet_name,
-        administered=time_of_administration,
+        pet_name=pet_name,
+        time_of_administration=time_of_administration,
         name_of_medicine=name_of_medicine,
-        type_of_medicine=type_of_medication,
+        type_of_medicine=type_of_medicine,
         next_due=next_due
     )
     _validate_record_then_put_in_pet_table(
@@ -94,14 +94,14 @@ def put_medication_record(pet_name: str,
 
 
 def put_observation_record(pet_name: str,
-                           observed: datetime,
+                           observed_time: datetime,
                            description: str):
     logger.info("Getting Record Factory")
     factory = ObservationRecordFactory()
     logger.info("Producing record")
     record = factory.produce_record(
-        name=pet_name,
-        date_time=observed,
+        pet_name=pet_name,
+        observed_time=observed_time,
         description=description
     )
     _validate_record_then_put_in_pet_table(

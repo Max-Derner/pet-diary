@@ -45,9 +45,9 @@ class TestsIllnessRecordFactory(TestCase):
         illness_factory = IllnessRecordFactory()
 
         actual_record = illness_factory.produce_record(
-            name='me',
+            pet_name='me',
             ailment='stinky-butt',
-            date_time=self.date_time,
+            observed_time=self.date_time,
             description="Butt so stinky, it makes everyone in the room cry"
         )
 
@@ -74,9 +74,9 @@ class TestsIllnessRecordFactory(TestCase):
     def tests_produces_valid_record(self):
         illness_factory = IllnessRecordFactory()
         record = illness_factory.produce_record(
-            name='me',
+            pet_name='me',
             ailment='stinky-butt',
-            date_time=self.date_time,
+            observed_time=self.date_time,
             description="Butt so stinky, it makes everyone in the room cry"
         )
 
@@ -123,7 +123,7 @@ class TestsDetailsRecordFactory(TestCase):
         details_factory = DetailsRecordFactory()
 
         actual_record = details_factory.produce_record(
-            name='me',
+            pet_name='me',
             date_of_birth=self.date_of_birth,
             colour='regular',
             gender='yes',
@@ -154,7 +154,7 @@ class TestsDetailsRecordFactory(TestCase):
     def tests_produces_valid_record(self):
         details_factory = DetailsRecordFactory()
         record = details_factory.produce_record(
-            name='me',
+            pet_name='me',
             date_of_birth=self.date_of_birth,
             colour='good',
             gender='yes',
@@ -218,10 +218,10 @@ class TestsMedicationRecordFactory(TestCase):
         medication_factory = MedicationRecordFactory()
 
         actual_record = medication_factory.produce_record(
-            name='me',
-            administered=datetime(year=2023,
-                                  month=12,
-                                  day=2),
+            pet_name='me',
+            time_of_administration=datetime(year=2023,
+                                            month=12,
+                                            day=2),
             name_of_medicine="Flux-a-make-you-feel-better-a-tonne",
             type_of_medicine="non-poisonous",
             next_due=datetime(year=2024,
@@ -237,10 +237,10 @@ class TestsMedicationRecordFactory(TestCase):
         medication_factory = MedicationRecordFactory()
 
         actual_record = medication_factory.produce_record(
-            name='me',
-            administered=datetime(year=2023,
-                                  month=12,
-                                  day=2),
+            pet_name='me',
+            time_of_administration=datetime(year=2023,
+                                            month=12,
+                                            day=2),
             name_of_medicine="Flux-a-make-you-feel-better-a-tonne",
             type_of_medicine="non-poisonous",
             next_due=None,
@@ -269,8 +269,8 @@ class TestsMedicationRecordFactory(TestCase):
     def tests_produces_valid_record(self):
         medication_factory = MedicationRecordFactory()
         record = medication_factory.produce_record(
-            name='me',
-            administered=datetime.now(),
+            pet_name='me',
+            time_of_administration=datetime.now(),
             name_of_medicine='poo better laxative tm',
             type_of_medicine='laxative',
             next_due=datetime.now() + timedelta(days=90)
@@ -283,8 +283,8 @@ class TestsMedicationRecordFactory(TestCase):
     def tests_produces_valid_record_alt(self):
         medication_factory = MedicationRecordFactory()
         record = medication_factory.produce_record(
-            name='me',
-            administered=datetime.now(),
+            pet_name='me',
+            time_of_administration=datetime.now(),
             name_of_medicine='poo better laxative tm',
             type_of_medicine='laxative',
             next_due=None
@@ -326,8 +326,8 @@ class TestsObservationRecordFactory(TestCase):
         observation_factory = ObservationRecordFactory()
 
         actual_record = observation_factory.produce_record(
-            name='me',
-            date_time=self.date_time,
+            pet_name='me',
+            observed_time=self.date_time,
             description="I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine"  # noqa: E501
         )
 
@@ -354,8 +354,8 @@ class TestsObservationRecordFactory(TestCase):
     def tests_produces_valid_record(self):
         observation_factory = ObservationRecordFactory()
         record = observation_factory.produce_record(
-            name='me',
-            date_time=self.date_time,
+            pet_name='me',
+            observed_time=self.date_time,
             description="Observed burping in the vicinity of his wife. Wife disappointed"  # noqa: E501
         )
 
@@ -394,8 +394,8 @@ class TestsAppointmentRecordFactory(TestCase):
         utc_timestamp_now.return_value = 123456.789
         appointment = AppointmentRecordFactory()
         actual_record = appointment.produce_record(
-            name='me',
-            date_time=self.date_time,
+            pet_name='me',
+            appointment_time=self.date_time,
             description="Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole"  # noqa: E501
         )
         assert actual_record == self.correct_appointment_record
@@ -417,8 +417,8 @@ class TestsAppointmentRecordFactory(TestCase):
     def tests_produces_valid_record(self):
         appointment = AppointmentRecordFactory()
         record = appointment.produce_record(
-            name='me',
-            date_time=datetime.now(),
+            pet_name='me',
+            appointment_time=datetime.now(),
             description='Got appointment to do some coding'
         )
 

@@ -122,7 +122,7 @@ def tests_put_medication_record(get_pet_table_resource: Mock,
     put_medication_record(pet_name='me',
                           time_of_administration=time_of_administration,
                           name_of_medicine='feel-better-aloxin',
-                          type_of_medication='good kind')
+                          type_of_medicine='good kind')
 
     put_item.assert_called_once_with(Item=expected_item)
 
@@ -156,7 +156,7 @@ def tests_put_medication_record_alt(get_pet_table_resource: Mock,
     put_medication_record(pet_name='me',
                           time_of_administration=time_of_administration,
                           name_of_medicine='feel-better-aloxin',
-                          type_of_medication='good kind',
+                          type_of_medicine='good kind',
                           next_due=next_due)
 
     put_item.assert_called_once_with(Item=expected_item)
@@ -180,7 +180,7 @@ def tests_put_observation_record(get_pet_table_resource: Mock,
         }
 
     put_observation_record(pet_name='me',
-                           observed=observed,
+                           observed_time=observed,
                            description='Broke venv, get very upset wth self')
 
     put_item.assert_called_once_with(Item=expected_item)

@@ -13,20 +13,29 @@ class DetailsRecordFactory(AbstractRecordFactory):
 
     def produce_record(
             self,
-            name: str,
+            pet_name: str,
             date_of_birth: datetime,
             colour: str,
             gender: str,
             breed: str,
             microchip_number: int
-    ) -> Dict[str, Union[str, Decimal, int]]:
+    ) -> Dict[str, Union[str, Decimal]]:
         details_record = {
-            "name": name,
+            "name": pet_name,
             "sort_key": "details",
             "dob": Decimal(date_of_birth.timestamp()),
             "colour": colour,
             "gender": gender,
             "breed": breed,
-            "microchip_number": microchip_number
+            "microchip_number": Decimal(microchip_number)
         }
         return details_record
+
+    def _extra_record_validation(self, record: Dict) -> bool:
+        try:
+            # Dynamo requires all numbers are Decimal,
+            # this needs to be natural number
+            int(record['microchip_number'])
+        except ValueError:
+            return False
+        return True

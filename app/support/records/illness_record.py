@@ -14,17 +14,17 @@ class IllnessRecordFactory(AbstractRecordFactory):
 
     def produce_record(
             self,
-            name: str,
+            pet_name: str,
             ailment: str,
-            date_time: datetime,
+            observed_time: datetime,
             description: str
             ) -> Dict[str, Union[str, Decimal]]:
         sort_key = f"illness#{ailment}#{utc_timestamp_now()}"
         illness_record = {
-            "name": name,
+            "name": pet_name,
             "sort_key": sort_key,
             "ailment": ailment,
-            "date_time": Decimal(date_time.timestamp()),
+            "date_time": Decimal(observed_time.timestamp()),
             "description": description
         }
         return illness_record

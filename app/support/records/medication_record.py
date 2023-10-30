@@ -14,17 +14,17 @@ class MedicationRecordFactory(AbstractRecordFactory):
 
     def produce_record(
             self,
-            name: str,
-            administered: datetime,
+            pet_name: str,
+            time_of_administration: datetime,
             name_of_medicine: str,
             type_of_medicine: str,
             next_due: Optional[datetime]
     ) -> Dict[str, Union[str, Decimal, bool]]:
         sort_key = f"medication#{type_of_medicine}#{utc_timestamp_now()}"
         medicine_record = {
-            "name": name,
+            "name": pet_name,
             "sort_key": sort_key,
-            "date_time": Decimal(administered.timestamp()),
+            "date_time": Decimal(time_of_administration.timestamp()),
             "medicine_name": name_of_medicine,
             "medicine_type": type_of_medicine,
             "repeat": True if next_due is not None else False

@@ -14,15 +14,15 @@ class ObservationRecordFactory(AbstractRecordFactory):
 
     def produce_record(
             self,
-            name: str,
-            date_time: datetime,
+            pet_name: str,
+            observed_time: datetime,
             description: str
             ) -> Dict[str, Union[str, Decimal]]:
         sort_key = f"observation#{utc_timestamp_now()}"
         illness_record = {
-            "name": name,
+            "name": pet_name,
             "sort_key": sort_key,
-            "date_time": Decimal(date_time.timestamp()),
+            "date_time": Decimal(observed_time.timestamp()),
             "description": description
         }
         return illness_record

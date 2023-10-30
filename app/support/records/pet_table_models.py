@@ -9,7 +9,7 @@
 #  | dob                    | Decimal as posix timestamp  | Details                                         | # noqa: E501
 #  | gender                 | str                         | Details                                         | # noqa: E501
 #  | colour                 | str                         | Details                                         | # noqa: E501
-#  | microchip_number       | int                         | Details                                         | # noqa: E501
+#  | microchip_number       | Decimal as int              | Details                                         | # noqa: E501
 #  | date_time              | Decimal as posix timestamp  | Medication, Illness, Observation, Appointment   | # noqa: E501
 #  | medicine_name          | str                         | Medication                                      | # noqa: E501
 #  | medicine_type          | str                         | Medication                                      | # noqa: E501
@@ -30,7 +30,7 @@ class DetailsRecordModel(BaseModel):
     dob: Decimal
     gender: str
     colour: str
-    microchip_number: int
+    microchip_number: Decimal
 
 
 class MedicationRecordModel(BaseModel):

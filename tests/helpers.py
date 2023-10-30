@@ -50,7 +50,7 @@ test_data = {
     'observation':
     {
         'pet_name': 'me',
-        'observed': datetime(year=1808, month=3, day=29),
+        'observed_time': datetime(year=1808, month=3, day=29),
         'description': 'seems vary lethargic since vaccine'
     },
     'illness':
@@ -65,7 +65,7 @@ test_data = {
         'pet_name': 'me',
         'time_of_administration': datetime(year=1808, month=4, day=4),
         'name_of_medicine': 'feel-better-a-loxin',
-        'type_of_medication': 'antiemetic',
+        'type_of_medicine': 'antiemetic',
         'next_due': datetime(year=1808, month=4, day=5)
     }
 }
@@ -115,7 +115,7 @@ def setup_test_dynamo_with_data():
     observation = test_data['observation']
     put_observation_record(
         pet_name=observation['pet_name'],
-        observed=observation['observed'],
+        observed_time=observation['observed_time'],
         description=observation['description']
     )
     illness = test_data['illness']
@@ -130,6 +130,6 @@ def setup_test_dynamo_with_data():
         pet_name=medication['pet_name'],
         time_of_administration=medication['time_of_administration'],
         name_of_medicine=medication['name_of_medicine'],
-        type_of_medication=medication['type_of_medication'],
+        type_of_medicine=medication['type_of_medicine'],
         next_due=medication['next_due']
     )

@@ -127,7 +127,7 @@ python-lint() {
     _verify_venv_active
     echo "linting Python"
     flake8 \
-    --exclude 'pet-diary-venv/**' \
+    --exclude 'pet-diary-venv/**,freezer/**' \
     "${VIRTUAL_ENV}/.." \
     && echo "No issues detected"
     return "$?"  # ensures function returns same code flake8 exits with

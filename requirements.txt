@@ -8,6 +8,7 @@ pydantic
 flake8
 bandit
 moto
+pyyaml
 
 # Security fixes
 setuptools == 65.5.1

@@ -1,0 +1,7 @@
+
+[profile only-unit-tests!]
+sso_start_url = https://some-other-place.awsapps.com/start#
+sso_region = eu-west-2
+sso_account_id = absolutely-not-sunshine!
+sso_role_name = BloodyNoAccess
+region = eu-west-2

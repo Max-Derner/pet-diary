@@ -36,6 +36,18 @@ aws-login() {
     aws sso login
 }
 
+aws-add-test-profile() {
+    _verify_venv_active
+    echo "Checking aws config for test profile"
+    TEST_PROFILE_HEADER='profile only-unit-tests!'
+    if [ -z "$(grep -o \-F "$TEST_PROFILE_HEADER" <~/.aws/config)" ]; then
+        echo "Test profile not found, adding now"
+        cat "${VIRTUAL_ENV}/../aws-test-profile" >> ~/.aws/config
+    else
+        echo "Testing profile found already"
+    fi
+}
+
 _delimit() {
     echo "================================================================================"
     echo
@@ -103,7 +115,9 @@ python-lint() {
     echo "linting Python"
     flake8 \
     --exclude 'pet-diary-venv/**' \
-    "${VIRTUAL_ENV}/.."
+    "${VIRTUAL_ENV}/.." \
+    && echo "No issues detected"
+    return "$?"  # ensures function returns same code flake8 exits with
 }
 
 python-security-check() {

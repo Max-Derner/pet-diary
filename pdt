@@ -28,6 +28,11 @@ pdt-help() {
     echo "    aws-login"
     echo "        This logs you in via SSO using the variables set up in configure-vars"
     echo
+    echo "    aws-add-test-profile"
+    echo "        This simply adds an exra profile to ~/.aws/config. The profile should be broken enough that it won't"
+    echo "        work, but not so broken that botocore will refuse to make the API call. This test profile is used in"
+    echo "        certain test scenarios."
+    echo
     echo "    sam-check"
     echo "        This will run checks against your sam-template"
     echo
@@ -70,6 +75,9 @@ pdt-help() {
     echo "            - Bandit (for Python code)"
     echo "            - Checkov (for SAM template)"
     echo "            - Grype (for 3rd party vulnerabilities)"
+    echo
+    echo "    help"
+    echo "        Shows this message but exits with status 0"
 }
 
 
@@ -80,6 +88,9 @@ pdt() {
             ;;
         "aws-login")
             aws-login
+            ;;
+        "aws-add-test-profile")
+            aws-add-test-profile
             ;;
         "sam-check")
             sam-check

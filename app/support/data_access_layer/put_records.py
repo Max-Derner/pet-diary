@@ -16,8 +16,6 @@ logger = get_full_logger()
 def put_appointment_record(pet_name: str,
                            appointment_time: datetime,
                            description: str):
-    logger.info("Getting Dynamo resource")
-    pet_table = get_pet_table_resource()
     logger.info("Getting Record Factory")
     factory = AppointmentRecordFactory()
     logger.info("Producing record")
@@ -26,10 +24,9 @@ def put_appointment_record(pet_name: str,
         date_time=appointment_time,
         description=description
     )
-    _arbitrary_validation_and_record_put(
+    _validate_record_then_put_in_pet_table(
         factory=factory,
-        record=record,
-        table=pet_table
+        record=record
     )
 
 
@@ -39,8 +36,6 @@ def put_details_record(pet_name: str,
                        gender: str,
                        breed: str,
                        microchip_number: int):
-    logger.info("Getting Dynamo resource")
-    pet_table = get_pet_table_resource()
     logger.info("Getting Record Factory")
     factory: DetailsRecordFactory = DetailsRecordFactory()
     logger.info("Producing record")
@@ -52,10 +47,9 @@ def put_details_record(pet_name: str,
         breed=breed,
         microchip_number=microchip_number
     )
-    _arbitrary_validation_and_record_put(
+    _validate_record_then_put_in_pet_table(
         factory=factory,
-        record=record,
-        table=pet_table
+        record=record
     )
 
 
@@ -63,8 +57,6 @@ def put_illness_record(pet_name: str,
                        ailment: str,
                        observed_time: datetime,
                        description: str):
-    logger.info("Getting Dynamo resource")
-    pet_table = get_pet_table_resource()
     logger.info("Getting Record Factory")
     factory = IllnessRecordFactory()
     logger.info("Producing record")
@@ -74,10 +66,9 @@ def put_illness_record(pet_name: str,
         date_time=observed_time,
         description=description
     )
-    _arbitrary_validation_and_record_put(
+    _validate_record_then_put_in_pet_table(
         factory=factory,
-        record=record,
-        table=pet_table
+        record=record
     )
 
 
@@ -86,8 +77,6 @@ def put_medication_record(pet_name: str,
                           name_of_medicine: str,
                           type_of_medication: str,
                           next_due: Optional[datetime] = None):
-    logger.info("Getting Dynamo resource")
-    pet_table = get_pet_table_resource()
     logger.info("Getting Record Factory")
     factory = MedicationRecordFactory()
     logger.info("Producing record")
@@ -98,18 +87,15 @@ def put_medication_record(pet_name: str,
         type_of_medicine=type_of_medication,
         next_due=next_due
     )
-    _arbitrary_validation_and_record_put(
+    _validate_record_then_put_in_pet_table(
         factory=factory,
-        record=record,
-        table=pet_table
+        record=record
     )
 
 
 def put_observation_record(pet_name: str,
                            observed: datetime,
                            description: str):
-    logger.info("Getting Dynamo resource")
-    pet_table = get_pet_table_resource()
     logger.info("Getting Record Factory")
     factory = ObservationRecordFactory()
     logger.info("Producing record")
@@ -118,21 +104,21 @@ def put_observation_record(pet_name: str,
         date_time=observed,
         description=description
     )
-    _arbitrary_validation_and_record_put(
+    _validate_record_then_put_in_pet_table(
         factory=factory,
-        record=record,
-        table=pet_table
+        record=record
     )
 
 
-def _arbitrary_validation_and_record_put(factory: AbstractRecordFactory,
-                                         record: Dict,
-                                         table):
+def _validate_record_then_put_in_pet_table(factory: AbstractRecordFactory,
+                                           record: Dict):
     logger.info("Validating record")
     if not factory.validate_record(record=record):
         record = factory.coerce_record_to_valid_state(record=record)
         if record is None:
             logger.warning("Record invalid, not attempting to publish record")
+    logger.info("Getting Dynamo resource")
+    table = get_pet_table_resource()
     logger.info("Putting record in Dynamo")
     _ = table.put_item(
         Item=record,

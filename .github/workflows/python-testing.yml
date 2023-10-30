@@ -43,6 +43,7 @@ jobs:
       run: |
         echo "ENV"
         env
+        echo "AWS_CONFIG_FILE: ${AWS_CONFIG_FILE}"
         . ./pdt activate 1>/dev/null && aws-add-test-profile
     - name: Run Pytest
       run: |

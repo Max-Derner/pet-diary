@@ -103,42 +103,11 @@ def setup_test_dynamo_with_data():
     )
     test_table.wait_until_exists()
     # fill table with test data
-    details = test_data['details']
-    put_details_record(
-        pet_name=details['pet_name'],
-        date_of_birth=details['date_of_birth'],
-        colour=details['colour'],
-        gender=details['gender'],
-        breed=details['breed'],
-        microchip_number=details['microchip_number']
-    )
-    appointment = test_data['appointment']
-    put_appointment_record(
-        pet_name=appointment['pet_name'],
-        appointment_time=appointment['appointment_time'],
-        description=appointment['description']
-    )
-    observation = test_data['observation']
-    put_observation_record(
-        pet_name=observation['pet_name'],
-        observed_time=observation['observed_time'],
-        description=observation['description']
-    )
-    illness = test_data['illness']
-    put_illness_record(
-        pet_name=illness['pet_name'],
-        ailment=illness['ailment'],
-        observed_time=illness['observed_time'],
-        description=illness['description']
-    )
-    medication = test_data['medication']
-    put_medication_record(
-        pet_name=medication['pet_name'],
-        time_of_administration=medication['time_of_administration'],
-        name_of_medicine=medication['name_of_medicine'],
-        type_of_medicine=medication['type_of_medicine'],
-        next_due=medication['next_due']
-    )
+    put_details_record(**test_data['details'])
+    put_appointment_record(**test_data['appointment'])
+    put_observation_record(**test_data['observation'])
+    put_illness_record(**test_data['illness'])
+    put_medication_record(**test_data['medication'])
 
 
 RECORDS_MODULE = 'app.support.records'
@@ -149,14 +118,7 @@ def fake_utc_timestamp_now():
 
 
 def details_test_record_creator():
-    return DetailsRecordFactory().produce_record(
-        pet_name=test_data['details']['pet_name'],
-        date_of_birth=test_data['details']['date_of_birth'],
-        colour=test_data['details']['colour'],
-        gender=test_data['details']['gender'],
-        breed=test_data['details']['breed'],
-        microchip_number=test_data['details']['microchip_number']
-    )
+    return DetailsRecordFactory().produce_record(**test_data['details'])
 
 
 @patch(
@@ -165,9 +127,7 @@ def details_test_record_creator():
 )
 def appointment_test_record_creator():
     return AppointmentRecordFactory().produce_record(
-        pet_name=test_data['appointment']['pet_name'],
-        appointment_time=test_data['appointment']['appointment_time'],
-        description=test_data['appointment']['description']
+        **test_data['appointment']
     )
 
 
@@ -177,9 +137,7 @@ def appointment_test_record_creator():
 )
 def observation_test_record_creator():
     return ObservationRecordFactory().produce_record(
-        pet_name=test_data['observation']['pet_name'],
-        observed_time=test_data['observation']['observed_time'],
-        description=test_data['observation']['description']
+        **test_data['observation']
     )
 
 
@@ -189,10 +147,7 @@ def observation_test_record_creator():
 )
 def illness_test_record_creator():
     return IllnessRecordFactory().produce_record(
-        pet_name=test_data['illness']['pet_name'],
-        ailment=test_data['illness']['ailment'],
-        observed_time=test_data['illness']['observed_time'],
-        description=test_data['illness']['description']
+        **test_data['illness']
     )
 
 
@@ -202,9 +157,5 @@ def illness_test_record_creator():
 )
 def medication_test_record_creator():
     return MedicationRecordFactory().produce_record(
-        pet_name=test_data['medication']['pet_name'],
-        time_of_administration=test_data['medication']['time_of_administration'],  # noqa: E501
-        name_of_medicine=test_data['medication']['name_of_medicine'],
-        type_of_medicine=test_data['medication']['type_of_medicine'],
-        next_due=test_data['medication']['next_due']
+        **test_data['medication']
     )

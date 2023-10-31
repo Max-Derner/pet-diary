@@ -1,5 +1,8 @@
-from app.support.records.pet_table_models import ObservationRecordModel
 from app.support.records.abstract_record import AbstractRecordFactory
+from app.support.records.pet_table_models import (
+    ObservationRecordModel,
+    RecordType
+)
 from datetime import datetime
 from typing import Dict, Union
 from app.support.misc import utc_timestamp_now
@@ -18,7 +21,7 @@ class ObservationRecordFactory(AbstractRecordFactory):
             observed_time: datetime,
             description: str
             ) -> Dict[str, Union[str, Decimal]]:
-        sort_key = f"observation#{utc_timestamp_now()}"
+        sort_key = f"{RecordType.OBSERVATION.value}#{utc_timestamp_now()}"
         illness_record = {
             "name": pet_name,
             "sort_key": sort_key,

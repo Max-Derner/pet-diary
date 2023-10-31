@@ -1,6 +1,9 @@
 from typing import Dict, Optional, Union
 from app.support.records.abstract_record import AbstractRecordFactory
-from app.support.records.pet_table_models import MedicationRecordModel
+from app.support.records.pet_table_models import (
+    MedicationRecordModel,
+    RecordType
+)
 from app.support.misc import utc_timestamp_now
 from datetime import datetime
 from decimal import Decimal
@@ -20,7 +23,7 @@ class MedicationRecordFactory(AbstractRecordFactory):
             type_of_medicine: str,
             next_due: Optional[datetime]
     ) -> Dict[str, Union[str, Decimal, bool]]:
-        sort_key = f"medication#{type_of_medicine}#{utc_timestamp_now()}"
+        sort_key = f"{RecordType.MEDICATION.value}#{type_of_medicine}#{utc_timestamp_now()}"  # noqa: E501
         medicine_record = {
             "name": pet_name,
             "sort_key": sort_key,

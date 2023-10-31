@@ -1,4 +1,7 @@
-from app.support.records.pet_table_models import AppointmentRecordModel
+from app.support.records.pet_table_models import (
+    AppointmentRecordModel,
+    RecordType
+)
 from app.support.records.abstract_record import AbstractRecordFactory
 from datetime import datetime
 from typing import Dict, Union
@@ -18,7 +21,7 @@ class AppointmentRecordFactory(AbstractRecordFactory):
             appointment_time: datetime,
             description: str
             ) -> Dict[str, Union[str, Decimal]]:
-        sort_key = f"appointment#{utc_timestamp_now()}"
+        sort_key = f"{RecordType.APPOINTMENT.value}#{utc_timestamp_now()}"
         illness_record = {
             "name": pet_name,
             "sort_key": sort_key,

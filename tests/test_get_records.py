@@ -4,8 +4,10 @@ from tests.helpers import (
     setup_test_dynamo_with_data
 )
 from app.support.data_access_layer.get_records import (
-    get_all_records_for_pet
+    get_all_records,
+    get_all_of_record_type
 )
+from app.support.records.pet_table_models import RecordType
 from tests.helpers import (
     RECORDS_MODULE,
     details_test_record_creator,
@@ -47,7 +49,7 @@ class TestsDynamoDBCalls:
         absences = []
         missing_records = []
 
-        result = get_all_records_for_pet(name='me')
+        result = get_all_records(pet_name='me')
 
         if self.details_test_record not in result:
             absences.append("details")
@@ -70,3 +72,20 @@ class TestsDynamoDBCalls:
             Missing: {missing_records}
             Received: {result}
             """
+
+    def tests_get_all_records_wrong_name(self):
+        setup_test_dynamo_with_data()
+
+        result = get_all_records(pet_name='you')
+
+        assert result == []
+
+    def test_get_all_of_record_type_for_pet_details(self):
+        setup_test_dynamo_with_data()
+
+        result = get_all_of_record_type(
+            pet_name='me',
+            record_type=RecordType.DETAILS
+        )
+
+        assert result == [self.details_test_record]

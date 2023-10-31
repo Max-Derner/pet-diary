@@ -11,6 +11,7 @@ from app.support.data_access_layer.put_records import (
     put_observation_record
 )
 from support.data_access_layer.helpers import get_pet_table_resource
+from tests.mock_pet_table_data import test_data
 from app.support.records.appointment_record import AppointmentRecordFactory
 from app.support.records.details_record import DetailsRecordFactory
 from app.support.records.illness_record import IllnessRecordFactory
@@ -35,56 +36,6 @@ def get_pet_table_properties() -> Dict:
     # No get functions here, we want this to blow up if it can't find the table
     pet_table_properties = full_template['Resources']['PetTable']['Properties']
     return pet_table_properties
-
-
-test_data = {
-    'details':
-    [
-        {
-            'pet_name': 'me',
-            'date_of_birth': datetime(year=1807, month=12, day=23),
-            'colour': 'some',
-            'gender': 'yes',
-            'breed': 'people',
-            'microchip_number': 2
-        },
-    ],
-    'appointment':
-    [
-        {
-            'pet_name': 'me',
-            'appointment_time': datetime(year=1808, month=3, day=23),
-            'description': 'Got to get first vaccination'
-        },
-    ],
-    'observation':
-    [
-        {
-            'pet_name': 'me',
-            'observed_time': datetime(year=1808, month=3, day=29),
-            'description': 'seems vary lethargic since vaccine'
-        },
-    ],
-    'illness':
-    [
-        {
-            'pet_name': 'me',
-            'ailment': 'vomiting',
-            'observed_time': datetime(year=1808, month=4, day=3),
-            'description': 'seems to not be reacting well to the vaccine, has vomited twice today'  # noqa: E501
-        },
-    ],
-    'medication':
-    [
-        {
-            'pet_name': 'me',
-            'time_of_administration': datetime(year=1808, month=4, day=4),
-            'name_of_medicine': 'feel-better-a-loxin',
-            'type_of_medicine': 'antiemetic',
-            'next_due': datetime(year=1808, month=4, day=5)
-        },
-    ],
-}
 
 
 def setup_test_dynamo_with_data():
@@ -132,14 +83,14 @@ def fake_utc_timestamp_now():
     return datetime(year=1908, month=12, day=1)
 
 
-def details_test_record_creator():
+def get_details_test_records():
     records = []
     factory = DetailsRecordFactory()
     for record in test_data['details']:
         records.append(
             factory.produce_record(**record)
         )
-        return records
+    return records
 
 
 @patch(
@@ -153,7 +104,7 @@ def get_appointment_test_records():
         records.append(
             factory.produce_record(**record)
         )
-        return records
+    return records
 
 
 @patch(
@@ -167,7 +118,7 @@ def get_observation_test_records():
         records.append(
             factory.produce_record(**record)
         )
-        return records
+    return records
 
 
 @patch(
@@ -181,7 +132,7 @@ def get_illness_test_records():
         records.append(
             factory.produce_record(**record)
         )
-        return records
+    return records
 
 
 @patch(
@@ -195,4 +146,4 @@ def get_medication_test_records():
         records.append(
             factory.produce_record(**record)
         )
-        return records
+    return records

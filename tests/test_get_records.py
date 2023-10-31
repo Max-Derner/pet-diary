@@ -10,7 +10,7 @@ from app.support.data_access_layer.get_records import (
 from app.support.records.pet_table_models import RecordType
 from tests.helpers import (
     RECORDS_MODULE,
-    details_test_record_creator,
+    get_details_test_records,
     get_illness_test_records,
     get_medication_test_records,
     get_appointment_test_records,
@@ -38,7 +38,7 @@ from tests.helpers import (
 )
 class TestsDynamoDBCalls:
 
-    details_test_records = details_test_record_creator()
+    details_test_records = get_details_test_records()
     appointment_test_records = get_appointment_test_records()
     observation_test_records = get_observation_test_records()
     illness_test_records = get_illness_test_records()
@@ -53,10 +53,13 @@ class TestsDynamoDBCalls:
         all_expected_records.extend(self.observation_test_records)
         all_expected_records.extend(self.illness_test_records)
         all_expected_records.extend(self.medication_test_records)
+        pet_we_want = 'Avocato'
 
-        result = get_all_records(pet_name='me')
+        result = get_all_records(pet_name=pet_we_want)
 
         for record in all_expected_records:
+            if record['name'] != pet_we_want:
+                continue
             if record not in result:
                 missing_records.append(record)
         assert missing_records == [], \
@@ -69,16 +72,86 @@ class TestsDynamoDBCalls:
     def tests_get_all_records_wrong_name(self):
         setup_test_dynamo_with_data()
 
-        result = get_all_records(pet_name='you')
+        result = get_all_records(pet_name='Quinn')
 
         assert result == []
 
     def test_get_all_of_record_type_for_pet_details(self):
         setup_test_dynamo_with_data()
+        expected_pet = 'Avocato'
+        expected_results = [
+            record for record
+            in self.details_test_records
+            if record['name'] == expected_pet
+            ]
 
         result = get_all_of_record_type(
-            pet_name='me',
+            pet_name=expected_pet,
             record_type=RecordType.DETAILS
         )
 
-        assert result == self.details_test_records
+        assert result == expected_results
+
+    def test_get_all_of_record_type_for_pet_appointment(self):
+        setup_test_dynamo_with_data()
+        expected_pet = 'Avocato'
+        expected_results = [
+            record for record
+            in self.appointment_test_records
+            if record['name'] == expected_pet
+            ]
+
+        result = get_all_of_record_type(
+            pet_name=expected_pet,
+            record_type=RecordType.APPOINTMENT
+        )
+
+        assert result == expected_results
+
+    def test_get_all_of_record_type_for_pet_illness(self):
+        setup_test_dynamo_with_data()
+        expected_pet = 'Avocato'
+        expected_results = [
+            record for record
+            in self.illness_test_records
+            if record['name'] == expected_pet
+            ]
+
+        result = get_all_of_record_type(
+            pet_name=expected_pet,
+            record_type=RecordType.ILLNESS
+        )
+
+        assert result == expected_results
+
+    def test_get_all_of_record_type_for_pet_medication(self):
+        setup_test_dynamo_with_data()
+        expected_pet = 'Avocato'
+        expected_results = [
+            record for record
+            in self.medication_test_records
+            if record['name'] == expected_pet
+            ]
+
+        result = get_all_of_record_type(
+            pet_name=expected_pet,
+            record_type=RecordType.MEDICATION
+        )
+
+        assert result == expected_results
+
+    def test_get_all_of_record_type_for_pet_observation(self):
+        setup_test_dynamo_with_data()
+        expected_pet = 'Avocato'
+        expected_results = [
+            record for record
+            in self.observation_test_records
+            if record['name'] == expected_pet
+            ]
+
+        result = get_all_of_record_type(
+            pet_name=expected_pet,
+            record_type=RecordType.OBSERVATION
+        )
+
+        assert result == expected_results

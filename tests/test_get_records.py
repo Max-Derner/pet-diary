@@ -1,5 +1,7 @@
 import moto
 from unittest.mock import patch
+from pytest import mark
+
 from tests.helpers import (
     setup_test_dynamo_with_data
 )
@@ -76,82 +78,28 @@ class TestsDynamoDBCalls:
 
         assert result == []
 
-    def test_get_all_of_record_type_for_pet_details(self):
+    @mark.parametrize(
+        argnames='record_type, records',
+        argvalues=[
+            (RecordType.DETAILS, details_test_records),
+            (RecordType.APPOINTMENT, appointment_test_records),
+            (RecordType.ILLNESS, illness_test_records),
+            (RecordType.MEDICATION, medication_test_records),
+            (RecordType.OBSERVATION, observation_test_records)
+        ]
+    )
+    def test_get_all_of_record_type_for_pet(self, record_type, records):
         setup_test_dynamo_with_data()
         expected_pet = 'Avocato'
         expected_results = [
             record for record
-            in self.details_test_records
+            in records
             if record['name'] == expected_pet
             ]
 
         result = get_all_of_record_type(
             pet_name=expected_pet,
-            record_type=RecordType.DETAILS
-        )
-
-        assert result == expected_results
-
-    def test_get_all_of_record_type_for_pet_appointment(self):
-        setup_test_dynamo_with_data()
-        expected_pet = 'Avocato'
-        expected_results = [
-            record for record
-            in self.appointment_test_records
-            if record['name'] == expected_pet
-            ]
-
-        result = get_all_of_record_type(
-            pet_name=expected_pet,
-            record_type=RecordType.APPOINTMENT
-        )
-
-        assert result == expected_results
-
-    def test_get_all_of_record_type_for_pet_illness(self):
-        setup_test_dynamo_with_data()
-        expected_pet = 'Avocato'
-        expected_results = [
-            record for record
-            in self.illness_test_records
-            if record['name'] == expected_pet
-            ]
-
-        result = get_all_of_record_type(
-            pet_name=expected_pet,
-            record_type=RecordType.ILLNESS
-        )
-
-        assert result == expected_results
-
-    def test_get_all_of_record_type_for_pet_medication(self):
-        setup_test_dynamo_with_data()
-        expected_pet = 'Avocato'
-        expected_results = [
-            record for record
-            in self.medication_test_records
-            if record['name'] == expected_pet
-            ]
-
-        result = get_all_of_record_type(
-            pet_name=expected_pet,
-            record_type=RecordType.MEDICATION
-        )
-
-        assert result == expected_results
-
-    def test_get_all_of_record_type_for_pet_observation(self):
-        setup_test_dynamo_with_data()
-        expected_pet = 'Avocato'
-        expected_results = [
-            record for record
-            in self.observation_test_records
-            if record['name'] == expected_pet
-            ]
-
-        result = get_all_of_record_type(
-            pet_name=expected_pet,
-            record_type=RecordType.OBSERVATION
+            record_type=record_type
         )
 
         assert result == expected_results

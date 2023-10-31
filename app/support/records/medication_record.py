@@ -5,7 +5,7 @@ from app.support.records.pet_table_models import (
     RecordType
 )
 from app.support.misc import utc_timestamp_now
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 
 
@@ -27,7 +27,7 @@ class MedicationRecordFactory(AbstractRecordFactory):
         medicine_record = {
             "name": pet_name,
             "sort_key": sort_key,
-            "date_time": Decimal(time_of_administration.timestamp()),
+            "date_time": Decimal(time_of_administration.astimezone(tz=timezone.utc).timestamp()),  # noqa: E501
             "medicine_name": name_of_medicine,
             "medicine_type": type_of_medicine,
             "repeat": True if next_due is not None else False

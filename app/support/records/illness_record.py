@@ -3,7 +3,7 @@ from app.support.records.pet_table_models import (
     IllnessRecordModel,
     RecordType
 )
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Union
 from support.misc import utc_timestamp_now
 from decimal import Decimal
@@ -27,7 +27,7 @@ class IllnessRecordFactory(AbstractRecordFactory):
             "name": pet_name,
             "sort_key": sort_key,
             "ailment": ailment,
-            "date_time": Decimal(observed_time.timestamp()),
+            "date_time": Decimal(observed_time.astimezone(tz=timezone.utc).timestamp()),  # noqa: E501
             "description": description
         }
         return illness_record

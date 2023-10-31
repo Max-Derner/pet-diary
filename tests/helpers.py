@@ -39,41 +39,51 @@ def get_pet_table_properties() -> Dict:
 
 test_data = {
     'details':
-    {
-        'pet_name': 'me',
-        'date_of_birth': datetime(year=1807, month=12, day=23),
-        'colour': 'some',
-        'gender': 'yes',
-        'breed': 'people',
-        'microchip_number': 2
-    },
+    [
+        {
+            'pet_name': 'me',
+            'date_of_birth': datetime(year=1807, month=12, day=23),
+            'colour': 'some',
+            'gender': 'yes',
+            'breed': 'people',
+            'microchip_number': 2
+        },
+    ],
     'appointment':
-    {
-        'pet_name': 'me',
-        'appointment_time': datetime(year=1808, month=3, day=23),
-        'description': 'Got to get first vaccination'
-    },
+    [
+        {
+            'pet_name': 'me',
+            'appointment_time': datetime(year=1808, month=3, day=23),
+            'description': 'Got to get first vaccination'
+        },
+    ],
     'observation':
-    {
-        'pet_name': 'me',
-        'observed_time': datetime(year=1808, month=3, day=29),
-        'description': 'seems vary lethargic since vaccine'
-    },
+    [
+        {
+            'pet_name': 'me',
+            'observed_time': datetime(year=1808, month=3, day=29),
+            'description': 'seems vary lethargic since vaccine'
+        },
+    ],
     'illness':
-    {
-        'pet_name': 'me',
-        'ailment': 'vomiting',
-        'observed_time': datetime(year=1808, month=4, day=3),
-        'description': 'seems to not be reacting well to the vaccine, has vomited twice today'  # noqa: E501
-    },
+    [
+        {
+            'pet_name': 'me',
+            'ailment': 'vomiting',
+            'observed_time': datetime(year=1808, month=4, day=3),
+            'description': 'seems to not be reacting well to the vaccine, has vomited twice today'  # noqa: E501
+        },
+    ],
     'medication':
-    {
-        'pet_name': 'me',
-        'time_of_administration': datetime(year=1808, month=4, day=4),
-        'name_of_medicine': 'feel-better-a-loxin',
-        'type_of_medicine': 'antiemetic',
-        'next_due': datetime(year=1808, month=4, day=5)
-    }
+    [
+        {
+            'pet_name': 'me',
+            'time_of_administration': datetime(year=1808, month=4, day=4),
+            'name_of_medicine': 'feel-better-a-loxin',
+            'type_of_medicine': 'antiemetic',
+            'next_due': datetime(year=1808, month=4, day=5)
+        },
+    ],
 }
 
 
@@ -103,11 +113,16 @@ def setup_test_dynamo_with_data():
     )
     test_table.wait_until_exists()
     # fill table with test data
-    put_details_record(**test_data['details'])
-    put_appointment_record(**test_data['appointment'])
-    put_observation_record(**test_data['observation'])
-    put_illness_record(**test_data['illness'])
-    put_medication_record(**test_data['medication'])
+    for record in test_data['details']:
+        put_details_record(**record)
+    for record in test_data['appointment']:
+        put_appointment_record(**record)
+    for record in test_data['observation']:
+        put_observation_record(**record)
+    for record in test_data['illness']:
+        put_illness_record(**record)
+    for record in test_data['medication']:
+        put_medication_record(**record)
 
 
 RECORDS_MODULE = 'app.support.records'
@@ -118,44 +133,66 @@ def fake_utc_timestamp_now():
 
 
 def details_test_record_creator():
-    return DetailsRecordFactory().produce_record(**test_data['details'])
+    records = []
+    factory = DetailsRecordFactory()
+    for record in test_data['details']:
+        records.append(
+            factory.produce_record(**record)
+        )
+        return records
 
 
 @patch(
     f'{RECORDS_MODULE}.appointment_record.utc_timestamp_now',
     fake_utc_timestamp_now
 )
-def appointment_test_record_creator():
-    return AppointmentRecordFactory().produce_record(
-        **test_data['appointment']
-    )
+def get_appointment_test_records():
+    records = []
+    factory = AppointmentRecordFactory()
+    for record in test_data['appointment']:
+        records.append(
+            factory.produce_record(**record)
+        )
+        return records
 
 
 @patch(
     f'{RECORDS_MODULE}.observation_record.utc_timestamp_now',
     fake_utc_timestamp_now
 )
-def observation_test_record_creator():
-    return ObservationRecordFactory().produce_record(
-        **test_data['observation']
-    )
+def get_observation_test_records():
+    records = []
+    factory = ObservationRecordFactory()
+    for record in test_data['observation']:
+        records.append(
+            factory.produce_record(**record)
+        )
+        return records
 
 
 @patch(
     f'{RECORDS_MODULE}.illness_record.utc_timestamp_now',
     fake_utc_timestamp_now
 )
-def illness_test_record_creator():
-    return IllnessRecordFactory().produce_record(
-        **test_data['illness']
-    )
+def get_illness_test_records():
+    records = []
+    factory = IllnessRecordFactory()
+    for record in test_data['illness']:
+        records.append(
+            factory.produce_record(**record)
+        )
+        return records
 
 
 @patch(
     f'{RECORDS_MODULE}.medication_record.utc_timestamp_now',
     fake_utc_timestamp_now
 )
-def medication_test_record_creator():
-    return MedicationRecordFactory().produce_record(
-        **test_data['medication']
-    )
+def get_medication_test_records():
+    records = []
+    factory = MedicationRecordFactory()
+    for record in test_data['medication']:
+        records.append(
+            factory.produce_record(**record)
+        )
+        return records

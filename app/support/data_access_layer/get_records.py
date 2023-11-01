@@ -6,17 +6,17 @@ from app.support.data_access_layer.helpers import get_pet_table_resource
 from app.support.records.pet_table_models import RecordType
 
 
-def get_all_records(pet_name: str) -> List[Dict]:
+def _arbitrary_pet_table_query(*args, **kwargs) -> List[Dict]:
+    """
+    This function handles everything around DynamoDB queries,
+    all you have to do is supply the args and kwargs for a query.
+    Read more: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb/table/query.html"""  # noqa: E501
     pet_table = get_pet_table_resource()
     fetching = True
     excl_key_kwarg = {}
     items = []
     while fetching:
-        response = pet_table.query(
-            ConsistentRead=True,
-            KeyConditionExpression=Key('name').eq(pet_name),
-            **excl_key_kwarg
-        )
+        response = pet_table.query(*args, **kwargs, **excl_key_kwarg)
         if (last_key := response.get('LastEvaluatedKey')) is None:
             fetching = False
         else:
@@ -25,15 +25,22 @@ def get_all_records(pet_name: str) -> List[Dict]:
     return items
 
 
+def get_all_records(pet_name: str) -> List[Dict]:
+    query_params = {
+        'ConsistentRead': True,
+        'KeyConditionExpression': Key('name').eq(pet_name),
+    }
+    return _arbitrary_pet_table_query(**query_params)
+
+
 def get_all_of_record_type(
         pet_name: str,
         record_type: RecordType
         ) -> List[Dict]:
-    pet_table = get_pet_table_resource()
-    response = pet_table.query(
-        KeyConditionExpression=Key('name').eq(pet_name) & Key('sort_key').begins_with(record_type.value)  # noqa: E501
-    )
-    return response['Items']
+    query_params = {
+        'KeyConditionExpression': Key('name').eq(pet_name) & Key('sort_key').begins_with(record_type.value)  # noqa: E501
+    }
+    return _arbitrary_pet_table_query(**query_params)
 
 
 def get_all_of_record_type_after_point_in_time(
@@ -41,21 +48,19 @@ def get_all_of_record_type_after_point_in_time(
         point_in_time: datetime,
         record_type: RecordType
         ) -> List[Dict]:
-    pet_table = get_pet_table_resource()
-    response = pet_table.query(
-        KeyConditionExpression=Key('name').eq(pet_name) & Key('sort_key').begins_with(record_type.value),  # noqa: E501
-        FilterExpression=Attr('date_time').gt(Decimal(point_in_time.astimezone(tz=timezone.utc).timestamp()))  # noqa: E501
-    )
-    return response['Items']
+    query_params = {
+        'KeyConditionExpression': Key('name').eq(pet_name) & Key('sort_key').begins_with(record_type.value),  # noqa: E501
+        'FilterExpression': Attr('date_time').gt(Decimal(point_in_time.astimezone(tz=timezone.utc).timestamp()))  # noqa: E501
+    }
+    return _arbitrary_pet_table_query(**query_params)
 
 
 def get_all_records_of_medicine_type(medicine_type: str):
-    pet_table = get_pet_table_resource()
-    response = pet_table.query(
-        IndexName='medicine_type',
-        KeyConditionExpression=Key('medicine_type').eq(medicine_type)
-    )
-    return response['Items']
+    query_params = {
+        'IndexName': 'medicine_type',
+        'KeyConditionExpression': Key('medicine_type').eq(medicine_type)
+    }
+    return _arbitrary_pet_table_query(**query_params)
 
 
 def get_all_records_of_medicine_type_in_timeframe(
@@ -87,10 +92,20 @@ def get_all_records_of_medicine_type_in_timeframe(
     else:
         return get_all_records_of_medicine_type(medicine_type=medicine_type)
 
-    pet_table = get_pet_table_resource()
-    response = pet_table.query(
-        IndexName='medicine_type',
-        KeyConditionExpression=Key('medicine_type').eq(medicine_type),
+    query_params = {
+        'IndexName': 'medicine_type',
+        'KeyConditionExpression': Key('medicine_type').eq(medicine_type),
         **filter_expression
-    )
-    return response['Items']
+    }
+    return _arbitrary_pet_table_query(**query_params)
+
+
+def get_all_records_of_medicine_name(medicine_name: str):
+    query_params = {
+        'IndexName': 'medicine_name',
+        'KeyConditionExpression': Key('medicine_name').eq(medicine_name)
+    }
+    return _arbitrary_pet_table_query(**query_params)
+
+
+get_all_records_of_medicine_name

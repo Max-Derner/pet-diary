@@ -14,7 +14,8 @@ from app.support.data_access_layer.get_records import (
     get_all_of_record_type,
     get_all_of_record_type_after_point_in_time,
     get_all_records_of_medicine_type,
-    get_all_records_of_medicine_type_in_timeframe
+    get_all_records_of_medicine_type_in_timeframe,
+    get_all_records_of_medicine_name
 )
 
 
@@ -222,6 +223,29 @@ class TestsDynamoDBCalls:
             medicine_type=medicine_type,
             lower_date_limit=lower_limit,
             upper_date_limit=upper_limit
+        )
+
+        assert result == expected_results
+
+    @mark.parametrize(
+        argnames='medicine_name',
+        argvalues=[
+            'feel-better-a-loxin',
+            'Abaddon - destroyer of fleas',
+            'Abaddon - destroyer of parasites'
+        ]
+    )
+    def test_get_all_records_of_medicine_name(self, medicine_name):
+        setup_test_dynamo_with_data()
+        self.refresh_known_test_records()
+        expected_results = [
+            record for record
+            in self.medication_test_records
+            if record['medicine_name'] == medicine_name
+            ]
+
+        result = get_all_records_of_medicine_name(
+            medicine_name=medicine_name
         )
 
         assert result == expected_results

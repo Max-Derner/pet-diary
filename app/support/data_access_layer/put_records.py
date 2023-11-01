@@ -120,7 +120,8 @@ def _validate_record_then_put_in_pet_table(factory: AbstractRecordFactory,
     logger.info("Getting Dynamo resource")
     table = get_pet_table_resource()
     logger.info("Putting record in Dynamo")
-    _ = table.put_item(
+    response = table.put_item(
         Item=record,
     )
+    logger.debug(f"RESPONSE: {response}")
     logger.info("Successful")

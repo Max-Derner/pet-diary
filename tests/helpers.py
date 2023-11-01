@@ -1,8 +1,7 @@
 import yaml
 from typing import Dict
 from os import environ
-from datetime import datetime
-from unittest.mock import patch
+
 from app.support.data_access_layer.put_records import (
     put_details_record,
     put_appointment_record,
@@ -12,11 +11,9 @@ from app.support.data_access_layer.put_records import (
 )
 from support.data_access_layer.helpers import get_pet_table_resource
 from tests.mock_pet_table_data import test_data
-from app.support.records.appointment_record import AppointmentRecordFactory
-from app.support.records.details_record import DetailsRecordFactory
-from app.support.records.illness_record import IllnessRecordFactory
-from app.support.records.medication_record import MedicationRecordFactory
-from app.support.records.observation_record import ObservationRecordFactory
+from app.support.logger import get_full_logger
+
+logger = get_full_logger()
 
 
 def _get_sam_template() -> Dict:
@@ -49,9 +46,11 @@ def setup_test_dynamo_with_data():
     """
 
     # invalidate credentials
+    logger.debug("Invalidating credentials")
     environ['AWS_PROFILE'] = 'only-unit-tests!'
     environ['AWS_ACCOUNT_ID'] = 'absolutely-not-sunshine!'
     # set up table using pet-table template file
+    logger.debug("Creating table")
     test_table = get_pet_table_resource()
     ptp = get_pet_table_properties()
     test_table.meta.client.create_table(
@@ -63,6 +62,7 @@ def setup_test_dynamo_with_data():
         ProvisionedThroughput=ptp['ProvisionedThroughput']
     )
     test_table.wait_until_exists()
+    logger.debug("Populating test table")
     # fill table with test data
     for record in test_data['details']:
         put_details_record(**record)
@@ -75,75 +75,6 @@ def setup_test_dynamo_with_data():
     for record in test_data['medication']:
         put_medication_record(**record)
 
-
-RECORDS_MODULE = 'app.support.records'
-
-
-def fake_utc_timestamp_now():
-    return datetime(year=1908, month=12, day=1)
-
-
-def get_details_test_records():
-    records = []
-    factory = DetailsRecordFactory()
-    for record in test_data['details']:
-        records.append(
-            factory.produce_record(**record)
-        )
-    return records
-
-
-@patch(
-    f'{RECORDS_MODULE}.appointment_record.utc_timestamp_now',
-    fake_utc_timestamp_now
-)
-def get_appointment_test_records():
-    records = []
-    factory = AppointmentRecordFactory()
-    for record in test_data['appointment']:
-        records.append(
-            factory.produce_record(**record)
-        )
-    return records
-
-
-@patch(
-    f'{RECORDS_MODULE}.observation_record.utc_timestamp_now',
-    fake_utc_timestamp_now
-)
-def get_observation_test_records():
-    records = []
-    factory = ObservationRecordFactory()
-    for record in test_data['observation']:
-        records.append(
-            factory.produce_record(**record)
-        )
-    return records
-
-
-@patch(
-    f'{RECORDS_MODULE}.illness_record.utc_timestamp_now',
-    fake_utc_timestamp_now
-)
-def get_illness_test_records():
-    records = []
-    factory = IllnessRecordFactory()
-    for record in test_data['illness']:
-        records.append(
-            factory.produce_record(**record)
-        )
-    return records
-
-
-@patch(
-    f'{RECORDS_MODULE}.medication_record.utc_timestamp_now',
-    fake_utc_timestamp_now
-)
-def get_medication_test_records():
-    records = []
-    factory = MedicationRecordFactory()
-    for record in test_data['medication']:
-        records.append(
-            factory.produce_record(**record)
-        )
-    return records
+    logger.debug("Checking table")
+    result = test_table.scan()
+    logger.debug(f"RESPONSE: {result}")

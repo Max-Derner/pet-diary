@@ -29,6 +29,11 @@ test_data = {
             'description': 'Got to get first vaccination'
         },
         {
+            'pet_name': 'Avocato',
+            'appointment_time': datetime(year=1812, month=2, day=1),
+            'description': 'Got appointment to fix up gunshot wound'
+        },
+        {
             'pet_name': 'Little Cato',
             'appointment_time': datetime(year=1809, month=3, day=23),
             'description': 'Got to get first vaccination'
@@ -39,7 +44,12 @@ test_data = {
         {
             'pet_name': 'Avocato',
             'observed_time': datetime(year=1808, month=3, day=29),
-            'description': 'seems vary lethargic since vaccine'
+            'description': 'seems very lethargic since vaccine'
+        },
+        {
+            'pet_name': 'Avocato',
+            'observed_time': datetime(year=1812, month=1, day=31),
+            'description': 'seems to not enjoy his new friend "The Gary"'
         },
         {
             'pet_name': 'Little Cato',
@@ -54,6 +64,12 @@ test_data = {
             'ailment': 'vomiting',
             'observed_time': datetime(year=1808, month=4, day=3),
             'description': 'seems to not be reacting well to the vaccine, has vomited twice today'  # noqa: E501
+        },
+        {
+            'pet_name': 'Avocato',
+            'ailment': 'gunshot wound',
+            'observed_time': datetime(year=1812, month=1, day=30),
+            'description': 'Got shot shortly after meeting "The Gary"'
         },
         {
             'pet_name': 'Little Cato',
@@ -98,6 +114,6 @@ test_data = {
             'name_of_medicine': 'Abaddon - destroyer of parasites',
             'type_of_medicine': 'deworm',
             'next_due': datetime(year=1809, month=7, day=13)
-        },
+        }
     ],
 }

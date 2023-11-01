@@ -1,67 +1,63 @@
+from datetime import datetime, timezone
+from typing import Dict, List
 import moto
-from unittest.mock import patch
 from pytest import mark
 
 from tests.helpers import (
     setup_test_dynamo_with_data
 )
+from app.support.records.pet_table_models import RecordType
+from app.support.data_access_layer.helpers import get_pet_table_resource
 from app.support.data_access_layer.get_records import (
     get_all_records,
-    get_all_of_record_type
-)
-from app.support.records.pet_table_models import RecordType
-from tests.helpers import (
-    RECORDS_MODULE,
-    get_details_test_records,
-    get_illness_test_records,
-    get_medication_test_records,
-    get_appointment_test_records,
-    get_observation_test_records,
-    fake_utc_timestamp_now
+    get_all_of_record_type,
+    get_all_of_record_type_after_point_in_time,
+    get_all_records_of_medicine_type
 )
 
 
 @moto.mock_dynamodb
-@patch(
-    f'{RECORDS_MODULE}.appointment_record.utc_timestamp_now',
-    fake_utc_timestamp_now
-)
-@patch(
-    f'{RECORDS_MODULE}.illness_record.utc_timestamp_now',
-    fake_utc_timestamp_now
-)
-@patch(
-    f'{RECORDS_MODULE}.medication_record.utc_timestamp_now',
-    fake_utc_timestamp_now
-)
-@patch(
-    f'{RECORDS_MODULE}.observation_record.utc_timestamp_now',
-    fake_utc_timestamp_now
-)
 class TestsDynamoDBCalls:
 
-    details_test_records = get_details_test_records()
-    appointment_test_records = get_appointment_test_records()
-    observation_test_records = get_observation_test_records()
-    illness_test_records = get_illness_test_records()
-    medication_test_records = get_medication_test_records()
+    all_test_records: List[Dict]
+    details_test_records: List[Dict]
+    appointment_test_records: List[Dict]
+    observation_test_records: List[Dict]
+    illness_test_records: List[Dict]
+    medication_test_records: List[Dict]
+
+    def refresh_known_test_records(self):
+        test_table = get_pet_table_resource()
+        scan_result = test_table.scan()
+        self.all_test_records = scan_result['Items']
+        self.details_test_records = [record for record
+                                     in self.all_test_records
+                                     if str(record['sort_key']).split('#')[0] == RecordType.DETAILS.value]  # noqa: E501
+        self.appointment_test_records = [record for record
+                                         in self.all_test_records
+                                         if str(record['sort_key']).split('#')[0] == RecordType.APPOINTMENT.value]  # noqa: E501
+        self.observation_test_records = [record for record
+                                         in self.all_test_records
+                                         if str(record['sort_key']).split('#')[0] == RecordType.OBSERVATION.value]  # noqa: E501
+        self.illness_test_records = [record for record
+                                     in self.all_test_records
+                                     if str(record['sort_key']).split('#')[0] == RecordType.ILLNESS.value]  # noqa: E501
+        self.medication_test_records = [record for record
+                                        in self.all_test_records
+                                        if str(record['sort_key']).split('#')[0] == RecordType.MEDICATION.value]  # noqa: E501
 
     def tests_get_all_records_for_pet(self):
         setup_test_dynamo_with_data()
-        missing_records = []
-        all_expected_records = []
-        all_expected_records.extend(self.details_test_records)
-        all_expected_records.extend(self.appointment_test_records)
-        all_expected_records.extend(self.observation_test_records)
-        all_expected_records.extend(self.illness_test_records)
-        all_expected_records.extend(self.medication_test_records)
+        self.refresh_known_test_records()
         pet_we_want = 'Avocato'
+        missing_records = []
+        all_expected_records = [record for record
+                                in self.all_test_records
+                                if record['name'] == pet_we_want]
 
         result = get_all_records(pet_name=pet_we_want)
 
         for record in all_expected_records:
-            if record['name'] != pet_we_want:
-                continue
             if record not in result:
                 missing_records.append(record)
         assert missing_records == [], \
@@ -69,6 +65,7 @@ class TestsDynamoDBCalls:
             Some expected records were not received:
                 Missing: {missing_records}
                 Received: {result}
+                Expected: {all_expected_records}
             """
 
     def tests_get_all_records_wrong_name(self):
@@ -79,27 +76,94 @@ class TestsDynamoDBCalls:
         assert result == []
 
     @mark.parametrize(
-        argnames='record_type, records',
+        argnames='record_type',
         argvalues=[
-            (RecordType.DETAILS, details_test_records),
-            (RecordType.APPOINTMENT, appointment_test_records),
-            (RecordType.ILLNESS, illness_test_records),
-            (RecordType.MEDICATION, medication_test_records),
-            (RecordType.OBSERVATION, observation_test_records)
+            RecordType.DETAILS,
+            RecordType.APPOINTMENT,
+            RecordType.ILLNESS,
+            RecordType.MEDICATION,
+            RecordType.OBSERVATION
         ]
     )
-    def test_get_all_of_record_type_for_pet(self, record_type, records):
+    def test_get_all_of_record_type_for_pet(self, record_type):
         setup_test_dynamo_with_data()
+        self.refresh_known_test_records()
         expected_pet = 'Avocato'
         expected_results = [
             record for record
-            in records
+            in self.all_test_records
             if record['name'] == expected_pet
+            and str(record['sort_key']).split('#')[0] == record_type.value
             ]
 
-        result = get_all_of_record_type(
+        results = get_all_of_record_type(
             pet_name=expected_pet,
             record_type=record_type
+        )
+
+        missed_results = []
+        for expected_result in expected_results:
+            if expected_result not in results:
+                missed_results.append(expected_result)
+        extra_results = []
+        for result in results:
+            if result not in expected_results:
+                extra_results.append(result)
+        assert missed_results == [] and extra_results == [], \
+            f"""
+            Results returned incorrectly:
+            {len(missed_results)} missed results: {missed_results}
+            {len(extra_results)} extra results: {extra_results}
+            """
+
+    @mark.parametrize(
+        argnames='record_type, point_in_time',
+        argvalues=[
+            (RecordType.APPOINTMENT, datetime(year=1808, month=3, day=23)),
+            (RecordType.ILLNESS, datetime(year=1808, month=4, day=4)),
+            (RecordType.MEDICATION, datetime(year=1808, month=4, day=5)),
+            (RecordType.OBSERVATION, datetime(year=1810, month=1, day=1))
+        ]
+    )
+    def test_get_all_of_record_type_after_point_in_time(
+            self,
+            record_type,
+            point_in_time: datetime
+            ):
+        setup_test_dynamo_with_data()
+        self.refresh_known_test_records()
+        expected_pet = 'Avocato'
+        expected_results = [
+            record for record
+            in self.all_test_records
+            if record['name'] == expected_pet
+            and str(record['sort_key']).split('#')[0] == record_type.value
+            and record['date_time'] > point_in_time.astimezone(tz=timezone.utc).timestamp()  # noqa: E501
+            ]
+
+        result = get_all_of_record_type_after_point_in_time(
+            pet_name=expected_pet,
+            point_in_time=point_in_time,
+            record_type=record_type
+        )
+
+        assert result == expected_results
+
+    @mark.parametrize(
+        argnames='medicine_type',
+        argvalues=['deworm', 'deflea', 'feel-better-a-loxin']
+    )
+    def test_get_all_records_of_medicine_type(self, medicine_type):
+        setup_test_dynamo_with_data()
+        self.refresh_known_test_records()
+        expected_results = [
+            record for record
+            in self.medication_test_records
+            if record['medicine_type'] == medicine_type
+            ]
+
+        result = get_all_records_of_medicine_type(
+            medicine_type=medicine_type
         )
 
         assert result == expected_results

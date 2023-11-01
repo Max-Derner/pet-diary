@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
-from typing import Dict, List
+from decimal import Decimal
+from typing import Dict, List, Optional
 import moto
 from pytest import mark
 
@@ -12,7 +13,8 @@ from app.support.data_access_layer.get_records import (
     get_all_records,
     get_all_of_record_type,
     get_all_of_record_type_after_point_in_time,
-    get_all_records_of_medicine_type
+    get_all_records_of_medicine_type,
+    get_all_records_of_medicine_type_in_timeframe
 )
 
 
@@ -151,7 +153,7 @@ class TestsDynamoDBCalls:
 
     @mark.parametrize(
         argnames='medicine_type',
-        argvalues=['deworm', 'deflea', 'feel-better-a-loxin']
+        argvalues=['deworm', 'deflea', 'antiemetic', 'vaccine']
     )
     def test_get_all_records_of_medicine_type(self, medicine_type):
         setup_test_dynamo_with_data()
@@ -164,6 +166,62 @@ class TestsDynamoDBCalls:
 
         result = get_all_records_of_medicine_type(
             medicine_type=medicine_type
+        )
+
+        assert result == expected_results
+
+    @mark.parametrize(
+        argnames='medicine_type, lower_limit, upper_limit',
+        argvalues=[
+            ('deworm', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),  # noqa: E501
+            ('deworm', None, datetime(year=1808, month=7, day=13)),
+            ('deworm', datetime(year=1808, month=4, day=5), None),
+            ('deworm', None, None),
+            ('deflea', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),  # noqa: E501
+            ('deflea', None, datetime(year=1808, month=7, day=13)),
+            ('deflea', datetime(year=1808, month=4, day=5), None),
+            ('deflea', None, None),
+            ('antiemetic', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),  # noqa: E501
+            ('antiemetic', None, datetime(year=1808, month=7, day=13)),
+            ('antiemetic', datetime(year=1808, month=4, day=5), None),
+            ('antiemetic', None, None),
+            ('vaccine', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),  # noqa: E501
+            ('vaccine', None, datetime(year=1808, month=7, day=13)),
+            ('vaccine', datetime(year=1808, month=4, day=5), None),
+            ('vaccine', None, None),
+        ]
+    )
+    def test_get_all_records_of_medicine_type_in_next_due_timeframe(
+            self,
+            medicine_type,
+            lower_limit: Optional[datetime],
+            upper_limit: Optional[datetime]
+            ):
+        setup_test_dynamo_with_data()
+        self.refresh_known_test_records()
+        lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_limit.astimezone(tz=timezone.utc).timestamp())if lower_limit is not None else None  # noqa: E501
+        upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_limit.astimezone(tz=timezone.utc).timestamp())if upper_limit is not None else None  # noqa: E501
+        expected_results = [
+            record for record
+            in self.medication_test_records
+            if record['medicine_type'] == medicine_type
+            ]
+        if lower_limit_decimal_timestamp is not None:
+
+            expected_results = [record for record
+                                in expected_results
+                                if record['date_time'] >= lower_limit_decimal_timestamp  # noqa: E501
+                                ]
+        if upper_limit_decimal_timestamp is not None:
+
+            expected_results = [record for record
+                                in expected_results
+                                if record['date_time'] <= upper_limit_decimal_timestamp  # noqa: E501
+                                ]
+        result = get_all_records_of_medicine_type_in_timeframe(
+            medicine_type=medicine_type,
+            lower_date_limit=lower_limit,
+            upper_date_limit=upper_limit
         )
 
         assert result == expected_results

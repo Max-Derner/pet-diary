@@ -114,6 +114,27 @@ test_data = {
             'name_of_medicine': 'Abaddon - destroyer of parasites',
             'type_of_medicine': 'deworm',
             'next_due': datetime(year=1809, month=7, day=13)
-        }
+        },
+        {
+            'pet_name': 'Avocato',
+            'time_of_administration': datetime(year=1808, month=3, day=23),
+            'name_of_medicine': 'fix-you-up-a-tub-e-lean',
+            'type_of_medicine': 'vaccine',
+            'next_due': datetime(year=1809, month=3, day=23)
+        },
+        {
+            'pet_name': 'Avocato',
+            'time_of_administration': datetime(year=1809, month=3, day=23),
+            'name_of_medicine': 'fix-you-up-a-tub-e-lean',
+            'type_of_medicine': 'vaccine',
+            'next_due': datetime(year=1810, month=3, day=23)
+        },
+        {
+            'pet_name': 'Little Cato',
+            'time_of_administration': datetime(year=1809, month=3, day=23),
+            'name_of_medicine': 'fix-you-up-a-tub-e-lean',
+            'type_of_medicine': 'vaccine',
+            'next_due': datetime(year=1810, month=3, day=23)
+        },
     ],
 }

@@ -28,6 +28,7 @@ class IllnessRecordFactory(AbstractRecordFactory):
             "sort_key": sort_key,
             "ailment": ailment,
             "date_time": Decimal(observed_time.astimezone(tz=timezone.utc).timestamp()),  # noqa: E501
-            "description": description
+            "description": description,
+            'record_type': RecordType.ILLNESS.value
         }
         return illness_record

@@ -14,6 +14,8 @@ Resources:
             AttributeType: S
         -   AttributeName: medicine_type
             AttributeType: S
+        -   AttributeName: record_type
+            AttributeType: S
       KeySchema: 
         -   AttributeName: name
             KeyType: HASH
@@ -34,6 +36,17 @@ Resources:
         -   IndexName: medicine_type
             KeySchema: 
               -   AttributeName: medicine_type
+                  KeyType: HASH
+              -   AttributeName: sort_key
+                  KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+            ProvisionedThroughput: 
+                ReadCapacityUnits: 5  # Gives ThrottlingException
+                WriteCapacityUnits: 5 # if exceeded
+        -   IndexName: record_type
+            KeySchema: 
+              -   AttributeName: record_type
                   KeyType: HASH
               -   AttributeName: sort_key
                   KeyType: RANGE

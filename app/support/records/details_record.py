@@ -30,7 +30,8 @@ class DetailsRecordFactory(AbstractRecordFactory):
             "colour": colour,
             "gender": gender,
             "breed": breed,
-            "microchip_number": Decimal(microchip_number)
+            "microchip_number": Decimal(microchip_number),
+            'record_type': RecordType.DETAILS.value
         }
         return details_record
 

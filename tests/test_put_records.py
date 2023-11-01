@@ -8,6 +8,7 @@ from app.support.data_access_layer.put_records import (
     put_medication_record,
     put_observation_record
 )
+from support.records.pet_table_models import RecordType
 
 
 PUT_RECORDS_PACKAGE = 'app.support.data_access_layer.put_records'
@@ -28,8 +29,9 @@ def tests_put_appointment_record(get_pet_table_resource: Mock,
         'name': 'me',
         'sort_key': 'appointment#123456.789',
         'date_time': Decimal(date_time.timestamp()),
-        'description': 'Got to get vaccinated against millennium bug'
-        }
+        'description': 'Got to get vaccinated against millennium bug',
+        'record_type': RecordType.APPOINTMENT.value
+    }
 
     put_appointment_record(
         pet_name='me',
@@ -54,8 +56,9 @@ def tests_put_details_record(get_pet_table_resource: Mock):
         'colour': 'bit peaky',
         'gender': 'yes',
         'breed': 'not yet',
-        'microchip_number': 741852963
-        }
+        'microchip_number': 741852963,
+        'record_type': RecordType.DETAILS.value
+    }
 
     put_details_record(pet_name='me',
                        date_of_birth=dob,
@@ -82,7 +85,9 @@ def tests_put_illness_record(get_pet_table_resource: Mock,
         'sort_key': 'illness#stinky butt#123456.789',
         'ailment': 'stinky butt',
         'date_time': Decimal(observed_time.timestamp()),
-        'description': 'butt is so stinky, neighbours have complained'}
+        'description': 'butt is so stinky, neighbours have complained',
+        'record_type': RecordType.ILLNESS.value
+    }
 
     put_illness_record(
         pet_name='me',
@@ -116,8 +121,9 @@ def tests_put_medication_record(get_pet_table_resource: Mock,
         'date_time': Decimal(time_of_administration.timestamp()),
         'medicine_name': 'feel-better-aloxin',
         'medicine_type': 'good kind',
-        'repeat': False
-        }
+        'repeat': False,
+        'record_type': RecordType.MEDICATION.value
+    }
 
     put_medication_record(pet_name='me',
                           time_of_administration=time_of_administration,
@@ -151,7 +157,9 @@ def tests_put_medication_record_alt(get_pet_table_resource: Mock,
         'medicine_name': 'feel-better-aloxin',
         'medicine_type': 'good kind',
         'repeat': True,
-        'next_due': Decimal(next_due.timestamp())}
+        'next_due': Decimal(next_due.timestamp()),
+        'record_type': RecordType.MEDICATION.value
+    }
 
     put_medication_record(pet_name='me',
                           time_of_administration=time_of_administration,
@@ -176,8 +184,9 @@ def tests_put_observation_record(get_pet_table_resource: Mock,
         'name': 'me',
         'sort_key': 'observation#123456.789',
         'date_time': Decimal(observed.timestamp()),
-        'description': 'Broke venv, get very upset wth self'
-        }
+        'description': 'Broke venv, get very upset wth self',
+        'record_type': RecordType.OBSERVATION.value
+    }
 
     put_observation_record(pet_name='me',
                            observed_time=observed,

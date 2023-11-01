@@ -26,6 +26,7 @@ class AppointmentRecordFactory(AbstractRecordFactory):
             "name": pet_name,
             "sort_key": sort_key,
             "date_time": Decimal(appointment_time.astimezone(tz=timezone.utc).timestamp()),  # noqa: E501
-            "description": description
+            "description": description,
+            'record_type': RecordType.APPOINTMENT.value
         }
         return illness_record

@@ -7,6 +7,7 @@ from app.support.records.observation_record import ObservationRecordFactory
 from app.support.records.appointment_record import AppointmentRecordFactory
 from datetime import datetime, timedelta
 from decimal import Decimal
+from app.support.records.pet_table_models import RecordType
 
 RECORDS_MODULE = 'app.support.records'
 
@@ -21,6 +22,7 @@ class TestsIllnessRecordFactory(TestCase):
         'date_time': Decimal(date_time.timestamp()),
         'ailment': 'stinky-butt',
         'description': 'Butt so stinky, it makes everyone in the room cry',
+        'record_type': RecordType.ILLNESS.value
         }
 
     nearly_correct_illness_record = {
@@ -29,6 +31,7 @@ class TestsIllnessRecordFactory(TestCase):
         'date_time': f'{Decimal(date_time.timestamp())}',  # it's a string!
         'ailment': 'stinky-butt',
         'description': 'Butt so stinky, it makes everyone in the room cry',
+        'record_type': RecordType.ILLNESS.value
         }
 
     invalid_illness_record = {
@@ -37,6 +40,7 @@ class TestsIllnessRecordFactory(TestCase):
         'date_time': 'today',
         'ailment': 'stinky-butt',
         'description': 'Butt so stinky, it makes everyone in the room cry',
+        'record_type': RecordType.ILLNESS.value
         }
 
     @patch(f'{RECORDS_MODULE}.illness_record.utc_timestamp_now')
@@ -97,6 +101,7 @@ class TestsDetailsRecordFactory(TestCase):
         'dob': Decimal(date_of_birth.timestamp()),
         'gender': 'yes',
         'microchip_number': 1,
+        'record_type': RecordType.DETAILS.value
         }
 
     nearly_correct_details_record = {
@@ -107,6 +112,7 @@ class TestsDetailsRecordFactory(TestCase):
         'dob': f'{Decimal(date_of_birth.timestamp())}',  # it's a string!
         'gender': 'yes',
         'microchip_number': '1',
+        'record_type': RecordType.DETAILS.value
         }
 
     invalid_details_record = {
@@ -117,6 +123,7 @@ class TestsDetailsRecordFactory(TestCase):
         'dob': 'yesterday',
         'gender': 'yes',
         'microchip_number': '1',
+        'record_type': RecordType.DETAILS.value
         }
 
     def tests_produces_record_of_correct_form(self):
@@ -181,6 +188,7 @@ class TestsMedicationRecordFactory(TestCase):
         'medicine_type': 'non-poisonous',
         'repeat': True,
         'next_due': Decimal(next_due.timestamp()),
+        'record_type': RecordType.MEDICATION.value
         }
 
     also_correct_medication_record = {
@@ -190,6 +198,7 @@ class TestsMedicationRecordFactory(TestCase):
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'repeat': False,
         'medicine_type': 'non-poisonous',
+        'record_type': RecordType.MEDICATION.value
         }
 
     nearly_correct_medication_record = {
@@ -200,6 +209,7 @@ class TestsMedicationRecordFactory(TestCase):
         'medicine_type': 'non-poisonous',
         'repeat': 'True',
         'next_due': '1704153600.0',
+        'record_type': RecordType.MEDICATION.value
         }
 
     invalid_medication_record = {
@@ -210,6 +220,7 @@ class TestsMedicationRecordFactory(TestCase):
         'medicine_type': 'non-poisonous',
         'repeat': 'yes',
         'next_due': 'never!',
+        'record_type': RecordType.MEDICATION.value
         }
 
     @patch(f'{RECORDS_MODULE}.medication_record.utc_timestamp_now')
@@ -304,6 +315,7 @@ class TestsObservationRecordFactory(TestCase):
         'sort_key': 'observation#123456.789',
         'date_time': Decimal(date_time.timestamp()),
         'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
+        'record_type': RecordType.OBSERVATION.value
         }
 
     nearly_correct_observation_record = {
@@ -311,6 +323,7 @@ class TestsObservationRecordFactory(TestCase):
         'sort_key': 'observation#123456.789',
         'date_time': f'{Decimal(date_time.timestamp())}',  # it's a string!
         'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
+        'record_type': RecordType.OBSERVATION.value
         }
 
     invalid_observation_record = {
@@ -318,6 +331,7 @@ class TestsObservationRecordFactory(TestCase):
         'sort_key': 'observation#123456.789',
         'date_time': 'Tuesday mate',
         'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
+        'record_type': RecordType.OBSERVATION.value
         }
 
     @patch(f'{RECORDS_MODULE}.observation_record.utc_timestamp_now')
@@ -373,6 +387,7 @@ class TestsAppointmentRecordFactory(TestCase):
         'sort_key': 'appointment#123456.789',
         'date_time': Decimal(date_time.timestamp()),
         'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
+        'record_type': RecordType.APPOINTMENT.value
         }
 
     nearly_correct_appointment_record = {
@@ -380,6 +395,7 @@ class TestsAppointmentRecordFactory(TestCase):
         'sort_key': 'appointment#123456.789',
         'date_time': f'{Decimal(date_time.timestamp())}',  # it's a string!
         'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
+        'record_type': RecordType.APPOINTMENT.value
         }
 
     invalid_appointment_record = {
@@ -387,6 +403,7 @@ class TestsAppointmentRecordFactory(TestCase):
         'sort_key': 'appointment#123456.789',
         'date_time': 'Tuesday mate',
         'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
+        'record_type': RecordType.APPOINTMENT.value
         }
 
     @patch(f'{RECORDS_MODULE}.appointment_record.utc_timestamp_now')

@@ -30,7 +30,8 @@ class MedicationRecordFactory(AbstractRecordFactory):
             "date_time": Decimal(time_of_administration.astimezone(tz=timezone.utc).timestamp()),  # noqa: E501
             "medicine_name": name_of_medicine,
             "medicine_type": type_of_medicine,
-            "repeat": True if next_due is not None else False
+            "repeat": True if next_due is not None else False,
+            'record_type': RecordType.MEDICATION.value
         }
         if next_due is not None:
             medicine_record['next_due'] = Decimal(next_due.timestamp())

@@ -29,7 +29,8 @@ class TestsDynamoDBCalls:
     illness_test_records: List[Dict]
     medication_test_records: List[Dict]
 
-    def refresh_known_test_records(self):
+    def build_mock_table_and_refresh_known_test_records(self):
+        setup_test_dynamo_with_data()
         test_table = get_pet_table_resource()
         scan_result = test_table.scan()
         self.all_test_records = scan_result['Items']
@@ -50,8 +51,7 @@ class TestsDynamoDBCalls:
                                         if str(record['sort_key']).split('#')[0] == RecordType.MEDICATION.value]  # noqa: E501
 
     def tests_get_all_records_for_pet(self):
-        setup_test_dynamo_with_data()
-        self.refresh_known_test_records()
+        self.build_mock_table_and_refresh_known_test_records()
         pet_we_want = 'Avocato'
         missing_records = []
         all_expected_records = [record for record
@@ -72,7 +72,7 @@ class TestsDynamoDBCalls:
             """
 
     def tests_get_all_records_wrong_name(self):
-        setup_test_dynamo_with_data()
+        self.build_mock_table_and_refresh_known_test_records()
 
         result = get_all_records(pet_name='Quinn')
 
@@ -89,8 +89,7 @@ class TestsDynamoDBCalls:
         ]
     )
     def test_get_all_of_record_type_for_pet(self, record_type):
-        setup_test_dynamo_with_data()
-        self.refresh_known_test_records()
+        self.build_mock_table_and_refresh_known_test_records()
         expected_pet = 'Avocato'
         expected_results = [
             record for record
@@ -133,8 +132,7 @@ class TestsDynamoDBCalls:
             record_type,
             point_in_time: datetime
             ):
-        setup_test_dynamo_with_data()
-        self.refresh_known_test_records()
+        self.build_mock_table_and_refresh_known_test_records()
         expected_pet = 'Avocato'
         expected_results = [
             record for record
@@ -157,8 +155,7 @@ class TestsDynamoDBCalls:
         argvalues=['deworm', 'deflea', 'antiemetic', 'vaccine']
     )
     def test_get_all_records_of_medicine_type(self, medicine_type):
-        setup_test_dynamo_with_data()
-        self.refresh_known_test_records()
+        self.build_mock_table_and_refresh_known_test_records()
         expected_results = [
             record for record
             in self.medication_test_records
@@ -198,8 +195,7 @@ class TestsDynamoDBCalls:
             lower_limit: Optional[datetime],
             upper_limit: Optional[datetime]
             ):
-        setup_test_dynamo_with_data()
-        self.refresh_known_test_records()
+        self.build_mock_table_and_refresh_known_test_records()
         lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_limit.astimezone(tz=timezone.utc).timestamp())if lower_limit is not None else None  # noqa: E501
         upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_limit.astimezone(tz=timezone.utc).timestamp())if upper_limit is not None else None  # noqa: E501
         expected_results = [
@@ -236,8 +232,7 @@ class TestsDynamoDBCalls:
         ]
     )
     def test_get_all_records_of_medicine_name(self, medicine_name):
-        setup_test_dynamo_with_data()
-        self.refresh_known_test_records()
+        self.build_mock_table_and_refresh_known_test_records()
         expected_results = [
             record for record
             in self.medication_test_records

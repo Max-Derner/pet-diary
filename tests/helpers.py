@@ -16,6 +16,10 @@ from app.support.logger import get_full_logger
 logger = get_full_logger()
 
 
+def mock_utc_timestamp_now():
+    return 123456.789
+
+
 def _get_sam_template() -> Dict:
     loader = yaml.Loader
     # The following line is some ropey business, just don't access anything

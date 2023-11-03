@@ -69,7 +69,6 @@ def get_all_records_of_medicine_type_in_next_due_timeframe(
         ):
     lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_date_limit.astimezone(tz=timezone.utc).timestamp())if lower_date_limit is not None else None  # noqa: E501
     upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_date_limit.astimezone(tz=timezone.utc).timestamp())if upper_date_limit is not None else None  # noqa: E501
-    sort_key_condition = None
     if lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is not None:  # noqa: E501
         sort_key_condition = Key('next_due').between(
                 lower_limit_decimal_timestamp, upper_limit_decimal_timestamp
@@ -94,4 +93,40 @@ def get_all_records_of_medicine_type_in_next_due_timeframe(
     return _arbitrary_pet_table_query(**query_params)
 
 
-# get_all_records_of_medicine_name
+def get_all_records_of_appointment_in_timeframe(
+        lower_date_limit: Optional[datetime],
+        upper_date_limit: Optional[datetime]
+        ):
+    lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_date_limit.astimezone(tz=timezone.utc).timestamp())if lower_date_limit is not None else None  # noqa: E501
+    upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_date_limit.astimezone(tz=timezone.utc).timestamp())if upper_date_limit is not None else None  # noqa: E501
+    sort_key_condition = None
+    if lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is not None:  # noqa: E501
+        sort_key_condition = Key('date_time').between(
+                lower_limit_decimal_timestamp, upper_limit_decimal_timestamp
+            )
+    elif lower_limit_decimal_timestamp is None and upper_limit_decimal_timestamp is not None:  # noqa: E501
+        sort_key_condition = Key('date_time').lte(
+                upper_limit_decimal_timestamp
+            )
+    elif lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is None:  # noqa: E501
+        sort_key_condition = Key('date_time').gte(
+                lower_limit_decimal_timestamp
+            )
+    else:
+        return get_all_of_record_type(record_type=RecordType.APPOINTMENT)
+
+    key_condition_expression = Key('record_type').eq(RecordType.APPOINTMENT.value) & sort_key_condition  # noqa: E501
+
+    query_params = {
+        'IndexName': 'record_type',
+        'KeyConditionExpression': key_condition_expression,
+    }
+    return _arbitrary_pet_table_query(**query_params)
+
+
+def get_all_of_record_type(record_type: RecordType):
+    query_params = {
+        'IndexName': 'record_type',
+        'KeyConditionExpression': Key('record_type').eq(record_type.value),
+    }
+    return _arbitrary_pet_table_query(**query_params)

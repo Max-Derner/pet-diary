@@ -1,4 +1,4 @@
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 from unittest import TestCase
 from app.support.records.illness_record import IllnessRecordFactory
 from app.support.records.details_record import DetailsRecordFactory
@@ -8,6 +8,7 @@ from app.support.records.appointment_record import AppointmentRecordFactory
 from datetime import datetime, timedelta
 from decimal import Decimal
 from app.support.records.pet_table_models import RecordType
+from helpers import mock_utc_timestamp_now
 
 RECORDS_MODULE = 'app.support.records'
 
@@ -18,7 +19,7 @@ class TestsIllnessRecordFactory(TestCase):
 
     correct_illness_record = {
         'name': 'me',
-        'sort_key': 'illness#stinky-butt#123456.789',
+        'sort_key': f'illness#stinky-butt#{mock_utc_timestamp_now()}',
         'date_time': Decimal(date_time.timestamp()),
         'ailment': 'stinky-butt',
         'description': 'Butt so stinky, it makes everyone in the room cry',
@@ -27,7 +28,7 @@ class TestsIllnessRecordFactory(TestCase):
 
     nearly_correct_illness_record = {
         'name': 'me',
-        'sort_key': 'illness#stinky-butt#123456.789',
+        'sort_key': f'illness#stinky-butt#{mock_utc_timestamp_now()}',
         'date_time': f'{Decimal(date_time.timestamp())}',  # it's a string!
         'ailment': 'stinky-butt',
         'description': 'Butt so stinky, it makes everyone in the room cry',
@@ -36,16 +37,18 @@ class TestsIllnessRecordFactory(TestCase):
 
     invalid_illness_record = {
         'name': 'me',
-        'sort_key': 'illness#stinky-butt#123456.789',
+        'sort_key': f'illness#stinky-butt#{mock_utc_timestamp_now()}',
         'date_time': 'today',
         'ailment': 'stinky-butt',
         'description': 'Butt so stinky, it makes everyone in the room cry',
         'record_type': RecordType.ILLNESS.value
         }
 
-    @patch(f'{RECORDS_MODULE}.illness_record.utc_timestamp_now')
-    def tests_produces_record_of_correct_form(self, utc_timestamp_now: Mock):
-        utc_timestamp_now.return_value = 123456.789
+    @patch(
+            f'{RECORDS_MODULE}.illness_record.utc_timestamp_now',
+            mock_utc_timestamp_now
+            )
+    def tests_produces_record_of_correct_form(self):
         illness_factory = IllnessRecordFactory()
 
         actual_record = illness_factory.produce_record(
@@ -99,6 +102,7 @@ class TestsDetailsRecordFactory(TestCase):
         'breed': 'person',
         'colour': 'regular',
         'dob': Decimal(date_of_birth.timestamp()),
+        'date_time': Decimal(mock_utc_timestamp_now()),
         'gender': 'yes',
         'microchip_number': 1,
         'record_type': RecordType.DETAILS.value
@@ -110,6 +114,7 @@ class TestsDetailsRecordFactory(TestCase):
         'breed': 'person',
         'colour': 'regular',
         'dob': f'{Decimal(date_of_birth.timestamp())}',  # it's a string!
+        'date_time': f'{Decimal(mock_utc_timestamp_now())}',  # it's a string!
         'gender': 'yes',
         'microchip_number': '1',
         'record_type': RecordType.DETAILS.value
@@ -121,11 +126,16 @@ class TestsDetailsRecordFactory(TestCase):
         'breed': 'person',
         'colour': 'regular',
         'dob': 'yesterday',
+        'date_time': 'the time I created my pet details record',
         'gender': 'yes',
         'microchip_number': '1',
         'record_type': RecordType.DETAILS.value
         }
 
+    @patch(
+            f'{RECORDS_MODULE}.details_record.utc_timestamp_now',
+            mock_utc_timestamp_now
+            )
     def tests_produces_record_of_correct_form(self):
         details_factory = DetailsRecordFactory()
 
@@ -182,7 +192,7 @@ class TestsMedicationRecordFactory(TestCase):
 
     correct_medication_record = {
         'name': 'me',
-        'sort_key': 'medication#non-poisonous#123456.789',
+        'sort_key': f'medication#non-poisonous#{mock_utc_timestamp_now()}',
         'date_time': Decimal(administered.timestamp()),
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'medicine_type': 'non-poisonous',
@@ -193,7 +203,7 @@ class TestsMedicationRecordFactory(TestCase):
 
     also_correct_medication_record = {
         'name': 'me',
-        'sort_key': 'medication#non-poisonous#123456.789',
+        'sort_key': f'medication#non-poisonous#{mock_utc_timestamp_now()}',
         'date_time': Decimal(administered.timestamp()),
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'repeat': False,
@@ -203,7 +213,7 @@ class TestsMedicationRecordFactory(TestCase):
 
     nearly_correct_medication_record = {
         'name': 'me',
-        'sort_key': 'medication#non-poisonous#123456.789',
+        'sort_key': f'medication#non-poisonous#{mock_utc_timestamp_now()}',
         'date_time': f'{Decimal(administered.timestamp())}',  # it's a string!
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'medicine_type': 'non-poisonous',
@@ -214,7 +224,7 @@ class TestsMedicationRecordFactory(TestCase):
 
     invalid_medication_record = {
         'name': 'me',
-        'sort_key': 'medication#non-poisonous#123456.789',
+        'sort_key': f'medication#non-poisonous#{mock_utc_timestamp_now()}',
         'date_time': Decimal(administered.timestamp()),
         'medicine_name': 'Flux-a-make-you-feel-better-a-tonne',
         'medicine_type': 'non-poisonous',
@@ -223,9 +233,11 @@ class TestsMedicationRecordFactory(TestCase):
         'record_type': RecordType.MEDICATION.value
         }
 
-    @patch(f'{RECORDS_MODULE}.medication_record.utc_timestamp_now')
-    def tests_produces_record_of_correct_form(self, utc_timestamp_now: Mock):
-        utc_timestamp_now.return_value = 123456.789
+    @patch(
+            f'{RECORDS_MODULE}.medication_record.utc_timestamp_now',
+            mock_utc_timestamp_now
+            )
+    def tests_produces_record_of_correct_form(self):
         medication_factory = MedicationRecordFactory()
 
         actual_record = medication_factory.produce_record(
@@ -242,9 +254,11 @@ class TestsMedicationRecordFactory(TestCase):
 
         assert actual_record == self.correct_medication_record
 
-    @patch(f'{RECORDS_MODULE}.medication_record.utc_timestamp_now')
-    def tests_produces_record_of_correct_form_when_medicine_not_due(self, utc_timestamp_now: Mock):  # noqa: E501
-        utc_timestamp_now.return_value = 123456.789
+    @patch(
+            f'{RECORDS_MODULE}.medication_record.utc_timestamp_now',
+            mock_utc_timestamp_now
+            )
+    def tests_produces_record_of_correct_form_when_medicine_not_due(self):
         medication_factory = MedicationRecordFactory()
 
         actual_record = medication_factory.produce_record(
@@ -308,40 +322,42 @@ class TestsMedicationRecordFactory(TestCase):
 
 class TestsObservationRecordFactory(TestCase):
 
-    date_time = datetime(year=2023, month=10, day=14)
+    observed_date_time = datetime(year=2023, month=10, day=14)
 
     correct_observation_record = {
         'name': 'me',
-        'sort_key': 'observation#123456.789',
-        'date_time': Decimal(date_time.timestamp()),
+        'sort_key': f'observation#{mock_utc_timestamp_now()}',
+        'date_time': Decimal(observed_date_time.timestamp()),
         'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
         'record_type': RecordType.OBSERVATION.value
         }
 
     nearly_correct_observation_record = {
         'name': 'me',
-        'sort_key': 'observation#123456.789',
-        'date_time': f'{Decimal(date_time.timestamp())}',  # it's a string!
+        'sort_key': f'observation#{mock_utc_timestamp_now()}',
+        'date_time': f'{Decimal(observed_date_time.timestamp())}',  # it's a string!  # noqa: E501
         'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
         'record_type': RecordType.OBSERVATION.value
         }
 
     invalid_observation_record = {
         'name': 'me',
-        'sort_key': 'observation#123456.789',
+        'sort_key': f'observation#{mock_utc_timestamp_now()}',
         'date_time': 'Tuesday mate',
         'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
         'record_type': RecordType.OBSERVATION.value
         }
 
-    @patch(f'{RECORDS_MODULE}.observation_record.utc_timestamp_now')
-    def tests_produces_record_of_correct_form(self, utc_timestamp_now: Mock):
-        utc_timestamp_now.return_value = 123456.789
+    @patch(
+            f'{RECORDS_MODULE}.observation_record.utc_timestamp_now',
+            mock_utc_timestamp_now
+            )
+    def tests_produces_record_of_correct_form(self):
         observation_factory = ObservationRecordFactory()
 
         actual_record = observation_factory.produce_record(
             pet_name='me',
-            observed_time=self.date_time,
+            observed_time=self.observed_date_time,
             description="I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine"  # noqa: E501
         )
 
@@ -369,7 +385,7 @@ class TestsObservationRecordFactory(TestCase):
         observation_factory = ObservationRecordFactory()
         record = observation_factory.produce_record(
             pet_name='me',
-            observed_time=self.date_time,
+            observed_time=self.observed_date_time,
             description="Observed burping in the vicinity of his wife. Wife disappointed"  # noqa: E501
         )
 
@@ -384,7 +400,7 @@ class TestsAppointmentRecordFactory(TestCase):
 
     correct_appointment_record = {
         'name': 'me',
-        'sort_key': 'appointment#123456.789',
+        'sort_key': f'appointment#{mock_utc_timestamp_now()}',
         'date_time': Decimal(date_time.timestamp()),
         'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
         'record_type': RecordType.APPOINTMENT.value
@@ -392,7 +408,7 @@ class TestsAppointmentRecordFactory(TestCase):
 
     nearly_correct_appointment_record = {
         'name': 'me',
-        'sort_key': 'appointment#123456.789',
+        'sort_key': f'appointment#{mock_utc_timestamp_now()}',
         'date_time': f'{Decimal(date_time.timestamp())}',  # it's a string!
         'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
         'record_type': RecordType.APPOINTMENT.value
@@ -400,15 +416,17 @@ class TestsAppointmentRecordFactory(TestCase):
 
     invalid_appointment_record = {
         'name': 'me',
-        'sort_key': 'appointment#123456.789',
+        'sort_key': f'appointment#{mock_utc_timestamp_now}',
         'date_time': 'Tuesday mate',
         'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
         'record_type': RecordType.APPOINTMENT.value
         }
 
-    @patch(f'{RECORDS_MODULE}.appointment_record.utc_timestamp_now')
-    def tests_produces_record_of_correct_form(self, utc_timestamp_now: Mock):
-        utc_timestamp_now.return_value = 123456.789
+    @patch(
+            f'{RECORDS_MODULE}.appointment_record.utc_timestamp_now',
+            mock_utc_timestamp_now
+            )
+    def tests_produces_record_of_correct_form(self):
         appointment = AppointmentRecordFactory()
         actual_record = appointment.produce_record(
             pet_name='me',

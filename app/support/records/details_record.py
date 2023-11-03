@@ -7,6 +7,8 @@ from app.support.records.pet_table_models import (
 from datetime import datetime
 from decimal import Decimal
 
+from support.misc import utc_timestamp_now
+
 
 class DetailsRecordFactory(AbstractRecordFactory):
     model: DetailsRecordModel
@@ -27,6 +29,7 @@ class DetailsRecordFactory(AbstractRecordFactory):
             "name": pet_name,
             "sort_key": RecordType.DETAILS.value,
             "dob": Decimal(date_of_birth.timestamp()),
+            'date_time': Decimal(utc_timestamp_now()),
             "colour": colour,
             "gender": gender,
             "breed": breed,

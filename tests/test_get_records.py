@@ -15,6 +15,8 @@ from app.support.data_access_layer.get_records import (
     get_all_of_pets_record_type_after_point_in_time,
     get_all_records_of_medicine_type,
     get_all_records_of_medicine_type_in_next_due_timeframe,
+    get_all_records_of_appointment_in_timeframe,
+    get_all_of_record_type
 )
 
 
@@ -141,13 +143,26 @@ class TestsDynamoDBCalls:
             and record['date_time'] > point_in_time.astimezone(tz=timezone.utc).timestamp()  # noqa: E501
             ]
 
-        result = get_all_of_pets_record_type_after_point_in_time(
+        results = get_all_of_pets_record_type_after_point_in_time(
             pet_name=expected_pet,
             point_in_time=point_in_time,
             record_type=record_type
         )
 
-        assert result == expected_results
+        missed_results = []
+        for expected_result in expected_results:
+            if expected_result not in results:
+                missed_results.append(expected_result)
+        extra_results = []
+        for result in results:
+            if result not in expected_results:
+                extra_results.append(result)
+        assert missed_results == [] and extra_results == [], \
+            f"""
+            Results returned incorrectly:
+            {len(missed_results)} missed results: {missed_results}
+            {len(extra_results)} extra results: {extra_results}
+            """
 
     @mark.parametrize(
         argnames='medicine_type',
@@ -161,11 +176,24 @@ class TestsDynamoDBCalls:
             if record['medicine_type'] == medicine_type
             ]
 
-        result = get_all_records_of_medicine_type(
+        results = get_all_records_of_medicine_type(
             medicine_type=medicine_type
         )
 
-        assert result == expected_results
+        missed_results = []
+        for expected_result in expected_results:
+            if expected_result not in results:
+                missed_results.append(expected_result)
+        extra_results = []
+        for result in results:
+            if result not in expected_results:
+                extra_results.append(result)
+        assert missed_results == [] and extra_results == [], \
+            f"""
+            Results returned incorrectly:
+            {len(missed_results)} missed results: {missed_results}
+            {len(extra_results)} extra results: {extra_results}
+            """
 
     @mark.parametrize(
         argnames='medicine_type, lower_limit, upper_limit',
@@ -214,10 +242,114 @@ class TestsDynamoDBCalls:
                                 in expected_results
                                 if record['next_due'] <= upper_limit_decimal_timestamp  # noqa: E501
                                 ]
-        result = get_all_records_of_medicine_type_in_next_due_timeframe(
+        results = get_all_records_of_medicine_type_in_next_due_timeframe(
             medicine_type=medicine_type,
             lower_date_limit=lower_limit,
             upper_date_limit=upper_limit
         )
 
-        assert result == expected_results
+        missed_results = []
+        for expected_result in expected_results:
+            if expected_result not in results:
+                missed_results.append(expected_result)
+        extra_results = []
+        for result in results:
+            if result not in expected_results:
+                extra_results.append(result)
+        assert missed_results == [] and extra_results == [], \
+            f"""
+            Results returned incorrectly:
+            {len(missed_results)} missed results: {missed_results}
+            {len(extra_results)} extra results: {extra_results}
+            """
+
+    @mark.parametrize(
+        argnames='lower_limit, upper_limit',
+        argvalues=[
+            (datetime(year=1808, month=3, day=23), datetime(year=1809, month=3, day=23)),  # noqa: E501
+            (None, datetime(year=1809, month=3, day=23)),
+            (datetime(year=1808, month=3, day=23), None),
+            (datetime(year=1812, month=1, day=29), datetime(year=1812, month=2, day=2)),  # noqa: E501
+            (None, datetime(year=1812, month=2, day=2)),
+            (datetime(year=1812, month=1, day=29), None),
+            (None, None),
+        ]
+    )
+    def test_get_all_records_of_appointment_in_timeframe(
+            self,
+            lower_limit: Optional[datetime],
+            upper_limit: Optional[datetime]
+            ):
+        self.build_mock_table_and_refresh_known_test_records()
+        lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_limit.astimezone(tz=timezone.utc).timestamp())if lower_limit is not None else None  # noqa: E501
+        upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_limit.astimezone(tz=timezone.utc).timestamp())if upper_limit is not None else None  # noqa: E501
+        expected_results = self.appointment_test_records
+        if lower_limit_decimal_timestamp is not None:
+
+            expected_results = [record for record
+                                in expected_results
+                                if record['date_time'] >= lower_limit_decimal_timestamp  # noqa: E501
+                                ]
+        if upper_limit_decimal_timestamp is not None:
+
+            expected_results = [record for record
+                                in expected_results
+                                if record['date_time'] <= upper_limit_decimal_timestamp  # noqa: E501
+                                ]
+
+        results = get_all_records_of_appointment_in_timeframe(
+            lower_date_limit=lower_limit,
+            upper_date_limit=upper_limit
+        )
+
+        missed_results = []
+        for expected_result in expected_results:
+            if expected_result not in results:
+                missed_results.append(expected_result)
+        extra_results = []
+        for result in results:
+            if result not in expected_results:
+                extra_results.append(result)
+        assert missed_results == [] and extra_results == [], \
+            f"""
+            Results returned incorrectly:
+            {len(missed_results)} missed results: {missed_results}
+            {len(extra_results)} extra results: {extra_results}
+            """
+
+    @mark.parametrize(
+        argnames='record_type',
+        argvalues=[
+            RecordType.APPOINTMENT,
+            RecordType.DETAILS,
+            RecordType.ILLNESS,
+            RecordType.MEDICATION,
+            RecordType.OBSERVATION,
+        ]
+    )
+    def test_get_all_of_record_type(self, record_type):
+        self.build_mock_table_and_refresh_known_test_records()
+        expected_results = [
+            record for record
+            in self.all_test_records
+            if str(record['record_type']) == record_type.value
+            ]
+
+        results = get_all_of_record_type(
+            record_type=record_type
+        )
+
+        missed_results = []
+        for expected_result in expected_results:
+            if expected_result not in results:
+                missed_results.append(expected_result)
+        extra_results = []
+        for result in results:
+            if result not in expected_results:
+                extra_results.append(result)
+        assert missed_results == [] and extra_results == [], \
+            f"""
+            Results returned incorrectly:
+            {len(missed_results)} missed results: {missed_results}
+            {len(extra_results)} extra results: {extra_results}
+            """

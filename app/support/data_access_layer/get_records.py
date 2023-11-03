@@ -32,7 +32,7 @@ def get_all_of_pets_records(pet_name: str) -> List[Dict]:
     return _arbitrary_pet_table_query(**query_params)
 
 
-def get_pets_record_type(
+def get_all_of_pets_record_type(
         pet_name: str,
         record_type: RecordType
         ) -> List[Dict]:
@@ -42,7 +42,7 @@ def get_pets_record_type(
     return _arbitrary_pet_table_query(**query_params)
 
 
-def get_pets_record_type_after_point_in_time(
+def get_all_of_pets_record_type_after_point_in_time(
         pet_name: str,
         point_in_time: datetime,
         record_type: RecordType

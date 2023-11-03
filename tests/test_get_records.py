@@ -11,8 +11,8 @@ from app.support.records.pet_table_models import RecordType
 from app.support.data_access_layer.helpers import get_pet_table_resource
 from app.support.data_access_layer.get_records import (
     get_all_of_pets_records,
-    get_pets_record_type,
-    get_pets_record_type_after_point_in_time,
+    get_all_of_pets_record_type,
+    get_all_of_pets_record_type_after_point_in_time,
     get_all_records_of_medicine_type,
     get_all_records_of_medicine_type_in_next_due_timeframe,
 )
@@ -97,7 +97,7 @@ class TestsDynamoDBCalls:
             and str(record['sort_key']).split('#')[0] == record_type.value
             ]
 
-        results = get_pets_record_type(
+        results = get_all_of_pets_record_type(
             pet_name=expected_pet,
             record_type=record_type
         )
@@ -141,7 +141,7 @@ class TestsDynamoDBCalls:
             and record['date_time'] > point_in_time.astimezone(tz=timezone.utc).timestamp()  # noqa: E501
             ]
 
-        result = get_pets_record_type_after_point_in_time(
+        result = get_all_of_pets_record_type_after_point_in_time(
             pet_name=expected_pet,
             point_in_time=point_in_time,
             record_type=record_type

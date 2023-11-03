@@ -10,34 +10,25 @@ Resources:
             AttributeType: S
         -   AttributeName: sort_key
             AttributeType: S
-        -   AttributeName: medicine_name
-            AttributeType: S
         -   AttributeName: medicine_type
             AttributeType: S
         -   AttributeName: record_type
             AttributeType: S
+        -   AttributeName: date_time
+            AttributeType: N
+        -   AttributeName: next_due
+            AttributeType: N
       KeySchema: 
         -   AttributeName: name
             KeyType: HASH
         -   AttributeName: sort_key
             KeyType: RANGE
       GlobalSecondaryIndexes: 
-        -   IndexName: medicine_name
-            KeySchema: 
-              -   AttributeName: medicine_name
-                  KeyType: HASH
-              -   AttributeName: sort_key
-                  KeyType: RANGE
-            Projection: 
-              ProjectionType: ALL
-            ProvisionedThroughput: 
-                ReadCapacityUnits: 5  # Gives ThrottlingException
-                WriteCapacityUnits: 5 # if exceeded
         -   IndexName: medicine_type
             KeySchema: 
               -   AttributeName: medicine_type
                   KeyType: HASH
-              -   AttributeName: sort_key
+              -   AttributeName: next_due
                   KeyType: RANGE
             Projection: 
               ProjectionType: ALL
@@ -48,7 +39,7 @@ Resources:
             KeySchema: 
               -   AttributeName: record_type
                   KeyType: HASH
-              -   AttributeName: sort_key
+              -   AttributeName: date_time
                   KeyType: RANGE
             Projection: 
               ProjectionType: ALL

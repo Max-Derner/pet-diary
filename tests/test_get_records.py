@@ -10,12 +10,11 @@ from tests.helpers import (
 from app.support.records.pet_table_models import RecordType
 from app.support.data_access_layer.helpers import get_pet_table_resource
 from app.support.data_access_layer.get_records import (
-    get_all_records,
-    get_all_of_record_type,
-    get_all_of_record_type_after_point_in_time,
+    get_all_of_pets_records,
+    get_pets_record_type,
+    get_pets_record_type_after_point_in_time,
     get_all_records_of_medicine_type,
-    get_all_records_of_medicine_type_in_timeframe,
-    get_all_records_of_medicine_name
+    get_all_records_of_medicine_type_in_next_due_timeframe,
 )
 
 
@@ -58,7 +57,7 @@ class TestsDynamoDBCalls:
                                 in self.all_test_records
                                 if record['name'] == pet_we_want]
 
-        result = get_all_records(pet_name=pet_we_want)
+        result = get_all_of_pets_records(pet_name=pet_we_want)
 
         for record in all_expected_records:
             if record not in result:
@@ -74,7 +73,7 @@ class TestsDynamoDBCalls:
     def tests_get_all_records_wrong_name(self):
         self.build_mock_table_and_refresh_known_test_records()
 
-        result = get_all_records(pet_name='Quinn')
+        result = get_all_of_pets_records(pet_name='Quinn')
 
         assert result == []
 
@@ -98,7 +97,7 @@ class TestsDynamoDBCalls:
             and str(record['sort_key']).split('#')[0] == record_type.value
             ]
 
-        results = get_all_of_record_type(
+        results = get_pets_record_type(
             pet_name=expected_pet,
             record_type=record_type
         )
@@ -142,7 +141,7 @@ class TestsDynamoDBCalls:
             and record['date_time'] > point_in_time.astimezone(tz=timezone.utc).timestamp()  # noqa: E501
             ]
 
-        result = get_all_of_record_type_after_point_in_time(
+        result = get_pets_record_type_after_point_in_time(
             pet_name=expected_pet,
             point_in_time=point_in_time,
             record_type=record_type
@@ -207,40 +206,18 @@ class TestsDynamoDBCalls:
 
             expected_results = [record for record
                                 in expected_results
-                                if record['date_time'] >= lower_limit_decimal_timestamp  # noqa: E501
+                                if record['next_due'] >= lower_limit_decimal_timestamp  # noqa: E501
                                 ]
         if upper_limit_decimal_timestamp is not None:
 
             expected_results = [record for record
                                 in expected_results
-                                if record['date_time'] <= upper_limit_decimal_timestamp  # noqa: E501
+                                if record['next_due'] <= upper_limit_decimal_timestamp  # noqa: E501
                                 ]
-        result = get_all_records_of_medicine_type_in_timeframe(
+        result = get_all_records_of_medicine_type_in_next_due_timeframe(
             medicine_type=medicine_type,
             lower_date_limit=lower_limit,
             upper_date_limit=upper_limit
-        )
-
-        assert result == expected_results
-
-    @mark.parametrize(
-        argnames='medicine_name',
-        argvalues=[
-            'feel-better-a-loxin',
-            'Abaddon - destroyer of fleas',
-            'Abaddon - destroyer of parasites'
-        ]
-    )
-    def test_get_all_records_of_medicine_name(self, medicine_name):
-        self.build_mock_table_and_refresh_known_test_records()
-        expected_results = [
-            record for record
-            in self.medication_test_records
-            if record['medicine_name'] == medicine_name
-            ]
-
-        result = get_all_records_of_medicine_name(
-            medicine_name=medicine_name
         )
 
         assert result == expected_results

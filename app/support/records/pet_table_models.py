@@ -18,6 +18,9 @@
 #  | next_due               | Decimal as posix timestamp  | Medication                                      |  # noqa: E501
 #  | record_type            | str                         | All                                             |  # noqa: E501
 #  +------------------------+-----------------------------+-------------------------------------------------+  # noqa: E501
+#
+#  Record Types = Details, Medication, Illness, Observation, Appointment
+#
 
 from typing import Optional
 from pydantic import BaseModel

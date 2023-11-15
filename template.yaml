@@ -1,7 +1,44 @@
 Transform: AWS::Serverless-2016-10-31  # Is SAM template
 
 Resources:
+
+  WeeklyReminder:
+  # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Gives fortnightly reminders of upcoming required medications and
+      FunctionName: weekly_reminder
+      Architectures: 
+        - x86_64
+      CodeUri: app/lambdas/
+      Environment: 
+        Variables:
+          database_name: pet_table
+          sns_topic: weekly_reminder
+      EphemeralStorage: 
+        Size: 512
+      Events: 
+        ScheduledEvent:
+          Type: Schedule
+          Properties: 
+              Description: Fire once a week
+              Enabled: true
+              Schedule: cron(0 8 ? * MON-FRI *)
+      Handler: weekly_reminder
+      KmsKeyArn: !GetAtt KMSAppKey.Arn
+      MemorySize: 128
+      PackageType: Zip
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.10
+      Timeout: 3
+      # TODO: the below
+      #checkov:skip=CKV_AWS_115: We are waiting on an account increase before we can increase this
+      # ReservedConcurrentExecutions: 5  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for you lambda and keeps it warm
+      #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
+      #checkov:skip=CKV_AWS_117: VPC will come later
+
   PetTable:
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
     Type: AWS::DynamoDB::Table
     Properties: 
       TableName: pet_table
@@ -54,14 +91,15 @@ Resources:
       PointInTimeRecoverySpecification: 
           PointInTimeRecoveryEnabled: true  # costs $0.23772 per GB-month
       SSESpecification: 
-        KMSMasterKeyId: !GetAtt KMSDynamoKey.Arn
+        KMSMasterKeyId: !GetAtt KMSAppKey.Arn
         SSEEnabled: true
         SSEType: KMS
 
-  KMSDynamoKey:
+  KMSAppKey:
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kms-key.html
     Type: AWS::KMS::Key  # costs $1 per creation, gets 20,000 requests a year free for encrypting/decrypting
     Properties: 
-      Description: For symmetric encryption of the DynamoDB table pet-table
+      Description: For symmetric encryption of all the applications resources
       Enabled: true
       EnableKeyRotation: true  # Creates new one every year
       KeySpec: SYMMETRIC_DEFAULT
@@ -69,3 +107,66 @@ Resources:
       MultiRegion: false
       Origin: AWS_KMS
       PendingWindowInDays: 30
+
+  # KMSLambdaKey:
+  #   Type: AWS::KMS::Key  # costs $1 per creation, gets 20,000 requests a year free for encrypting/decrypting
+  #   Properties: 
+  #     Description: For symmetric encryption of the Lambda variables
+  #     Enabled: true
+  #     EnableKeyRotation: true  # Creates new one every year
+  #     KeySpec: SYMMETRIC_DEFAULT
+  #     KeyUsage:  ENCRYPT_DECRYPT
+  #     MultiRegion: false
+  #     Origin: AWS_KMS
+  #     PendingWindowInDays: 30
+
+  LambdaRole:
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+    Type: AWS::IAM::Role
+    Properties:
+      Description: Allows Lambdas read access to DynamoDB, and publish to SNS topics
+      RoleName: lambda-role
+      Policies:
+        - PolicyName: Weekly_access   # TODO: see if this works, you've made some changes
+          PolicyDocument:
+          # https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policies-json
+            Version: "2012-10-17"
+            Statement:
+              - Sid: DynamoRestrictiveRead
+                Effect: Allow
+                Resource: arn:aws:lambda:eu-west-2:*  # !GetAtt WeeklyReminder.Arn
+                Action:
+                  - dynamodb:Query
+                  - dynamodb:GetItem
+              - Effect: Allow
+                Resource: arn:aws:lambda:eu-west-2:*  # !GetAtt WeeklyReminder.Arn
+                Action:
+                  - sns:Publish
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      MaxSessionDuration: 3600
+
+
+# WeeklyReminderTopic:
+#   Type: AWS::SNS::Topic
+#   Properties:
+#     ArchivePolicy: Json
+#     ContentBasedDeduplication: Boolean
+#     DataProtectionPolicy: Json
+#     DisplayName: PD Weekly Reminder
+#     FifoTopic: Boolean
+#     KmsMasterKeyId: !GetAtt KMSAppKey.Arn
+#     SignatureVersion: String
+#     Subscription: 
+#       - Subscription
+#     Tags: 
+#       - Tag
+#     TopicName: weekly_reminder
+#     TracingConfig: String

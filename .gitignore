@@ -5,3 +5,4 @@ freezer/
 .pdt-config
 **/__pycache__/
 logging_output/
+.aws-sam

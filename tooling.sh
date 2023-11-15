@@ -16,7 +16,7 @@ _aws_exports() {
         if [ -n "$AWS_PROFILE" ]; then break; fi
     done
     CONFIG_SNIPPET=$(grep -A 20 -F "[profile ${AWS_PROFILE}]" <~/.aws/config)
-    AWS_ACCOUNT_ID=$(echo "$CONFIG_SNIPPET" | grep -F 'sso_account_id = ' | sed -e 's/sso_account_id = //g' -e 's/ *$//g')
+    AWS_ACCOUNT_ID=$(echo "$CONFIG_SNIPPET" | grep -m 1 -F 'sso_account_id = ' | sed -e 's/sso_account_id = //g' -e 's/ *$//g')
     echo "Exporting AWS_PROFILE as: $AWS_PROFILE"
     echo "Exporting AWS_ACCOUNT_ID as: $AWS_ACCOUNT_ID"
     export AWS_PROFILE
@@ -103,24 +103,30 @@ _sam-security-check() {
 
 sam-deploy() {
     _verify_venv_active
-    AWS_REGION=$(get-aws-region)
-    AWS_PROFILE=$(get-aws-profile)
-    echo "Deploying application into the $AWS_REGION region, using the $AWS_PROFILE profile"
+    echo "Building application"
+    sam build
+    echo "Deploying application into the '$AWS_REGION' region, using the '$AWS_PROFILE' profile"
     sam deploy \
-    --template "{VIRTUAL_ENV}/../template.yaml" \
+    --s3-bucket pet-dairy-app \
     --stack-name pet-diary-stack \
+    --template "{VIRTUAL_ENV}/../template.yaml" \
     --region "$AWS_REGION" \
-    --profile "$AWS_PROFILE"
+    --profile "$AWS_PROFILE" \
+    --capabilities CAPABILITY_NAMED_IAM \
+    # --resolve-s3
+
+    if [ "$?" != 0 ]; then
+        echo "Did you get an issue with reserved concurrency for the account going below 10?"
+        echo "Follow the instructions: https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html"
 }
 
 sam-destroy() {
-    AWS_REGION=$(get-aws-region)
-    AWS_PROFILE=$(get-aws-profile)
-    echo "Tearing down application from the $AWS_REGION region, using the $AWS_PROFILE profile"
+    echo "Tearing down application from the '$AWS_REGION' region, using the '$AWS_PROFILE' profile"
     sam delete \
     --stack-name pet-diary-stack \
     --region "$AWS_REGION" \
-    --profile "$AWS_PROFILE"
+    --profile "$AWS_PROFILE" \
+    --s3-bucket pet-dairy-app
 }
 
 python-lint() {

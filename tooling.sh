@@ -44,7 +44,7 @@ aws-add-test-profile() {
         echo "There was no aws config file found at ~/.aws/config"
         echo "If you have specified a different location for the config, then I trust you to fix this yourself"
         return 1
-    elif [ -z "$(grep -o \-F "$TEST_PROFILE_HEADER" <~/.aws/config)" ]; then
+    elif [ -z "$(grep -o -F "$TEST_PROFILE_HEADER" <~/.aws/config)" ]; then
         echo "Test profile not found, adding now"
         cat "${VIRTUAL_ENV}/../aws-test-profile" >> ~/.aws/config
     else
@@ -107,17 +107,17 @@ sam-deploy() {
     sam build
     echo "Deploying application into the '$AWS_REGION' region, using the '$AWS_PROFILE' profile"
     sam deploy \
-    --s3-bucket pet-dairy-app \
     --stack-name pet-diary-stack \
     --template "{VIRTUAL_ENV}/../template.yaml" \
     --region "$AWS_REGION" \
     --profile "$AWS_PROFILE" \
     --capabilities CAPABILITY_NAMED_IAM \
-    # --resolve-s3
+    --resolve-s3
 
     if [ "$?" != 0 ]; then
         echo "Did you get an issue with reserved concurrency for the account going below 10?"
         echo "Follow the instructions: https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html"
+    fi
 }
 
 sam-destroy() {
@@ -213,7 +213,7 @@ configure-venv() {
     pip install -r ./requirements.txt
     # Check venv configuration
     echo "Checking venv configuration"
-    if [ -n "$(grep -o -F "$(cat .env)" <./pet-diary-venv/bin/activate)" ]; then
+    if grep -q -F "$(cat .env)" <./pet-diary-venv/bin/activate; then
         echo "Looks like you're all set up"
     else
         echo "Amending pet-diary-venv/bin/activate"

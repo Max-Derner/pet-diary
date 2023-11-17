@@ -17,10 +17,13 @@ _aws_exports() {
     done
     CONFIG_SNIPPET=$(grep -A 20 -F "[profile ${AWS_PROFILE}]" <~/.aws/config)
     AWS_ACCOUNT_ID=$(echo "$CONFIG_SNIPPET" | grep -m 1 -F 'sso_account_id = ' | sed -e 's/sso_account_id = //g' -e 's/ *$//g')
+    AWS_REGION=$(echo "$CONFIG_SNIPPET" | grep -m 1 -F 'sso_region = ' | sed -e 's/sso_region = //g' -e 's/ *$//g')
     echo "Exporting AWS_PROFILE as: $AWS_PROFILE"
-    echo "Exporting AWS_ACCOUNT_ID as: $AWS_ACCOUNT_ID"
     export AWS_PROFILE
-    export AWS_ACCOUNT_ID
+    echo "Exporting AWS_ACCOUNT_ID as: $AWS_ACCOUNT_ID"
+    export AWS_REGION
+    echo "Exporting AWS_REGION as: $AWS_REGION"
+    export AWS_REGION
 }
 
 _verify_venv_active() {

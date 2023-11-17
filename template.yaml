@@ -1,10 +1,24 @@
-Transform: AWS::Serverless-2016-10-31  # Is SAM template
+Transform: AWS::Serverless-2016-10-31  # Mandatory declaration of SAM template
+
+# Docs for SAM template specifically:
+#     https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html
+
+# Docs for the broader and still compatible CloudFormation template:
+#     https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
+
+# Developer guide for SAM
+#     https://docs.aws.amazon.com/serverless-application-model/
 
 Resources:
 
   WeeklyReminder:
-  # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  # Guide:
+  #   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  #   https://docs.aws.amazon.com/lambda/
     Type: AWS::Serverless::Function
+    # TODO: the following checkov outliers
+    #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
+    #checkov:skip=CKV_AWS_117: VPC will come later
     Properties:
       Description: Gives fortnightly reminders of upcoming required medications and
       FunctionName: weekly_reminder
@@ -24,6 +38,10 @@ Resources:
               Description: Fire once a week
               Enabled: true
               Schedule: cron(0 8 ? * MON-FRI *)
+      # The following option may need you to increase your reserved concurrent executions limit.
+      # Instructions on doing that https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html
+      # Can be commented out instead, though not as safe especially regarding DDOS attacks
+      ReservedConcurrentExecutions: 5  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
       Handler: weekly_reminder
       KmsKeyArn: !GetAtt KMSAppKey.Arn
       MemorySize: 128
@@ -31,14 +49,10 @@ Resources:
       Role: !GetAtt LambdaRole.Arn
       Runtime: python3.10
       Timeout: 3
-      # TODO: the below
-      #checkov:skip=CKV_AWS_115: We are waiting on an account increase before we can increase this
-      # ReservedConcurrentExecutions: 5  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for you lambda and keeps it warm
-      #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
-      #checkov:skip=CKV_AWS_117: VPC will come later
 
   PetTable:
-  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
+  # Guide:
+  #   https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
     Type: AWS::DynamoDB::Table
     Properties: 
       TableName: pet_table
@@ -96,7 +110,8 @@ Resources:
         SSEType: KMS
 
   KMSAppKey:
-  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kms-key.html
+  # Guide:
+  #   https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kms-key.html
     Type: AWS::KMS::Key  # costs $1 per creation, gets 20,000 requests a year free for encrypting/decrypting
     Properties: 
       Description: For symmetric encryption of all the applications resources
@@ -108,40 +123,40 @@ Resources:
       Origin: AWS_KMS
       PendingWindowInDays: 30
 
-  # KMSLambdaKey:
-  #   Type: AWS::KMS::Key  # costs $1 per creation, gets 20,000 requests a year free for encrypting/decrypting
-  #   Properties: 
-  #     Description: For symmetric encryption of the Lambda variables
-  #     Enabled: true
-  #     EnableKeyRotation: true  # Creates new one every year
-  #     KeySpec: SYMMETRIC_DEFAULT
-  #     KeyUsage:  ENCRYPT_DECRYPT
-  #     MultiRegion: false
-  #     Origin: AWS_KMS
-  #     PendingWindowInDays: 30
-
   LambdaRole:
-  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+  # Guide:
+  #   https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
     Type: AWS::IAM::Role
     Properties:
       Description: Allows Lambdas read access to DynamoDB, and publish to SNS topics
       RoleName: lambda-role
       Policies:
-        - PolicyName: Weekly_access   # TODO: see if this works, you've made some changes
+        - PolicyName: Weekly_access
           PolicyDocument:
           # https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policies-json
             Version: "2012-10-17"
             Statement:
-              - Sid: DynamoRestrictiveRead
+              - Sid: PetTableRestrictiveRead
                 Effect: Allow
-                Resource: arn:aws:lambda:eu-west-2:*  # !GetAtt WeeklyReminder.Arn
+                Resource: !GetAtt PetTable.Arn  # arn:aws:lambda:eu-west-2:*
                 Action:
                   - dynamodb:Query
                   - dynamodb:GetItem
-              - Effect: Allow
-                Resource: arn:aws:lambda:eu-west-2:*  # !GetAtt WeeklyReminder.Arn
+              - Sid: SNSPublish
+                Effect: Allow
+                Resource: arn:aws:sns:eu-west-2:*
                 Action:
                   - sns:Publish
+              - Sid: CreateLogGroups
+                Effect: Allow
+                Action: logs:CreateLogGroup
+                Resource: arn:aws:logs:eu-west-2:*
+              - Sid: PublishLogs
+                Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:eu-west-2:*:log-group:/aws/lambda/WeeklyReminder:*
       AssumeRolePolicyDocument: 
         Version: "2012-10-17"
         Statement:
@@ -153,6 +168,7 @@ Resources:
               - sts:AssumeRole
       MaxSessionDuration: 3600
 
+#       https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
 
 # WeeklyReminderTopic:
 #   Type: AWS::SNS::Topic

@@ -10,4 +10,7 @@ __DISCLAIMER__: This breakdown is only done to the best of my abilities, I canno
 * __KMS Key__: 
     * $1 per key generated (can comment out in [template.yaml](../template.yaml))
     * Gets 20,000 requests free per month
+* __Lambda__:
+    * 1 million free requests a month
+    * Up to 3.2 million seconds of free compute time per month (37 days worth of runtime)
 

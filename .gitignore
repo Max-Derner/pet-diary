@@ -6,3 +6,4 @@ freezer/
 **/__pycache__/
 logging_output/
 .aws-sam
+lambda_packages/

@@ -1,13 +1,14 @@
 from datetime import datetime
 from typing import Dict, Optional
-from app.support.logger import get_full_logger
-from app.support.data_access_layer.helpers import get_pet_table_resource
-from app.support.records.abstract_record import AbstractRecordFactory
-from app.support.records.details_record import DetailsRecordFactory
-from app.support.records.appointment_record import AppointmentRecordFactory
-from app.support.records.illness_record import IllnessRecordFactory
-from app.support.records.medication_record import MedicationRecordFactory
-from app.support.records.observation_record import ObservationRecordFactory
+
+from support.common.logger import get_full_logger
+from support.data_access_layer.helpers import get_pet_table_resource
+from support.data_access_layer.records.abstract_record import AbstractRecordFactory  # noqa: E501
+from support.data_access_layer.records.details_record import DetailsRecordFactory  # noqa: E501
+from support.data_access_layer.records.appointment_record import AppointmentRecordFactory  # noqa: E501
+from support.data_access_layer.records.illness_record import IllnessRecordFactory  # noqa: E501
+from support.data_access_layer.records.medication_record import MedicationRecordFactory  # noqa: E501
+from support.data_access_layer.records.observation_record import ObservationRecordFactory  # noqa: E501
 
 
 logger = get_full_logger()

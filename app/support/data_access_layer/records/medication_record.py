@@ -1,12 +1,13 @@
 from typing import Dict, Optional, Union
-from app.support.records.abstract_record import AbstractRecordFactory
-from app.support.records.pet_table_models import (
+from datetime import datetime, timezone
+from decimal import Decimal
+
+from app.support.data_access_layer.records.abstract_record import AbstractRecordFactory  # noqa: E501
+from app.support.data_access_layer.records.pet_table_models import (
     MedicationRecordModel,
     RecordType
 )
-from app.support.misc import utc_timestamp_now
-from datetime import datetime, timezone
-from decimal import Decimal
+from app.support.common.misc import utc_timestamp_now
 
 
 class MedicationRecordFactory(AbstractRecordFactory):

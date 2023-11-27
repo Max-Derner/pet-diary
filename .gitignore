@@ -1,9 +1,10 @@
 notes/
 pet-diary-venv/
 .vscode
-freezer/
 .pdt-config
 **/__pycache__/
 logging_output/
 .aws-sam
 lambda_packages/
+# Put experimental stuff in here, it's sleeping
+zzz/

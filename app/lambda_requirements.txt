@@ -1,0 +1,4 @@
+pydantic
+
+# Security fixes
+setuptools == 65.5.1

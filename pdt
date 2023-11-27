@@ -126,7 +126,7 @@ pdt() {
             install-anchore-security-tools
             ;;
         "help")
-            pdt-help
+            pdt-help | less
             ;;
         *)
             pdt-help

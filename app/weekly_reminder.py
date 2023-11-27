@@ -1,4 +1,4 @@
-from app.support.logger import get_full_logger
+from support.common.logger import get_full_logger
 import json
 
 

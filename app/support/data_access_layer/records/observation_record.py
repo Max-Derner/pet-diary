@@ -1,12 +1,13 @@
-from app.support.records.abstract_record import AbstractRecordFactory
-from app.support.records.pet_table_models import (
+from datetime import datetime, timezone
+from typing import Dict, Union
+from decimal import Decimal
+
+from app.support.data_access_layer.records.abstract_record import AbstractRecordFactory  # noqa: E501
+from app.support.data_access_layer.records.pet_table_models import (
     ObservationRecordModel,
     RecordType
 )
-from datetime import datetime, timezone
-from typing import Dict, Union
-from app.support.misc import utc_timestamp_now
-from decimal import Decimal
+from app.support.common.misc import utc_timestamp_now
 
 
 class ObservationRecordFactory(AbstractRecordFactory):

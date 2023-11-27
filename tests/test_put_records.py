@@ -9,11 +9,11 @@ from app.support.data_access_layer.put_records import (
     put_observation_record
 )
 from helpers import mock_utc_timestamp_now
-from support.records.pet_table_models import RecordType
+from app.support.data_access_layer.records.pet_table_models import RecordType
 
 
 PUT_RECORDS_PACKAGE = 'app.support.data_access_layer.put_records'
-RECORDS_PACKAGE = 'app.support.records'
+RECORDS_PACKAGE = 'support.data_access_layer.records'
 
 
 @patch(

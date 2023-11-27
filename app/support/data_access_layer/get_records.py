@@ -1,9 +1,11 @@
 from datetime import datetime, timezone
 from decimal import Decimal
 from typing import List, Dict, Optional
+
 from boto3.dynamodb.conditions import Key, Attr
-from app.support.data_access_layer.helpers import get_pet_table_resource
-from app.support.records.pet_table_models import RecordType
+
+from support.data_access_layer.helpers import get_pet_table_resource
+from support.data_access_layer.records.pet_table_models import RecordType
 
 
 def _arbitrary_pet_table_query(**kwargs) -> List[Dict]:
@@ -120,6 +122,38 @@ def get_all_records_of_appointment_in_timeframe(
     query_params = {
         'IndexName': 'record_type',
         'KeyConditionExpression': key_condition_expression,
+    }
+    return _arbitrary_pet_table_query(**query_params)
+
+
+def get_all_records_of_medicine_in_next_due_timeframe(
+        lower_date_limit: Optional[datetime],
+        upper_date_limit: Optional[datetime]
+        ):
+    lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_date_limit.astimezone(tz=timezone.utc).timestamp())if lower_date_limit is not None else None  # noqa: E501
+    upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_date_limit.astimezone(tz=timezone.utc).timestamp())if upper_date_limit is not None else None  # noqa: E501
+    filter_expression = None
+    if lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is not None:  # noqa: E501
+        filter_expression = Attr('next_due').between(
+                lower_limit_decimal_timestamp, upper_limit_decimal_timestamp
+            )
+    elif lower_limit_decimal_timestamp is None and upper_limit_decimal_timestamp is not None:  # noqa: E501
+        filter_expression = Attr('next_due').lte(
+                upper_limit_decimal_timestamp
+            )
+    elif lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is None:  # noqa: E501
+        filter_expression = Attr('next_due').gte(
+                lower_limit_decimal_timestamp
+            )
+    else:
+        return get_all_of_record_type(record_type=RecordType.MEDICATION)
+
+    key_condition_expression = Key('record_type').eq(RecordType.MEDICATION.value)  # noqa: E501
+
+    query_params = {
+        'IndexName': 'record_type',
+        'KeyConditionExpression': key_condition_expression,
+        'FilterExpression': filter_expression
     }
     return _arbitrary_pet_table_query(**query_params)
 

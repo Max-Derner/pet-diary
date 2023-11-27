@@ -9,6 +9,9 @@ Transform: AWS::Serverless-2016-10-31  # Mandatory declaration of SAM template
 # Developer guide for SAM
 #     https://docs.aws.amazon.com/serverless-application-model/
 
+# Intrinsic functions
+#     https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html
+
 Resources:
 
   WeeklyReminder:
@@ -24,7 +27,7 @@ Resources:
       FunctionName: weekly_reminder
       Architectures: 
         - x86_64
-      CodeUri: app/lambdas/
+      CodeUri: lambda_packages/weekly_reminder.zip
       Environment: 
         Variables:
           database_name: pet_table
@@ -37,18 +40,32 @@ Resources:
           Properties: 
               Description: Fire once a week
               Enabled: true
-              Schedule: cron(0 8 ? * MON-FRI *)
+              Schedule: cron(0 8 ? * MON *)
       # The following option may need you to increase your reserved concurrent executions limit.
       # Instructions on doing that https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html
       # Can be commented out instead, though not as safe especially regarding DDOS attacks
       ReservedConcurrentExecutions: 5  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
-      Handler: weekly_reminder
+      Handler: lambda_weekly_reminder.lambda_weekly_reminder
       KmsKeyArn: !GetAtt KMSAppKey.Arn
       MemorySize: 128
       PackageType: Zip
+      # LoggingConfig:
+      #   ApplicationLogLevel: TRACE
+      #   LogFormat: Text
+      #   LogGroup: !Ref WeeklyReminderLogGroup
+      #   SystemLogLevel: WARN
       Role: !GetAtt LambdaRole.Arn
       Runtime: python3.10
-      Timeout: 3
+      Timeout: 5
+
+  # WeeklyReminderLogGroup:
+  # # Guide:
+  # #   https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html
+  #   Type: AWS::Logs::LogGroup
+  #   Properties:
+  #     # KmsKeyId: !GetAtt KMSAppKey.Arn
+  #     LogGroupName: /aws/lambda/weekly_reminder
+  #     RetentionInDays: 30
 
   PetTable:
   # Guide:
@@ -138,10 +155,17 @@ Resources:
             Statement:
               - Sid: PetTableRestrictiveRead
                 Effect: Allow
-                Resource: !GetAtt PetTable.Arn  # arn:aws:lambda:eu-west-2:*
+                Resource:
+                  - arn:aws:dynamodb:eu-west-2:*:table/pet_table
+                  - arn:aws:dynamodb:eu-west-2:*:table/pet_table/index/*
                 Action:
                   - dynamodb:Query
                   - dynamodb:GetItem
+              - Sid: DecryptThings
+                Effect: Allow
+                Resource: !GetAtt KMSAppKey.Arn
+                Action:
+                  - kms:Decrypt
               - Sid: SNSPublish
                 Effect: Allow
                 Resource: arn:aws:sns:eu-west-2:*
@@ -156,7 +180,7 @@ Resources:
                 Action:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                Resource: arn:aws:logs:eu-west-2:*:log-group:/aws/lambda/WeeklyReminder:*
+                Resource: arn:aws:logs:eu-west-2:*:log-group:*:*
       AssumeRolePolicyDocument: 
         Version: "2012-10-17"
         Statement:

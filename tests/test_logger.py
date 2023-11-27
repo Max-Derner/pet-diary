@@ -1,7 +1,7 @@
 import logging
 import pytest
 from os.path import abspath
-from app.support.logger import (
+from support.common.logger import (
     _ARTEFACTS_DIR,
     _ROOT_DIR_PATH,
     _get_debug_output_formatter,
@@ -12,7 +12,7 @@ from app.support.logger import (
     get_partial_logger,
     get_full_logger
 )
-from support.file_interactors import ensure_directories_present
+from support.common.misc import ensure_directories_present
 
 
 def tests_get_debug_output_formatter():

@@ -1,6 +1,8 @@
 from typing import Dict, Union
+
 from pydantic import ValidationError, BaseModel
-from app.support.logger import get_full_logger
+
+from app.support.common.logger import get_full_logger
 
 
 logger = get_full_logger()

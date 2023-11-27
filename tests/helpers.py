@@ -11,7 +11,7 @@ from app.support.data_access_layer.put_records import (
 )
 from support.data_access_layer.helpers import get_pet_table_resource
 from tests.mock_pet_table_data import test_data
-from app.support.logger import get_full_logger
+from support.common.logger import get_full_logger
 
 logger = get_full_logger()
 
@@ -22,8 +22,8 @@ def mock_utc_timestamp_now():
 
 def _get_sam_template() -> Dict:
     loader = yaml.Loader
-    # The following line is some ropey business, just don't access anything
-    # that uses the '!GetAtt' and you'll be fine.
+    # The following line is some ropey business, just don't access any values
+    # that are populated by the '!GetAtt' function and you'll be fine.
     loader.add_constructor(tag='!GetAtt', constructor=lambda x, y: str(y))
     # This whole thing is only supposed to be used to make Dynamo mocking
     # easier anyway, using it for anything else is stupid.

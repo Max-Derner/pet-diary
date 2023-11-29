@@ -38,19 +38,19 @@ class TestsDynamoDBCalls:
         self.all_test_records = scan_result['Items']
         self.details_test_records = [record for record
                                      in self.all_test_records
-                                     if str(record['sort_key']).split('#')[0] == RecordType.DETAILS.value]  # noqa: E501
+                                     if str(record['sort_key']).split('#')[0] == RecordType.DETAILS.value]
         self.appointment_test_records = [record for record
                                          in self.all_test_records
-                                         if str(record['sort_key']).split('#')[0] == RecordType.APPOINTMENT.value]  # noqa: E501
+                                         if str(record['sort_key']).split('#')[0] == RecordType.APPOINTMENT.value]
         self.observation_test_records = [record for record
                                          in self.all_test_records
-                                         if str(record['sort_key']).split('#')[0] == RecordType.OBSERVATION.value]  # noqa: E501
+                                         if str(record['sort_key']).split('#')[0] == RecordType.OBSERVATION.value]
         self.illness_test_records = [record for record
                                      in self.all_test_records
-                                     if str(record['sort_key']).split('#')[0] == RecordType.ILLNESS.value]  # noqa: E501
+                                     if str(record['sort_key']).split('#')[0] == RecordType.ILLNESS.value]
         self.medication_test_records = [record for record
                                         in self.all_test_records
-                                        if str(record['sort_key']).split('#')[0] == RecordType.MEDICATION.value]  # noqa: E501
+                                        if str(record['sort_key']).split('#')[0] == RecordType.MEDICATION.value]
 
     def tests_get_all_records_for_pet(self):
         self.build_mock_table_and_refresh_known_test_records()
@@ -141,7 +141,7 @@ class TestsDynamoDBCalls:
             in self.all_test_records
             if record['name'] == expected_pet
             and str(record['sort_key']).split('#')[0] == record_type.value
-            and record['date_time'] > point_in_time.astimezone(tz=timezone.utc).timestamp()  # noqa: E501
+            and record['date_time'] > point_in_time.astimezone(tz=timezone.utc).timestamp()
             ]
 
         results = get_all_of_pets_record_type_after_point_in_time(
@@ -199,19 +199,19 @@ class TestsDynamoDBCalls:
     @mark.parametrize(
         argnames='medicine_type, lower_limit, upper_limit',
         argvalues=[
-            ('deworm', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),  # noqa: E501
+            ('deworm', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),
             ('deworm', None, datetime(year=1808, month=7, day=13)),
             ('deworm', datetime(year=1808, month=4, day=5), None),
             ('deworm', None, None),
-            ('deflea', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),  # noqa: E501
+            ('deflea', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),
             ('deflea', None, datetime(year=1808, month=7, day=13)),
             ('deflea', datetime(year=1808, month=4, day=5), None),
             ('deflea', None, None),
-            ('antiemetic', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),  # noqa: E501
+            ('antiemetic', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),
             ('antiemetic', None, datetime(year=1808, month=7, day=13)),
             ('antiemetic', datetime(year=1808, month=4, day=5), None),
             ('antiemetic', None, None),
-            ('vaccine', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),  # noqa: E501
+            ('vaccine', datetime(year=1808, month=4, day=5), datetime(year=1808, month=7, day=13)),
             ('vaccine', None, datetime(year=1808, month=7, day=13)),
             ('vaccine', datetime(year=1808, month=4, day=5), None),
             ('vaccine', None, None),
@@ -224,8 +224,8 @@ class TestsDynamoDBCalls:
             upper_limit: Optional[datetime]
             ):
         self.build_mock_table_and_refresh_known_test_records()
-        lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_limit.astimezone(tz=timezone.utc).timestamp())if lower_limit is not None else None  # noqa: E501
-        upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_limit.astimezone(tz=timezone.utc).timestamp())if upper_limit is not None else None  # noqa: E501
+        lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_limit.astimezone(tz=timezone.utc).timestamp())if lower_limit is not None else None
+        upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_limit.astimezone(tz=timezone.utc).timestamp())if upper_limit is not None else None
         expected_results = [
             record for record
             in self.medication_test_records
@@ -235,13 +235,13 @@ class TestsDynamoDBCalls:
 
             expected_results = [record for record
                                 in expected_results
-                                if record['next_due'] >= lower_limit_decimal_timestamp  # noqa: E501
+                                if record['next_due'] >= lower_limit_decimal_timestamp
                                 ]
         if upper_limit_decimal_timestamp is not None:
 
             expected_results = [record for record
                                 in expected_results
-                                if record['next_due'] <= upper_limit_decimal_timestamp  # noqa: E501
+                                if record['next_due'] <= upper_limit_decimal_timestamp
                                 ]
         results = get_all_records_of_medicine_type_in_next_due_timeframe(
             medicine_type=medicine_type,
@@ -267,10 +267,10 @@ class TestsDynamoDBCalls:
     @mark.parametrize(
         argnames='lower_limit, upper_limit',
         argvalues=[
-            (datetime(year=1808, month=3, day=23), datetime(year=1809, month=3, day=23)),  # noqa: E501
+            (datetime(year=1808, month=3, day=23), datetime(year=1809, month=3, day=23)),
             (None, datetime(year=1809, month=3, day=23)),
             (datetime(year=1808, month=3, day=23), None),
-            (datetime(year=1812, month=1, day=29), datetime(year=1812, month=2, day=2)),  # noqa: E501
+            (datetime(year=1812, month=1, day=29), datetime(year=1812, month=2, day=2)),
             (None, datetime(year=1812, month=2, day=2)),
             (datetime(year=1812, month=1, day=29), None),
             (None, None),
@@ -282,20 +282,20 @@ class TestsDynamoDBCalls:
             upper_limit: Optional[datetime]
             ):
         self.build_mock_table_and_refresh_known_test_records()
-        lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_limit.astimezone(tz=timezone.utc).timestamp())if lower_limit is not None else None  # noqa: E501
-        upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_limit.astimezone(tz=timezone.utc).timestamp())if upper_limit is not None else None  # noqa: E501
+        lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_limit.astimezone(tz=timezone.utc).timestamp())if lower_limit is not None else None
+        upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_limit.astimezone(tz=timezone.utc).timestamp())if upper_limit is not None else None
         expected_results = self.appointment_test_records
         if lower_limit_decimal_timestamp is not None:
 
             expected_results = [record for record
                                 in expected_results
-                                if record['date_time'] >= lower_limit_decimal_timestamp  # noqa: E501
+                                if record['date_time'] >= lower_limit_decimal_timestamp
                                 ]
         if upper_limit_decimal_timestamp is not None:
 
             expected_results = [record for record
                                 in expected_results
-                                if record['date_time'] <= upper_limit_decimal_timestamp  # noqa: E501
+                                if record['date_time'] <= upper_limit_decimal_timestamp
                                 ]
 
         results = get_all_records_of_appointment_in_timeframe(
@@ -321,10 +321,10 @@ class TestsDynamoDBCalls:
     @mark.parametrize(
         argnames='lower_limit, upper_limit',
         argvalues=[
-            (datetime(year=1808, month=3, day=23), datetime(year=1809, month=3, day=23)),  # noqa: E501
+            (datetime(year=1808, month=3, day=23), datetime(year=1809, month=3, day=23)),
             (None, datetime(year=1809, month=3, day=23)),
             (datetime(year=1808, month=3, day=23), None),
-            (datetime(year=1812, month=1, day=29), datetime(year=1812, month=2, day=2)),  # noqa: E501
+            (datetime(year=1812, month=1, day=29), datetime(year=1812, month=2, day=2)),
             (None, datetime(year=1812, month=2, day=2)),
             (datetime(year=1812, month=1, day=29), None),
             (None, None),
@@ -336,20 +336,20 @@ class TestsDynamoDBCalls:
             upper_limit: Optional[datetime]
             ):
         self.build_mock_table_and_refresh_known_test_records()
-        lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_limit.astimezone(tz=timezone.utc).timestamp())if lower_limit is not None else None  # noqa: E501
-        upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_limit.astimezone(tz=timezone.utc).timestamp())if upper_limit is not None else None  # noqa: E501
+        lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_limit.astimezone(tz=timezone.utc).timestamp())if lower_limit is not None else None
+        upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_limit.astimezone(tz=timezone.utc).timestamp())if upper_limit is not None else None
         expected_results = self.medication_test_records
         if lower_limit_decimal_timestamp is not None:
 
             expected_results = [record for record
                                 in expected_results
-                                if record['next_due'] >= lower_limit_decimal_timestamp  # noqa: E501
+                                if record['next_due'] >= lower_limit_decimal_timestamp
                                 ]
         if upper_limit_decimal_timestamp is not None:
 
             expected_results = [record for record
                                 in expected_results
-                                if record['next_due'] <= upper_limit_decimal_timestamp  # noqa: E501
+                                if record['next_due'] <= upper_limit_decimal_timestamp
                                 ]
 
         results = get_all_records_of_medicine_in_next_due_timeframe(

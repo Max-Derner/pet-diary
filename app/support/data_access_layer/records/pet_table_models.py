@@ -1,23 +1,23 @@
-#  +--------------------------------------------------------------------------------------------+  # noqa: E501
-#  | pet-table DynamoDB table map/schema/call it what you want                                  |  # noqa: E501
-#  +========================+=============================+=====================================+  # noqa: E501
-#  | Key                    | Data type                   | Record types used in                |  # noqa: E501
-#  +------------------------+-----------------------------+-------------------------------------+  # noqa: E501
-#  | name (partition key)   | str                         | All                                 |  # noqa: E501
-#  | sort_key (sort key)    | str                         | All                                 |  # noqa: E501
-#  | breed                  | str                         | Details                             |  # noqa: E501
-#  | dob                    | Decimal as posix timestamp  | Details                             |  # noqa: E501
-#  | gender                 | str                         | Details                             |  # noqa: E501
-#  | colour                 | str                         | Details                             |  # noqa: E501
-#  | microchip_number       | Decimal as int              | Details                             |  # noqa: E501
-#  | date_time              | Decimal as posix timestamp  | All                                 |  # noqa: E501
-#  | medicine_name          | str                         | Medication                          |  # noqa: E501
-#  | medicine_type          | str                         | Medication                          |  # noqa: E501
-#  | ailment                | str                         | Illness                             |  # noqa: E501
-#  | description            | str                         | Illness, Observation, Appointment   |  # noqa: E501
-#  | next_due               | Decimal as posix timestamp  | Medication                          |  # noqa: E501
-#  | record_type            | str                         | All                                 |  # noqa: E501
-#  +------------------------+-----------------------------+-------------------------------------+  # noqa: E501
+#  +--------------------------------------------------------------------------------------------+
+#  | pet-table DynamoDB table map/schema/call it what you want                                  |
+#  +========================+=============================+=====================================+
+#  | Key                    | Data type                   | Record types used in                |
+#  +------------------------+-----------------------------+-------------------------------------+
+#  | name (partition key)   | str                         | All                                 |
+#  | sort_key (sort key)    | str                         | All                                 |
+#  | breed                  | str                         | Details                             |
+#  | dob                    | Decimal as posix timestamp  | Details                             |
+#  | gender                 | str                         | Details                             |
+#  | colour                 | str                         | Details                             |
+#  | microchip_number       | Decimal as int              | Details                             |
+#  | date_time              | Decimal as posix timestamp  | All                                 |
+#  | medicine_name          | str                         | Medication                          |
+#  | medicine_type          | str                         | Medication                          |
+#  | ailment                | str                         | Illness                             |
+#  | description            | str                         | Illness, Observation, Appointment   |
+#  | next_due               | Decimal as posix timestamp  | Medication                          |
+#  | record_type            | str                         | All                                 |
+#  +------------------------+-----------------------------+-------------------------------------+
 #
 #  Record Types = Details, Medication, Illness, Observation, Appointment
 #

@@ -12,7 +12,7 @@ def _arbitrary_pet_table_query(**kwargs) -> List[Dict]:
     """
     This function handles everything around DynamoDB queries,
     all you have to do is supply the args and kwargs for a query.
-    Read more: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb/table/query.html"""  # noqa: E501
+    Read more: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb/table/query.html"""
     pet_table = get_pet_table_resource()
     fetching = True
     excl_key_kwarg = {}
@@ -39,7 +39,7 @@ def get_all_of_pets_record_type(
         record_type: RecordType
         ) -> List[Dict]:
     query_params = {
-        'KeyConditionExpression': Key('name').eq(pet_name) & Key('sort_key').begins_with(record_type.value)  # noqa: E501
+        'KeyConditionExpression': Key('name').eq(pet_name) & Key('sort_key').begins_with(record_type.value)
     }
     return _arbitrary_pet_table_query(**query_params)
 
@@ -50,8 +50,8 @@ def get_all_of_pets_record_type_after_point_in_time(
         record_type: RecordType
         ) -> List[Dict]:
     query_params = {
-        'KeyConditionExpression': Key('name').eq(pet_name) & Key('sort_key').begins_with(record_type.value),  # noqa: E501
-        'FilterExpression': Attr('date_time').gt(Decimal(point_in_time.astimezone(tz=timezone.utc).timestamp()))  # noqa: E501
+        'KeyConditionExpression': Key('name').eq(pet_name) & Key('sort_key').begins_with(record_type.value),
+        'FilterExpression': Attr('date_time').gt(Decimal(point_in_time.astimezone(tz=timezone.utc).timestamp()))
     }
     return _arbitrary_pet_table_query(**query_params)
 
@@ -69,24 +69,24 @@ def get_all_records_of_medicine_type_in_next_due_timeframe(
         lower_date_limit: Optional[datetime],
         upper_date_limit: Optional[datetime]
         ):
-    lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_date_limit.astimezone(tz=timezone.utc).timestamp())if lower_date_limit is not None else None  # noqa: E501
-    upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_date_limit.astimezone(tz=timezone.utc).timestamp())if upper_date_limit is not None else None  # noqa: E501
-    if lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is not None:  # noqa: E501
+    lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_date_limit.astimezone(tz=timezone.utc).timestamp())if lower_date_limit is not None else None
+    upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_date_limit.astimezone(tz=timezone.utc).timestamp())if upper_date_limit is not None else None
+    if lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is not None:
         sort_key_condition = Key('next_due').between(
                 lower_limit_decimal_timestamp, upper_limit_decimal_timestamp
             )
-    elif lower_limit_decimal_timestamp is None and upper_limit_decimal_timestamp is not None:  # noqa: E501
+    elif lower_limit_decimal_timestamp is None and upper_limit_decimal_timestamp is not None:
         sort_key_condition = Key('next_due').lte(
                 upper_limit_decimal_timestamp
             )
-    elif lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is None:  # noqa: E501
+    elif lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is None:
         sort_key_condition = Key('next_due').gte(
                 lower_limit_decimal_timestamp
             )
     else:
         return get_all_records_of_medicine_type(medicine_type=medicine_type)
 
-    key_condition_expression = Key('medicine_type').eq(medicine_type) & sort_key_condition  # noqa: E501
+    key_condition_expression = Key('medicine_type').eq(medicine_type) & sort_key_condition
 
     query_params = {
         'IndexName': 'medicine_type',
@@ -99,25 +99,25 @@ def get_all_records_of_appointment_in_timeframe(
         lower_date_limit: Optional[datetime],
         upper_date_limit: Optional[datetime]
         ):
-    lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_date_limit.astimezone(tz=timezone.utc).timestamp())if lower_date_limit is not None else None  # noqa: E501
-    upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_date_limit.astimezone(tz=timezone.utc).timestamp())if upper_date_limit is not None else None  # noqa: E501
+    lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_date_limit.astimezone(tz=timezone.utc).timestamp())if lower_date_limit is not None else None
+    upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_date_limit.astimezone(tz=timezone.utc).timestamp())if upper_date_limit is not None else None
     sort_key_condition = None
-    if lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is not None:  # noqa: E501
+    if lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is not None:
         sort_key_condition = Key('date_time').between(
                 lower_limit_decimal_timestamp, upper_limit_decimal_timestamp
             )
-    elif lower_limit_decimal_timestamp is None and upper_limit_decimal_timestamp is not None:  # noqa: E501
+    elif lower_limit_decimal_timestamp is None and upper_limit_decimal_timestamp is not None:
         sort_key_condition = Key('date_time').lte(
                 upper_limit_decimal_timestamp
             )
-    elif lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is None:  # noqa: E501
+    elif lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is None:
         sort_key_condition = Key('date_time').gte(
                 lower_limit_decimal_timestamp
             )
     else:
         return get_all_of_record_type(record_type=RecordType.APPOINTMENT)
 
-    key_condition_expression = Key('record_type').eq(RecordType.APPOINTMENT.value) & sort_key_condition  # noqa: E501
+    key_condition_expression = Key('record_type').eq(RecordType.APPOINTMENT.value) & sort_key_condition
 
     query_params = {
         'IndexName': 'record_type',
@@ -130,25 +130,25 @@ def get_all_records_of_medicine_in_next_due_timeframe(
         lower_date_limit: Optional[datetime],
         upper_date_limit: Optional[datetime]
         ):
-    lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_date_limit.astimezone(tz=timezone.utc).timestamp())if lower_date_limit is not None else None  # noqa: E501
-    upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_date_limit.astimezone(tz=timezone.utc).timestamp())if upper_date_limit is not None else None  # noqa: E501
+    lower_limit_decimal_timestamp: Optional[Decimal] = Decimal(lower_date_limit.astimezone(tz=timezone.utc).timestamp())if lower_date_limit is not None else None
+    upper_limit_decimal_timestamp: Optional[Decimal] = Decimal(upper_date_limit.astimezone(tz=timezone.utc).timestamp())if upper_date_limit is not None else None
     filter_expression = None
-    if lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is not None:  # noqa: E501
+    if lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is not None:
         filter_expression = Attr('next_due').between(
                 lower_limit_decimal_timestamp, upper_limit_decimal_timestamp
             )
-    elif lower_limit_decimal_timestamp is None and upper_limit_decimal_timestamp is not None:  # noqa: E501
+    elif lower_limit_decimal_timestamp is None and upper_limit_decimal_timestamp is not None:
         filter_expression = Attr('next_due').lte(
                 upper_limit_decimal_timestamp
             )
-    elif lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is None:  # noqa: E501
+    elif lower_limit_decimal_timestamp is not None and upper_limit_decimal_timestamp is None:
         filter_expression = Attr('next_due').gte(
                 lower_limit_decimal_timestamp
             )
     else:
         return get_all_of_record_type(record_type=RecordType.MEDICATION)
 
-    key_condition_expression = Key('record_type').eq(RecordType.MEDICATION.value)  # noqa: E501
+    key_condition_expression = Key('record_type').eq(RecordType.MEDICATION.value)
 
     query_params = {
         'IndexName': 'record_type',

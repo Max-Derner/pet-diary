@@ -63,7 +63,7 @@ test_data = {
             'pet_name': 'Avocato',
             'ailment': 'vomiting',
             'observed_time': datetime(year=1808, month=4, day=3),
-            'description': 'seems to not be reacting well to the vaccine, has vomited twice today'  # noqa: E501
+            'description': 'seems to not be reacting well to the vaccine, has vomited twice today'
         },
         {
             'pet_name': 'Avocato',
@@ -75,7 +75,7 @@ test_data = {
             'pet_name': 'Little Cato',
             'ailment': 'vomiting',
             'observed_time': datetime(year=1809, month=4, day=3),
-            'description': 'developing sores due to water immunity and not being able to wash'  # noqa: E501
+            'description': 'developing sores due to water immunity and not being able to wash'
         },
     ],
     'medication':

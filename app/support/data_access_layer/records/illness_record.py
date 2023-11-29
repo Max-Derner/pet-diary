@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from typing import Dict, Union
 from decimal import Decimal
 
-from app.support.data_access_layer.records.abstract_record import AbstractRecordFactory  # noqa: E501
+from app.support.data_access_layer.records.abstract_record import AbstractRecordFactory
 from app.support.data_access_layer.records.pet_table_models import (
     IllnessRecordModel,
     RecordType
@@ -23,12 +23,12 @@ class IllnessRecordFactory(AbstractRecordFactory):
             observed_time: datetime,
             description: str
             ) -> Dict[str, Union[str, Decimal]]:
-        sort_key = f"{RecordType.ILLNESS.value}#{ailment}#{utc_timestamp_now()}"  # noqa: E501
+        sort_key = f"{RecordType.ILLNESS.value}#{ailment}#{utc_timestamp_now()}"
         illness_record = {
             "name": pet_name,
             "sort_key": sort_key,
             "ailment": ailment,
-            "date_time": Decimal(observed_time.astimezone(tz=timezone.utc).timestamp()),  # noqa: E501
+            "date_time": Decimal(observed_time.astimezone(tz=timezone.utc).timestamp()),
             "description": description,
             'record_type': RecordType.ILLNESS.value
         }

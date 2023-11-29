@@ -38,12 +38,12 @@ _ROOT_DIR_PATH = os.path.dirname(os.path.abspath(_ROOT_FILE_NAME))
 _ARTEFACTS_DIR = "logging_output"
 
 _FILE_NAME_FOR_CONSOLE_OUTPUT = 'console_output.log'
-_RELATIVE_CONSOLE_OUTPUT_FILE_PATH = f'{_ARTEFACTS_DIR}/{_FILE_NAME_FOR_CONSOLE_OUTPUT}'  # noqa: E501
-_FULL_CONSOLE_OUTPUT_FILE_PATH = f'{_ROOT_DIR_PATH}/{_RELATIVE_CONSOLE_OUTPUT_FILE_PATH}'  # noqa: E501
+_RELATIVE_CONSOLE_OUTPUT_FILE_PATH = f'{_ARTEFACTS_DIR}/{_FILE_NAME_FOR_CONSOLE_OUTPUT}'
+_FULL_CONSOLE_OUTPUT_FILE_PATH = f'{_ROOT_DIR_PATH}/{_RELATIVE_CONSOLE_OUTPUT_FILE_PATH}'
 
 _FILE_NAME_FOR_DEBUG_OUTPUT = 'debug_output.log'
-_RELATIVE_DEBUG_OUTPUT_FILE_PATH = f'{_ARTEFACTS_DIR}/{_FILE_NAME_FOR_DEBUG_OUTPUT}'  # noqa: E501
-_FULL_DEBUG_OUTPUT_FILE_PATH = f'{_ROOT_DIR_PATH}/{_RELATIVE_DEBUG_OUTPUT_FILE_PATH}'  # noqa: E501
+_RELATIVE_DEBUG_OUTPUT_FILE_PATH = f'{_ARTEFACTS_DIR}/{_FILE_NAME_FOR_DEBUG_OUTPUT}'
+_FULL_DEBUG_OUTPUT_FILE_PATH = f'{_ROOT_DIR_PATH}/{_RELATIVE_DEBUG_OUTPUT_FILE_PATH}'
 
 _CONSOLE_LOG_LEVEL = logging.INFO
 _DEBUG_FILE_LOG_LEVEL = logging.DEBUG
@@ -52,8 +52,8 @@ handlers: List[logging.Handler]
 
 config_message = 'logger configured:\n'
 config_message += 'logging will go to 2 output files\n'
-config_message += 'console output - '.ljust(18) + f'{_FULL_CONSOLE_OUTPUT_FILE_PATH}\n'  # noqa: E501
-config_message += 'debug output - '.ljust(18) + f'{_FULL_DEBUG_OUTPUT_FILE_PATH}\n'  # noqa: E501
+config_message += 'console output - '.ljust(18) + f'{_FULL_CONSOLE_OUTPUT_FILE_PATH}\n'
+config_message += 'debug output - '.ljust(18) + f'{_FULL_DEBUG_OUTPUT_FILE_PATH}\n'
 
 
 def _get_debug_output_formatter() -> logging.Formatter:
@@ -98,7 +98,7 @@ def _get_handlers(create_console_stream_handler: bool = True,
                   create_console_file_handler: bool = True,
                   create_debug_file_handler: bool = True
                   ) -> List[Union[None, logging.Handler]]:
-    console_stream_handler, console_file_handler, debug_file_handler = None, None, None  # noqa: E501
+    console_stream_handler, console_file_handler, debug_file_handler = None, None, None
     if create_console_stream_handler or create_console_file_handler:
         console_output_formatter = _get_console_output_formatter()
         if create_console_stream_handler:

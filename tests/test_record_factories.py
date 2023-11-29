@@ -1,10 +1,10 @@
 from unittest.mock import patch
 from unittest import TestCase
-from app.support.data_access_layer.records.illness_record import IllnessRecordFactory  # noqa: E501
-from app.support.data_access_layer.records.details_record import DetailsRecordFactory  # noqa: E501
-from app.support.data_access_layer.records.medication_record import MedicationRecordFactory  # noqa: E501
-from app.support.data_access_layer.records.observation_record import ObservationRecordFactory  # noqa: E501
-from app.support.data_access_layer.records.appointment_record import AppointmentRecordFactory  # noqa: E501
+from app.support.data_access_layer.records.illness_record import IllnessRecordFactory
+from app.support.data_access_layer.records.details_record import DetailsRecordFactory
+from app.support.data_access_layer.records.medication_record import MedicationRecordFactory
+from app.support.data_access_layer.records.observation_record import ObservationRecordFactory
+from app.support.data_access_layer.records.appointment_record import AppointmentRecordFactory
 from datetime import datetime, timedelta
 from decimal import Decimal
 from app.support.data_access_layer.records.pet_table_models import RecordType
@@ -328,15 +328,15 @@ class TestsObservationRecordFactory(TestCase):
         'name': 'me',
         'sort_key': f'observation#{mock_utc_timestamp_now()}',
         'date_time': Decimal(observed_date_time.timestamp()),
-        'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
+        'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',
         'record_type': RecordType.OBSERVATION.value
         }
 
     nearly_correct_observation_record = {
         'name': 'me',
         'sort_key': f'observation#{mock_utc_timestamp_now()}',
-        'date_time': f'{Decimal(observed_date_time.timestamp())}',  # it's a string!  # noqa: E501
-        'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
+        'date_time': f'{Decimal(observed_date_time.timestamp())}',  # it's a string!
+        'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',
         'record_type': RecordType.OBSERVATION.value
         }
 
@@ -344,7 +344,7 @@ class TestsObservationRecordFactory(TestCase):
         'name': 'me',
         'sort_key': f'observation#{mock_utc_timestamp_now()}',
         'date_time': 'Tuesday mate',
-        'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',  # noqa: E501
+        'description': 'I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine',
         'record_type': RecordType.OBSERVATION.value
         }
 
@@ -358,7 +358,7 @@ class TestsObservationRecordFactory(TestCase):
         actual_record = observation_factory.produce_record(
             pet_name='me',
             observed_time=self.observed_date_time,
-            description="I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine"  # noqa: E501
+            description="I have observed that you are not the nicest person, and I have concerns for your future health regarding me bloody well lamping you one sunshine"
         )
 
         assert actual_record == self.correct_observation_record
@@ -386,7 +386,7 @@ class TestsObservationRecordFactory(TestCase):
         record = observation_factory.produce_record(
             pet_name='me',
             observed_time=self.observed_date_time,
-            description="Observed burping in the vicinity of his wife. Wife disappointed"  # noqa: E501
+            description="Observed burping in the vicinity of his wife. Wife disappointed"
         )
 
         validation_result = observation_factory.validate_record(record=record)
@@ -402,7 +402,7 @@ class TestsAppointmentRecordFactory(TestCase):
         'name': 'me',
         'sort_key': f'appointment#{mock_utc_timestamp_now()}',
         'date_time': Decimal(date_time.timestamp()),
-        'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
+        'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',
         'record_type': RecordType.APPOINTMENT.value
         }
 
@@ -410,7 +410,7 @@ class TestsAppointmentRecordFactory(TestCase):
         'name': 'me',
         'sort_key': f'appointment#{mock_utc_timestamp_now()}',
         'date_time': f'{Decimal(date_time.timestamp())}',  # it's a string!
-        'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
+        'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',
         'record_type': RecordType.APPOINTMENT.value
         }
 
@@ -418,7 +418,7 @@ class TestsAppointmentRecordFactory(TestCase):
         'name': 'me',
         'sort_key': f'appointment#{mock_utc_timestamp_now}',
         'date_time': 'Tuesday mate',
-        'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',  # noqa: E501
+        'description': 'Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole',
         'record_type': RecordType.APPOINTMENT.value
         }
 
@@ -431,7 +431,7 @@ class TestsAppointmentRecordFactory(TestCase):
         actual_record = appointment.produce_record(
             pet_name='me',
             appointment_time=self.date_time,
-            description="Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole"  # noqa: E501
+            description="Appointment with Dr Nick to perform a butthole-dectomy so you can be less of a butthole"
         )
         assert actual_record == self.correct_appointment_record
 

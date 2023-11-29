@@ -49,8 +49,8 @@ def tests_get_stream_handler(level):
 def tests_get_file_handler(level, mode):
     formatter = logging.Formatter()
     _FILE_NAME_FOR_TESTING = 'some_test_file.smth'
-    _RELATIVE_CONSOLE_OUTPUT_FILE_PATH = f'{_ARTEFACTS_DIR}/{_FILE_NAME_FOR_TESTING}'  # noqa: E501
-    _FULL_CONSOLE_OUTPUT_FILE_PATH = f'{_ROOT_DIR_PATH}/{_RELATIVE_CONSOLE_OUTPUT_FILE_PATH}'  # noqa: E501
+    _RELATIVE_CONSOLE_OUTPUT_FILE_PATH = f'{_ARTEFACTS_DIR}/{_FILE_NAME_FOR_TESTING}'
+    _FULL_CONSOLE_OUTPUT_FILE_PATH = f'{_ROOT_DIR_PATH}/{_RELATIVE_CONSOLE_OUTPUT_FILE_PATH}'
     output_directories = get_output_directories()
     ensure_directories_present(directories=output_directories)
     file_handler = _get_file_handler(level=level,

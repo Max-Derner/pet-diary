@@ -19,7 +19,7 @@ def format_record(record: Dict):
     if (breed := record.get('breed')) is not None:
         fr += 'Breed:'.ljust(justification) + f'{breed.title()}\n'
     if (dob := record.get('dob')) is not None:
-        fr += 'Date of Birth:'.ljust(justification) + f'{british_format_time(float(dob))}\n'  # noqa: E501
+        fr += 'Date of Birth:'.ljust(justification) + f'{british_format_time(float(dob))}\n'
     if (gender := record.get('gender')) is not None:
         fr += 'Gender:'.ljust(justification) + f'{gender.title()}\n'
     if (colour := record.get('colour')) is not None:
@@ -27,14 +27,14 @@ def format_record(record: Dict):
     if (chip_num := record.get('microchip_number')) is not None:
         fr += 'Microchip number:'.ljust(justification) + f'{chip_num}\n'
     if (medicine_name := record.get('medicine_name')) is not None:
-        fr += 'Name of medicine:'.ljust(justification) + f'{medicine_name.title()}\n'  # noqa: E501
+        fr += 'Name of medicine:'.ljust(justification) + f'{medicine_name.title()}\n'
     if (medicine_type := record.get('medicine_type')) is not None:
-        fr += 'Type of medicine:'.ljust(justification) + f'{medicine_type.title()}\n'  # noqa: E501
-    if record_type is not RecordType.DETAILS.value:  # no one needs to know when you added a details record  # noqa: E501
+        fr += 'Type of medicine:'.ljust(justification) + f'{medicine_type.title()}\n'
+    if record_type is not RecordType.DETAILS.value:  # no one needs to know when you added a details record
         # but date_time is in every record
-        fr += 'Date and time:'.ljust(justification) + f'{british_format_time(float(record["date_time"]))}\n'  # noqa: E501
+        fr += 'Date and time:'.ljust(justification) + f'{british_format_time(float(record["date_time"]))}\n'
     if (next_due := record.get('next_due')) is not None:
-        fr += 'Next due:'.ljust(justification) + f'{british_format_time(float(next_due))}\n'  # noqa: E501
+        fr += 'Next due:'.ljust(justification) + f'{british_format_time(float(next_due))}\n'
     if (ailment := record.get('ailment')) is not None:
         fr += 'Ailment:'.ljust(justification) + f'{ailment.title()}\n'
     if (description := record.get('description')) is not None:
@@ -51,7 +51,7 @@ def format_record(record: Dict):
         ]
         # Add section title in
         section_title = 'Description:'
-        description_column[0] = section_title + description_column[0][len(section_title):]  # noqa: E501
+        description_column[0] = section_title + description_column[0][len(section_title):]
         description_section = '\n'.join(description_column) + '\n'
         fr += description_section
     return fr
@@ -62,7 +62,7 @@ def str_to_column(string: str, column_width: int) -> str:
     string_lines = []
     while len(string) > 0:
         next_line: str = string[:column_width]
-        if (len(string) >= column_width and string[column_width] == ' ') or len(next_line) < column_width:  # noqa: E501
+        if (len(string) >= column_width and string[column_width] == ' ') or len(next_line) < column_width:
             string = string[len(next_line):].lstrip(' ')
         elif (last_space_idx := next_line.rfind(' ')) != -1:
             next_line = next_line[:last_space_idx]

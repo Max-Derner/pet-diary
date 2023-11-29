@@ -2,7 +2,7 @@ from typing import Dict, Union
 from datetime import datetime
 from decimal import Decimal
 
-from app.support.data_access_layer.records.abstract_record import AbstractRecordFactory  # noqa: E501
+from app.support.data_access_layer.records.abstract_record import AbstractRecordFactory
 from app.support.data_access_layer.records.pet_table_models import (
     DetailsRecordModel,
     RecordType

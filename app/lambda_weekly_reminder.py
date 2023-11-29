@@ -19,21 +19,21 @@ def lambda_weekly_reminder(*args, **kwargs):
         hour=0, minute=0, second=0, microsecond=0
     )
     reminder_limit = today + timedelta(weeks=2)
-    logger.info(f"Finding appointments and medicine due in the next two weeks: {today} to {reminder_limit}")  # noqa: E501
+    logger.info(f"Finding appointments and medicine due in the next two weeks: {today} to {reminder_limit}")
 
     appointments_to_remind = get_all_records_of_appointment_in_timeframe(
         lower_date_limit=today,
         upper_date_limit=reminder_limit
     )
     appointment_string = record_formatter(appointments_to_remind)  # noqa: F841
-    logger.info(f"Found {len(appointments_to_remind)} appointments")  # noqa: E501
+    logger.info(f"Found {len(appointments_to_remind)} appointments")
 
     medicines_to_remind = get_all_records_of_medicine_in_next_due_timeframe(
         lower_date_limit=today,
         upper_date_limit=reminder_limit
     )
     medicines_string = record_formatter(medicines_to_remind)  # noqa: F841
-    logger.info(f"Found {len(medicines_to_remind)} medicines")  # noqa: E501
+    logger.info(f"Found {len(medicines_to_remind)} medicines")
 
     return {
         'statusCode': 200,

@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
 import os
 from typing import List
+from json import JSONEncoder
+from decimal import Decimal
 
 
 def ensure_directories_present(directories: List[str]):
@@ -24,3 +26,11 @@ def utc_datetime_now() -> datetime:
 def british_format_time(timestamp: float):
     # Gives format is the style: Friday, 24 November 2023 - 05:35PM
     return datetime.fromtimestamp(timestamp).strftime('%A, %-d %B %Y - %I:%M %p')  # noqa: E501
+
+
+class DynamoItemJSONEncoder(JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return JSONEncoder.default(self, obj)

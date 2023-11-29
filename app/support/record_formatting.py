@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import List, Dict
 from .common.misc import british_format_time
 from .data_access_layer.records.pet_table_models import RecordType
@@ -85,17 +84,3 @@ def record_formatter(records: List[Dict]) -> str:
         record_cards.append(format_record(record=record))
     divider = '='.ljust(RECORD_CARD_WIDTH, '=')
     return f'\n{divider}\n'.join(record_cards)
-
-
-def tidy_data_types_for_record(record: Dict) -> Dict:
-    for key, value in record.items():
-        if isinstance(value, Decimal):
-            record[key] = float(value)
-    return record
-
-
-def tidy_data_types_for_records(records: List[Dict]) -> List[Dict]:
-    tidy_records = []
-    for record in records:
-        tidy_records.append(tidy_data_types_for_record(record=record))
-    return tidy_records

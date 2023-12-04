@@ -14,8 +14,8 @@ pdt-help() {
     echo
     echo "Pet Diary Tooling"
     echo
-    echo "Hi, you've found the help thingy-ma-bob!"
-    echo "Enter the command 'pdt' if you wish to see this message again."
+    echo "Hi, you've found the help page!"
+    echo "Enter the command 'pdt help' if you wish to see this message again."
     echo "You will also see this message anytime you fail to spell a pdt command correctly too."
     echo
     echo "Usage: pdt [COMMAND]"
@@ -26,15 +26,12 @@ pdt-help() {
     echo "        This is just a shortcut for activating your Python Virtual Environment"
     echo
     echo "    aws-login"
-    echo "        This logs you in via SSO using the variables set up in configure-vars"
+    echo "        This logs you in via SSO after selecting a profile from you AWS config"
     echo
     echo "    aws-add-test-profile"
     echo "        This simply adds an exra profile to ~/.aws/config. The profile should be broken enough that it won't"
     echo "        work, but not so broken that botocore will refuse to make the API call. This test profile is used in"
     echo "        certain test scenarios."
-    echo
-    echo "    sam-check"
-    echo "        This will run checks against your sam-template"
     echo
     echo "    sam-deploy"
     echo "        This will deploy you application"
@@ -42,33 +39,40 @@ pdt-help() {
     echo "    sam-destroy"
     echo "        This will tear down the application leaving nothing in AWS"
     echo
-    echo "    python-lint"
+    echo "    lint-python"
     echo "        This will lint your Python code using flake8,"
     echo "        it will start in the current directory and exclude the venv"
     echo
-    echo "    python-security-check"
-    echo "        This will run Bandit on the app/ directory. Bandit scans your Python code for secuirty issues, it does"
-    echo "        not check any imported or installed libraries for secuirty flaws though, that has to be done with"
-    echo "        'pdt third-party-security-check'."
-    echo
-    echo "    python-test"
+    echo "    test-python"
     echo "        This will run pytest against the tests/ directory in very verbose mode"
     echo
-    echo "    configure-vars"
-    echo "        This will parse your AWS config file and let you choose which profile and region you wish to use when"
-    echo "        running functions which require AWS usage (e.g. sam-deploy)"
+    echo "    coverage-python [OPTION]"
+    echo "        This will generate a test coverage report for you"
+    echo "        OPTIONS:"
+    echo "            html"
+    echo "                - Generates an interactive coverage report and opens it in your browser"
+    echo "            term"
+    echo "                - Generates a tabular output directly to the terminal (handy if you don't have a browser)"
     echo
     echo "    configure-venv"
     echo "        This will set up your virtual environment for you, it is the reccomended way to do so"
     echo
-    echo "    install-anchore-security-tools"
+    echo "    install-grype"
     echo "        This will install the security tooling needed for 3rd party dependency checking"
     echo
-    echo "    third-party-security-check"
+    echo "    security-cloud"
+    echo "        This will run the chekov security scanner against your sam-template"
+    echo
+    echo "    security-libraries"
     echo "        This will run Grype against the project directory, which will find 3rd party security issues. These"
     echo "        3rd party issues will be in imported and installed libraries and such"
     echo
-    echo "    full-security-check"
+    echo "    security-python"
+    echo "        This will run Bandit on the app/ directory. Bandit scans your Python code for secuirty issues, it does"
+    echo "        not check any imported or installed libraries for secuirty flaws though, that has to be done with"
+    echo "        'pdt third-party-security-check'."
+    echo
+    echo "    security-all"
     echo "        This will run each of the security checks consecutively and can be redirected into a text file to form"
     echo "        a security audit report."
     echo "        The included security checks are:"
@@ -77,7 +81,7 @@ pdt-help() {
     echo "            - Grype (for 3rd party vulnerabilities)"
     echo
     echo "    help"
-    echo "        Shows this message but exits with status 0"
+    echo "        Shows this message but in the 'less' reader and exits with status 0"
 }
 
 
@@ -92,7 +96,7 @@ pdt() {
         "aws-add-test-profile")
             aws-add-test-profile
             ;;
-        "sam-check")
+        "security-cloud")
             sam-check
             ;;
         "sam-deploy")
@@ -101,28 +105,28 @@ pdt() {
         "sam-destroy")
             sam-destroy
             ;;
-        "python-lint")
+        "lint-python")
             python-lint
             ;;
-        "python-test")
+        "test-python")
             python-test
             ;;
-        "python-security-check")
-            python-security-check
+        "coverage-python")
+            coverage-python "$2"
             ;;
-        "configure-vars")
-            configure-vars
+        "security-python")
+            python-security-check
             ;;
         "configure-venv")
             configure-venv
             ;;
-        "third-party-security-check")
+        "security-libraries")
             third-party-security-check
             ;;
-        "full-security-check")
+        "security-all")
             full-security-check
             ;;
-        "install-anchore-security-tools")
+        "install-grype")
             install-anchore-security-tools
             ;;
         "help")

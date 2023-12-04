@@ -1,4 +1,2 @@
 pydantic
-
-# Security fixes
-setuptools == 65.5.1
+ -r ./security_patch_requirements.txt

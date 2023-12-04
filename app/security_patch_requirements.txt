@@ -1,0 +1,4 @@
+# Security fixes
+setuptools == 65.5.1
+aiohttp == 3.9.0
+cryptography == 41.0.6

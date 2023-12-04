@@ -2,13 +2,6 @@
 
 # This is the tooling used by pdt
 
-get-aws-profile() {
-    grep -E 'PROFILE:' <.pdt-config | sed -e 's/PROFILE://g'
-}
-get-aws-region() {
-    grep -E 'REGION:' <.pdt-config| sed -e 's/REGION://g'
-}
-
 _aws_exports() {
     AVAILABLE_PROFILES=$(grep -F '[profile' <~/.aws/config | sed -e 's/\[profile //g' -e 's/\]//g')
     PS3='Profile selection: '
@@ -89,7 +82,7 @@ sam-check() {
 }
 
 _sam-validate-template() {
-    AWS_REGION=$(get-aws-region)
+    AWS_REGION='eu-west-2'
     echo "Validating SAM template as if region is ${AWS_REGION}"
 	sam validate \
     --region "$AWS_REGION" \
@@ -156,41 +149,6 @@ python-test() {
     pytest "${VIRTUAL_ENV}/../tests" -vv
 }
 
-configure-vars() {
-    # Check AWS CLI is in place and configured
-    if [ -z "$(which aws)" ]; then 
-        echo "Looks like you haven't installed AWS CLI yet."
-        echo "Do that, and configure it first, then come back."
-        return 1
-    fi
-    if [ ! -e ~/.aws/config ]; then
-        echo "Looks like you haven't configured your AWS CLI."
-        echo "Configure that and then come back."
-        return 1
-    fi
-    # Start config
-    AWS_CONFIG=$(cat ~/.aws/config)
-    # Establish chosen AWS profile
-    AVAILABLE_AWS_PROFILES=$(echo "$AWS_CONFIG" | grep -E '\[profile .*\]' | sed -e 's/.*\[profile //g' -e 's/\].*//g')
-    echo "Please choose an AWS profile"
-    PS3='Choose profile: '
-    select AWS_PROFILE in $AVAILABLE_AWS_PROFILES; do
-        echo "You chose $AWS_PROFILE"
-        break
-    done
-    # Establish chosen AWS region
-    AVAILABLE_AWS_REGIONS=$(echo "$AWS_CONFIG" | grep -E 'region = ' | sed -e 's/region = //g')
-    echo "Please choose an AWS region"
-    PS3='Choose region: '
-    select AWS_REGION in $AVAILABLE_AWS_REGIONS; do
-        echo "You chose $AWS_REGION"
-        break
-    done
-    # Drop profile and region into config file
-    CONFIG=$(echo "PROFILE:${AWS_PROFILE}"; echo "REGION:${AWS_REGION}")
-    echo "$CONFIG" > .pdt-config
-}
-
 configure-venv() {
     # Figure out if we're in the correct directory
     echo "Checking current working directory."
@@ -248,4 +206,28 @@ install-anchore-security-tools () {
         echo "Installing Grype"
         cat "${VIRTUAL_ENV}/../grype-install.sh" | sudo sh -s -- -b /usr/local/bin
     fi
+}
+
+coverage-python () {
+    _verify_venv_active
+    # For more information on test coverage see https://pytest-cov.readthedocs.io/en/latest/config.html
+    OPTION="$1"
+    case $OPTION in
+        "term")
+            pytest \
+            --cov-report term-missing:coverage/term \
+            --cov=app tests/
+            ;;
+        "html")
+            pytest \
+            --cov-report html:coverage/html \
+            --cov=app tests/
+            xdg-open coverage/html/index.html &
+            ;;
+        *)
+            echo "Invalid option."
+            echo "Options are html or term."
+            return 1
+            ;;
+    esac
 }

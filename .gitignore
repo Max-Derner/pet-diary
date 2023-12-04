@@ -1,10 +1,23 @@
-notes/
-pet-diary-venv/
-.vscode
-.pdt-config
 **/__pycache__/
+.vscode
+
+# virtual environment
+pet-diary-venv/
+
+# get debug output here
 logging_output/
-.aws-sam
+
+# lambda deployment packages
 lambda_packages/
+
+# created by sam build
+.aws-sam
+
+# created by pytest coverage reports
+coverage/
+
 # Put experimental stuff in here, it's sleeping
 zzz/
+
+# space for dev notes
+notes/

@@ -183,7 +183,7 @@ configure-venv() {
     fi
     # restart venv
     echo "Restarting virtual environment"
-    source ./pet-diary-venv/bin/activate
+    source ./pet-diary-venv/bin/activate 1>/dev/null
     echo "Complete, enjoy your new venv"
 }
 

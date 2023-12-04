@@ -132,6 +132,9 @@ pdt() {
         "help")
             pdt-help | less
             ;;
+        "alt-help")
+            pdt-help
+            ;;
         *)
             pdt-help
             return 1  # Just to point out that you done biffed it

@@ -183,7 +183,7 @@ configure-venv() {
     fi
     # restart venv
     echo "Restarting virtual environment"
-    deactivate
+    deactivate || true  # was giving grief to pipeline
     source ./pet-diary-venv/bin/activate 1>/dev/null
     echo "Complete, enjoy your new venv"
 }

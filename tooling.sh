@@ -175,7 +175,7 @@ configure-venv() {
     pip install -r ./requirements.txt
     # Check venv configuration
     echo "Checking venv configuration"
-    if grep -q -F "$(cat .env)" <./pet-diary-venv/bin/activate; then
+    if grep -q -F "$(tail -n 1 .env)" <./pet-diary-venv/bin/activate; then
         echo "Looks like you're all set up"
     else
         echo "Amending pet-diary-venv/bin/activate"

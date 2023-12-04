@@ -182,6 +182,10 @@ configure-venv() {
         sudo tee -a ./pet-diary-venv/bin/activate <.env 1>/dev/null
     fi
     # restart venv
+    ls ./
+    ls ./pet-diary-venv
+    ls ./pet-diary-venv/bin
+    ls ./pet-diary-venv/bin/activate
     echo "Restarting virtual environment"
     source ./pet-diary-venv/bin/activate 1>/dev/null
     echo "Complete, enjoy your new venv"

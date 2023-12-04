@@ -8,7 +8,7 @@ from app.support.data_access_layer.records.appointment_record import Appointment
 from datetime import datetime, timedelta
 from decimal import Decimal
 from app.support.data_access_layer.records.pet_table_models import RecordType
-from helpers import mock_utc_timestamp_now
+from .helpers import mock_utc_timestamp_now
 
 RECORDS_MODULE = 'app.support.data_access_layer.records'
 

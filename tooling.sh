@@ -222,7 +222,7 @@ coverage-python () {
             pytest \
             --cov-report html:coverage/ \
             --cov=app tests/
-            xdg-open coverage/html/index.html &
+            xdg-open coverage/index.html &
             ;;
         *)
             echo "Invalid option."

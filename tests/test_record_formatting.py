@@ -28,21 +28,8 @@ def tests_format_record():
         'next_due': datetime(year=2023, month=2, day=2).timestamp(),
         'record_type': RecordType.APPOINTMENT.value
     }
-    expected_formatting = """             ~~- -~- Appointment Record -~- -~~             
-Pet:                Pet Name
-Breed:              Pets Breed
-Date of Birth:      Monday, 4 December 2023 - 12:00 AM
-Gender:             Pets Gender
-Colour:             Colour Of Pet
-Microchip number:   1
-Name of medicine:   Precise Name Of Medication
-Type of medicine:   Deflea, Deworm, Etc
-Date and time:      Sunday, 1 January 2023 - 12:00 AM
-Next due:           Thursday, 2 February 2023 - 12:00 AM
-Ailment:            Vomiting, Lathargy, Etc
-Description:        description of ailment, vet appointment,
-                    observation, etc
-"""
+    with open('tests/formatted_record_example.txt', mode='r') as fileio:
+        expected_formatting = ''.join(fileio.readlines())
 
     formatted_record = format_record(record=monster_record)
 

@@ -1,0 +1,14 @@
+             ~~- -~- Appointment Record -~- -~~             
+Pet:                Pet Name
+Breed:              Pets Breed
+Date of Birth:      Monday, 4 December 2023 - 12:00 AM
+Gender:             Pets Gender
+Colour:             Colour Of Pet
+Microchip number:   1
+Name of medicine:   Precise Name Of Medication
+Type of medicine:   Deflea, Deworm, Etc
+Date and time:      Sunday, 1 January 2023 - 12:00 AM
+Next due:           Thursday, 2 February 2023 - 12:00 AM
+Ailment:            Vomiting, Lathargy, Etc
+Description:        description of ailment, vet appointment,
+                    observation, etc

@@ -215,12 +215,12 @@ coverage-python () {
     case $OPTION in
         "term")
             pytest \
-            --cov-report term-missing:coverage/term \
+            --cov-report term-missing \
             --cov=app tests/
             ;;
         "html")
             pytest \
-            --cov-report html:coverage/html \
+            --cov-report html:coverage/ \
             --cov=app tests/
             xdg-open coverage/html/index.html &
             ;;

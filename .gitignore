@@ -15,6 +15,7 @@ lambda_packages/
 
 # created by pytest coverage reports
 coverage/
+.coverage
 
 # Put experimental stuff in here, it's sleeping
 zzz/

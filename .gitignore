@@ -22,3 +22,7 @@ zzz/
 
 # space for dev notes
 notes/
+
+# The actual template you will use to deploy your app
+# Doiung it this way keeps your email off other peoples project (wouldn't want random reminders from someone elses project getting through to you)
+app_template.yaml

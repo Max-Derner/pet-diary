@@ -21,67 +21,78 @@ pdt-help() {
     echo "Usage: pdt [COMMAND]"
     echo
     echo "COMMANDS:"
-    echo
-    echo "    activate"
-    echo "        This is just a shortcut for activating your Python Virtual Environment"
-    echo
-    echo "    aws-login"
-    echo "        This logs you in via SSO after selecting a profile from you AWS config"
-    echo
-    echo "    aws-add-test-profile"
-    echo "        This simply adds an exra profile to ~/.aws/config. The profile should be broken enough that it won't"
-    echo "        work, but not so broken that botocore will refuse to make the API call. This test profile is used in"
-    echo "        certain test scenarios."
-    echo
-    echo "    sam-deploy"
-    echo "        This will deploy you application"
-    echo
-    echo "    sam-destroy"
-    echo "        This will tear down the application leaving nothing in AWS"
-    echo
-    echo "    lint-python"
-    echo "        This will lint your Python code using flake8,"
-    echo "        it will start in the current directory and exclude the venv"
-    echo
-    echo "    test-python"
-    echo "        This will run pytest against the tests/ directory in very verbose mode"
-    echo
-    echo "    coverage-python [OPTION]"
-    echo "        This will generate a test coverage report for you"
-    echo "        OPTIONS:"
-    echo "            html"
-    echo "                - Generates an interactive coverage report and opens it in your browser"
-    echo "            term"
-    echo "                - Generates a tabular output directly to the terminal (handy if you don't have a browser)"
-    echo
-    echo "    configure-venv"
-    echo "        This will set up your virtual environment for you, it is the reccomended way to do so"
-    echo
-    echo "    install-grype"
-    echo "        This will install the security tooling needed for 3rd party dependency checking"
-    echo
-    echo "    security-cloud"
-    echo "        This will run the chekov security scanner against your sam-template"
-    echo
-    echo "    security-libraries"
-    echo "        This will run Grype against the project directory, which will find 3rd party security issues. These"
-    echo "        3rd party issues will be in imported and installed libraries and such"
-    echo
-    echo "    security-python"
-    echo "        This will run Bandit on the app/ directory. Bandit scans your Python code for secuirty issues, it does"
-    echo "        not check any imported or installed libraries for secuirty flaws though, that has to be done with"
-    echo "        'pdt third-party-security-check'."
-    echo
-    echo "    security-all"
-    echo "        This will run each of the security checks consecutively and can be redirected into a text file to form"
-    echo "        a security audit report."
-    echo "        The included security checks are:"
-    echo "            - Bandit (for Python code)"
-    echo "            - Checkov (for SAM template)"
-    echo "            - Grype (for 3rd party vulnerabilities)"
-    echo
-    echo "    help"
-    echo "        Shows this message but in the 'less' reader and exits with status 0"
+    echo -e "\033[0;32m"
+    echo -e "\033[0;32m    help"
+    echo -e "\033[0;32m        Shows this message but in the 'less' reader and exits with status 0"
+    echo -e "\033[0;32m"
+    echo -e "\033[0;32m    activate"
+    echo -e "\033[0;32m        This is just a shortcut for activating your Python Virtual Environment"
+    echo -e "\033[0;32m"
+    echo -e "\033[0;32m    configure-venv"
+    echo -e "\033[0;32m        This will set up your virtual environment for you, it is the reccomended way to do so"
+    echo -e "\033[0;32m"
+    echo -e "\033[0;32m    aws-add-test-profile"
+    echo -e "\033[0;32m        This simply adds an exra profile to ~/.aws/config. The profile should be broken enough that it won't"
+    echo -e "\033[0;32m        work, but not so broken that botocore will refuse to make the API call. This test profile is used in"
+    echo -e "\033[0;32m        certain test scenarios."
+    echo -e "\033[0;32m"
+    echo -e "\033[0;32m    install-grype"
+    echo -e "\033[0;32m        This will install the security tooling needed for 3rd party dependency checking"
+    echo -e "\033[0;32m"
+    echo -e "\033[0;32m    form-example-template"
+    echo -e "\033[0;32m        This will tmake a copy of your template.yaml called example_template.yaml,"
+    echo -e "\033[0;32m        it will hide any value associated with the value 'Endpoint'."
+    echo -e "\033[0;32m        This helps to keep the project updated as app_template.yaml is in the git ignore"
+    echo -e "\033[0;33m"
+    echo -e "\033[0;33m    aws-login"
+    echo -e "\033[0;33m        This logs you in via SSO after selecting a profile from you AWS config"
+    echo -e "\033[0;33m"
+    echo -e "\033[0;33m    sam-deploy"
+    echo -e "\033[0;33m        This will deploy you application"
+    echo -e "\033[0;33m"
+    echo -e "\033[0;33m    sam-destroy"
+    echo -e "\033[0;33m        This will tear down the application leaving nothing in AWS"
+    echo -e "\033[0;33m"
+    echo -e "\033[0;33m    describe-deployment"
+    echo -e "\033[0;33m        This will tell you what you have deplyed in the cloud"
+    echo -e "\033[0;33m"
+    echo -e "\033[0;33m    lint-sam"
+    echo -e "\033[0;33m        This will validate your SAM template for you, using the alerady available SAM tooling."
+    echo -e "\033[0;34m"
+    echo -e "\033[0;34m    lint-python"
+    echo -e "\033[0;34m        This will lint your Python code using flake8,"
+    echo -e "\033[0;34m        it will start in the current directory and exclude the venv"
+    echo -e "\033[0;34m"
+    echo -e "\033[0;34m    test-python"
+    echo -e "\033[0;34m        This will run pytest against the tests/ directory in very verbose mode"
+    echo -e "\033[0;34m"
+    echo -e "\033[0;34m    coverage-python [OPTION]"
+    echo -e "\033[0;34m        This will generate a test coverage report for you"
+    echo -e "\033[0;34m        OPTIONS:"
+    echo -e "\033[0;34m            html"
+    echo -e "\033[0;34m                - Generates an interactive coverage report and opens it in your browser"
+    echo -e "\033[0;34m            term"
+    echo -e "\033[0;34m                - Generates a tabular output directly to the terminal (handy if you don't have a browser)"
+    echo -e "\033[0;31m"
+    echo -e "\033[0;31m    security-cloud"
+    echo -e "\033[0;31m        This will run the chekov security scanner against your sam-template"
+    echo -e "\033[0;31m"
+    echo -e "\033[0;31m    security-libraries"
+    echo -e "\033[0;31m        This will run Grype against the project directory, which will find 3rd party security issues. These"
+    echo -e "\033[0;31m        3rd party issues will be in imported and installed libraries and such"
+    echo -e "\033[0;31m"
+    echo -e "\033[0;31m    security-python"
+    echo -e "\033[0;31m        This will run Bandit on the app/ directory. Bandit scans your Python code for secuirty issues, it does"
+    echo -e "\033[0;31m        not check any imported or installed libraries for secuirty flaws though, that has to be done with"
+    echo -e "\033[0;31m        'pdt third-party-security-check'."
+    echo -e "\033[0;31m"
+    echo -e "\033[0;31m    security-all"
+    echo -e "\033[0;31m        This will run each of the security checks consecutively and can be redirected into a text file to form"
+    echo -e "\033[0;31m        a security audit report."
+    echo -e "\033[0;31m        The included security checks are:"
+    echo -e "\033[0;31m            - Bandit (for Python code)"
+    echo -e "\033[0;31m            - Checkov (for SAM template)"
+    echo -e "\033[0;31m            - Grype (for 3rd party vulnerabilities)"
 }
 
 
@@ -105,8 +116,14 @@ pdt() {
         "sam-destroy")
             sam-destroy
             ;;
+        "describe-deployment")
+            describe-deployment
+            ;;
         "lint-python")
             python-lint
+            ;;
+        "lint-sam")
+            sam-validate-template
             ;;
         "test-python")
             python-test
@@ -130,13 +147,16 @@ pdt() {
             install-anchore-security-tools
             ;;
         "help")
-            pdt-help | less
+            pdt-help | less -R
             ;;
         "alt-help")
             pdt-help
             ;;
+        "form-example-template")
+            form-example-template
+            ;;
         *)
-            pdt-help
+            echo "Try 'pdt help'"
             return 1  # Just to point out that you done biffed it
             ;;
     esac

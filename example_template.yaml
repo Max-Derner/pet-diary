@@ -16,8 +16,8 @@ Resources:
 
   WeeklyReminder:
   # Guide:
-  #   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
-  #   https://docs.aws.amazon.com/lambda/
+  #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  #   dev guide --> https://docs.aws.amazon.com/lambda/
     Type: AWS::Serverless::Function
     # TODO: the following checkov outliers
     #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
@@ -49,23 +49,83 @@ Resources:
       KmsKeyArn: !GetAtt KMSAppKey.Arn
       MemorySize: 128
       PackageType: Zip
-      # LoggingConfig:
-      #   ApplicationLogLevel: TRACE
-      #   LogFormat: Text
-      #   LogGroup: !Ref WeeklyReminderLogGroup
-      #   SystemLogLevel: WARN
       Role: !GetAtt LambdaRole.Arn
       Runtime: python3.10
       Timeout: 5
 
-  # WeeklyReminderLogGroup:
-  # # Guide:
-  # #   https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html
-  #   Type: AWS::Logs::LogGroup
-  #   Properties:
-  #     # KmsKeyId: !GetAtt KMSAppKey.Arn
-  #     LogGroupName: /aws/lambda/weekly_reminder
-  #     RetentionInDays: 30
+  LambdaRole:
+  # Guide:
+  #   https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+    Type: AWS::IAM::Role
+    Properties:
+      Description: Allows Lambdas read access to DynamoDB, and publish to SNS topics
+      RoleName: lambda-role
+      Policies:
+        - PolicyName: Weekly_access
+          PolicyDocument:
+          # https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policies-json
+            Version: "2012-10-17"
+            Statement:
+              - Sid: PetTableRestrictiveRead
+                Effect: Allow
+                Resource:
+                  - arn:aws:dynamodb:eu-west-2:*:table/pet_table
+                  - arn:aws:dynamodb:eu-west-2:*:table/pet_table/index/*
+                Action:
+                  - dynamodb:Query
+                  - dynamodb:GetItem
+              - Sid: DecryptThings
+                Effect: Allow
+                Resource: !GetAtt KMSAppKey.Arn
+                Action:
+                  - kms:Decrypt
+              - Sid: SNSPublish
+                Effect: Allow
+                Resource: !GetAtt WeeklyReminderTopic.TopicArn
+                Action:
+                  - sns:Publish
+              - Sid: CreateLogGroups
+                Effect: Allow
+                Action: logs:CreateLogGroup
+                Resource: arn:aws:logs:eu-west-2:*
+              - Sid: PublishLogs
+                Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:eu-west-2:*:log-group:*:*
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      MaxSessionDuration: 3600
+
+  WeeklyReminderTopic:
+    # Guide
+    #   General SNS --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
+    #   Topic only --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: weekly_reminder
+      DisplayName: PD_Weekly_Reminder
+      FifoTopic: false
+      KmsMasterKeyId: !GetAtt KMSAppKey.KeyId
+
+
+  EmailMeSubscription:
+    # Guide
+    #   General SNS --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
+    #   Subscription only --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-subscription.html
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: # ! Replace this with valid endpoint !
+      Protocol: email
+      TopicArn: !GetAtt WeeklyReminderTopic.TopicArn
 
   PetTable:
   # Guide:
@@ -118,7 +178,7 @@ Resources:
       ProvisionedThroughput: 
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
-      # Anything below this point costs money
+#!################## Anything below this point  in the template file costs money ##################!#
       PointInTimeRecoverySpecification: 
           PointInTimeRecoveryEnabled: true  # costs $0.23772 per GB-month
       SSESpecification: 
@@ -139,74 +199,3 @@ Resources:
       MultiRegion: false
       Origin: AWS_KMS
       PendingWindowInDays: 30
-
-  LambdaRole:
-  # Guide:
-  #   https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
-    Type: AWS::IAM::Role
-    Properties:
-      Description: Allows Lambdas read access to DynamoDB, and publish to SNS topics
-      RoleName: lambda-role
-      Policies:
-        - PolicyName: Weekly_access
-          PolicyDocument:
-          # https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policies-json
-            Version: "2012-10-17"
-            Statement:
-              - Sid: PetTableRestrictiveRead
-                Effect: Allow
-                Resource:
-                  - arn:aws:dynamodb:eu-west-2:*:table/pet_table
-                  - arn:aws:dynamodb:eu-west-2:*:table/pet_table/index/*
-                Action:
-                  - dynamodb:Query
-                  - dynamodb:GetItem
-              - Sid: DecryptThings
-                Effect: Allow
-                Resource: !GetAtt KMSAppKey.Arn
-                Action:
-                  - kms:Decrypt
-              - Sid: SNSPublish
-                Effect: Allow
-                Resource: arn:aws:sns:eu-west-2:*
-                Action:
-                  - sns:Publish
-              - Sid: CreateLogGroups
-                Effect: Allow
-                Action: logs:CreateLogGroup
-                Resource: arn:aws:logs:eu-west-2:*
-              - Sid: PublishLogs
-                Effect: Allow
-                Action:
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: arn:aws:logs:eu-west-2:*:log-group:*:*
-      AssumeRolePolicyDocument: 
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action:
-              - sts:AssumeRole
-      MaxSessionDuration: 3600
-
-#       https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
-
-# WeeklyReminderTopic:
-#   Type: AWS::SNS::Topic
-#   Properties:
-#     ArchivePolicy: Json
-#     ContentBasedDeduplication: Boolean
-#     DataProtectionPolicy: Json
-#     DisplayName: PD Weekly Reminder
-#     FifoTopic: Boolean
-#     KmsMasterKeyId: !GetAtt KMSAppKey.Arn
-#     SignatureVersion: String
-#     Subscription: 
-#       - Subscription
-#     Tags: 
-#       - Tag
-#     TopicName: weekly_reminder
-#     TracingConfig: String

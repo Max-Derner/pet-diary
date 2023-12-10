@@ -101,6 +101,7 @@ _sam-security-check() {
 sam-deploy() {
     echo "Creating Lambda packages"
     make lambda_packages/weekly_reminder.zip
+    make lambda_packages/lambda_libraries_layer.zip
     echo "Deploying application into the '$AWS_REGION' region, using the '$AWS_PROFILE' profile"
     sam deploy \
     --stack-name pet-diary-stack \

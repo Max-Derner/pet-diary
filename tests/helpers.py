@@ -23,8 +23,9 @@ def mock_utc_timestamp_now():
 def _get_sam_template() -> Dict:
     loader = yaml.Loader
     # The following line is some ropey business, just don't access any values
-    # that are populated by the '!GetAtt' function and you'll be fine.
+    # that are populated by the '!GetAtt' or '!Ref' functions and you'll be fine.
     loader.add_constructor(tag='!GetAtt', constructor=lambda x, y: str(y))
+    loader.add_constructor(tag='!Ref', constructor=lambda x, y: str(y))
     # This whole thing is only supposed to be used to make Dynamo mocking
     # easier anyway, using it for anything else is stupid.
     with open('template.yaml', mode='r') as file_io:

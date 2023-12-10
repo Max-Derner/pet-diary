@@ -53,10 +53,29 @@ Resources:
       Role: !GetAtt LambdaRole.Arn
       Runtime: python3.10
       Timeout: 5
+      Layers:
+        - !Ref LambdaLibrariesLayer
+
+  LambdaLibrariesLayer:
+  # Guide:
+  #   Example ----> https://docs.aws.amazon.com/lambda/latest/dg/layers-sam.html
+  #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleArchitectures: 
+        - x86_64
+      LayerName: lambda-libraries-layer
+      Description: A layer for the Lambdas containing all the pip dependencies
+      ContentUri: lambda_packages/lambda_libraries_layer.zip
+      RetentionPolicy: Delete
+      CompatibleRuntimes:
+        - python3.8
+        - python3.9
+        - python3.10
 
   LambdaRole:
   # Guide:
-  #   https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+  #   SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
     Type: AWS::IAM::Role
     Properties:
       Description: Allows Lambdas read access to DynamoDB, and publish to SNS topics
@@ -64,7 +83,7 @@ Resources:
       Policies:
         - PolicyName: Weekly_access
           PolicyDocument:
-          # https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policies-json
+          # SAM guide to policy doc --> https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policies-json
             Version: "2012-10-17"
             Statement:
               - Sid: PetTableRestrictiveRead
@@ -116,8 +135,8 @@ Resources:
   WeeklyReminderTopic:
     # Guide
     #   General SNS --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
-    #   Topic only --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html
-    #   Dev guide --> https://docs.aws.amazon.com/sns/
+    #   Topic only ---> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html
+    #   Dev guide ----> https://docs.aws.amazon.com/sns/
     Type: AWS::SNS::Topic
     Properties:
       TopicName: weekly_reminder
@@ -187,7 +206,7 @@ Resources:
 
   KMSAppKey:
   # Guide:
-  #   https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kms-key.html
+  #   SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kms-key.html
     Type: AWS::KMS::Key  # costs $1 per creation, gets 20,000 requests a year free for encrypting/decrypting
     Properties: 
       Description: For symmetric encryption of all the applications resources

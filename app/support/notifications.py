@@ -1,7 +1,7 @@
 from typing import List, Dict, Tuple
 from datetime import timedelta
 
-from boto3 import resource
+from support.common.aws_resources import get_weekly_reminder_topic
 
 from support.common.logger import get_full_logger
 from support.record_formatting import record_formatter, DIVIDER
@@ -9,29 +9,6 @@ from support.common.misc import current_date
 
 
 logger = get_full_logger()
-
-
-def get_weekly_reminder_topic():
-    """
-    return sns Topic PD_Weekly_Reminder
-    available methods can be found at:
-    https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sns/topic/index.html
-    """
-    # Client ----> https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sns.html
-    # Resource --> https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sns/service-resource/index.html
-    # Topic  ----> https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sns/topic/index.html
-
-    desired_topic_display_name = 'PD_Weekly_Reminder'
-    logger.info(f"Acquiring {desired_topic_display_name} topic")
-    sns = resource('sns')
-    topic_collection = sns.topics.all()
-    logger.info(f"Found {len(list(topic_collection))} topics, narrowing down")
-
-    for topic in topic_collection:
-        if topic.attributes['DisplayName'] == desired_topic_display_name:
-            logger.info(f"Found {desired_topic_display_name} topic")
-            return topic
-    raise ValueError(f"The topic {desired_topic_display_name} could not be found")
 
 
 def publish_to_weekly_reminder_topic(subject: str, message: str):

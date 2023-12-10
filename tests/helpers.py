@@ -9,7 +9,7 @@ from app.support.data_access_layer.put_records import (
     put_medication_record,
     put_observation_record
 )
-from support.data_access_layer.helpers import get_pet_table_resource
+from support.common.aws_resources import get_pet_table_resource
 from tests.mock_pet_table_data import test_data
 from support.common.logger import get_full_logger
 

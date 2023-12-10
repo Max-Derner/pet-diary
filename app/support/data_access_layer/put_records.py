@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Dict, Optional
 
 from support.common.logger import get_full_logger
-from support.data_access_layer.helpers import get_pet_table_resource
+from support.common.aws_resources import get_pet_table_resource
 from support.data_access_layer.records.abstract_record import AbstractRecordFactory
 from support.data_access_layer.records.details_record import DetailsRecordFactory
 from support.data_access_layer.records.appointment_record import AppointmentRecordFactory

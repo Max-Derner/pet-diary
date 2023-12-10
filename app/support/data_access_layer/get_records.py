@@ -4,7 +4,7 @@ from typing import List, Dict, Optional
 
 from boto3.dynamodb.conditions import Key, Attr
 
-from support.data_access_layer.helpers import get_pet_table_resource
+from support.common.aws_resources import get_pet_table_resource
 from support.data_access_layer.records.pet_table_models import RecordType
 
 

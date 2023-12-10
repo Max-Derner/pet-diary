@@ -8,7 +8,7 @@ from tests.helpers import (
     setup_test_dynamo_with_data
 )
 from app.support.data_access_layer.records.pet_table_models import RecordType
-from app.support.data_access_layer.helpers import get_pet_table_resource
+from support.common.aws_resources import get_pet_table_resource
 from app.support.data_access_layer.get_records import (
     get_all_of_pets_records,
     get_all_of_pets_record_type,

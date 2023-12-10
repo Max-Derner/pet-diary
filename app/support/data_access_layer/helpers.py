@@ -1,4 +1,5 @@
 from boto3 import resource
+# TODO move this file out of DAL
 
 
 def get_pet_table_resource():

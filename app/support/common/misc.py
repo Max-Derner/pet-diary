@@ -23,9 +23,15 @@ def utc_datetime_now() -> datetime:
     return datetime.now(tz=timezone.utc)
 
 
-def british_format_time(timestamp: float):
-    # Gives format is the style: Friday, 24 November 2023 - 05:35PM
+def british_format_time(timestamp: float) -> str:
+    # Gives format in the style: Friday, 24 November 2023 - 05:35PM
     return datetime.fromtimestamp(timestamp).strftime('%A, %-d %B %Y - %I:%M %p')
+
+
+def current_date() -> str:
+    # Gives format in the style: Friday, 24 November 2023
+    current_date = utc_datetime_now().date()
+    return current_date.strftime('%A, %-d %B %Y')
 
 
 class DynamoItemJSONEncoder(JSONEncoder):

@@ -3,6 +3,7 @@ from .common.misc import british_format_time
 from .data_access_layer.records.pet_table_models import RecordType
 
 RECORD_CARD_WIDTH = 60
+DIVIDER = f"\n{'='.ljust(RECORD_CARD_WIDTH, '=')}\n"
 
 
 def format_record(record: Dict):
@@ -82,5 +83,4 @@ def record_formatter(records: List[Dict]) -> str:
     record_cards = []
     for record in records:
         record_cards.append(format_record(record=record))
-    divider = '='.ljust(RECORD_CARD_WIDTH, '=')
-    return f'\n{divider}\n'.join(record_cards)
+    return DIVIDER + f'{DIVIDER}'.join(record_cards)

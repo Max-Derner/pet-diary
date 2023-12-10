@@ -14,7 +14,7 @@ Transform: AWS::Serverless-2016-10-31  # Mandatory declaration of SAM template
 
 Resources:
 
-  WeeklyReminder:
+  WeeklyReminder:  # TODO: Create daily reminder
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   #   dev guide --> https://docs.aws.amazon.com/lambda/
@@ -22,8 +22,9 @@ Resources:
     # TODO: the following checkov outliers
     #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
     #checkov:skip=CKV_AWS_117: VPC will come later
+    # TODO VPC and WAF
     Properties:
-      Description: Gives fortnightly reminders of upcoming required medications and
+      Description: Gives weekly reminders of upcoming medications and appointments
       FunctionName: weekly_reminder
       Architectures: 
         - x86_64
@@ -74,16 +75,23 @@ Resources:
                 Action:
                   - dynamodb:Query
                   - dynamodb:GetItem
-              - Sid: DecryptThings
+              - Sid: UseKMSKey
                 Effect: Allow
                 Resource: !GetAtt KMSAppKey.Arn
                 Action:
                   - kms:Decrypt
-              - Sid: SNSPublish
+                  - kms:GenerateDataKey
+              - Sid: PublishToSNSWeeklyReminder
                 Effect: Allow
                 Resource: !GetAtt WeeklyReminderTopic.TopicArn
                 Action:
                   - sns:Publish
+              - Sid: SNSFindTopic
+                Effect: Allow
+                Resource: arn:aws:sns:eu-west-2:*
+                Action:
+                  - sns:ListTopics
+                  - sns:GetTopicAttributes
               - Sid: CreateLogGroups
                 Effect: Allow
                 Action: logs:CreateLogGroup
@@ -109,6 +117,7 @@ Resources:
     # Guide
     #   General SNS --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
     #   Topic only --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html
+    #   Dev guide --> https://docs.aws.amazon.com/sns/
     Type: AWS::SNS::Topic
     Properties:
       TopicName: weekly_reminder
@@ -116,11 +125,12 @@ Resources:
       FifoTopic: false
       KmsMasterKeyId: !GetAtt KMSAppKey.KeyId
 
-
+ # TODO: Remove this and replace with script to subscribe you
   EmailMeSubscription:
     # Guide
     #   General SNS --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
     #   Subscription only --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-subscription.html
+    #   Dev guide --> https://docs.aws.amazon.com/sns/
     Type: AWS::SNS::Subscription
     Properties:
       Endpoint: # ! Replace this with valid endpoint !
@@ -129,7 +139,8 @@ Resources:
 
   PetTable:
   # Guide:
-  #   https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
+  #   SAM Guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
+  #   Dev guide --> https://docs.aws.amazon.com/dynamodb
     Type: AWS::DynamoDB::Table
     Properties: 
       TableName: pet_table

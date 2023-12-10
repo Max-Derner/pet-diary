@@ -1,5 +1,6 @@
 lambda_packages/weekly_reminder.zip: app/lambda_weekly_reminder.py \
 									 app/support/record_formatting.py \
+									 app/support/notifications.py \
 									 app/support/common/ \
 									 app/support/data_access_layer/get_records.py \
 									 app/support/data_access_layer/helpers.py \
@@ -13,6 +14,7 @@ lambda_packages/weekly_reminder.zip: app/lambda_weekly_reminder.py \
 	mkdir -p lambda_packages/weekly_reminder/support/data_access_layer/records
 	mkdir -p lambda_packages/weekly_reminder/support/common
 	
+	# TODO: move these libraries out into a Lambda Layer
 	echo "Installing pip packages"
 	pip install --target ./lambda_packages/weekly_reminder -r ./app/lambda_requirements.txt
 
@@ -23,6 +25,7 @@ lambda_packages/weekly_reminder.zip: app/lambda_weekly_reminder.py \
 
 	cp app/support/__init__.py 	         lambda_packages/weekly_reminder/support/__init__.py
 	cp app/support/record_formatting.py  lambda_packages/weekly_reminder/support/record_formatting.py
+	cp app/support/notifications.py  lambda_packages/weekly_reminder/support/notifications.py
 
 	cp -r app/support/common    lambda_packages/weekly_reminder/support/
 

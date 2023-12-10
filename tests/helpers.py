@@ -27,7 +27,7 @@ def _get_sam_template() -> Dict:
     loader.add_constructor(tag='!GetAtt', constructor=lambda x, y: str(y))
     # This whole thing is only supposed to be used to make Dynamo mocking
     # easier anyway, using it for anything else is stupid.
-    with open('example_template.yaml', mode='r') as file_io:
+    with open('template.yaml', mode='r') as file_io:
         full_template = yaml.load(stream=file_io, Loader=loader)
     return full_template
 

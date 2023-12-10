@@ -3,7 +3,7 @@ lambda_packages/weekly_reminder.zip: app/lambda_weekly_reminder.py \
 									 app/support/notifications.py \
 									 app/support/common/ \
 									 app/support/data_access_layer/get_records.py \
-									 app/support/data_access_layer/helpers.py \
+									 app/support/common/aws_resources.py \
 									 app/support/data_access_layer/records/pet_table_models.py \
 									 app/lambda_requirements.txt
 	echo "Building weekly-reminder Lmabda zip package"
@@ -31,7 +31,6 @@ lambda_packages/weekly_reminder.zip: app/lambda_weekly_reminder.py \
 
 	cp app/support/data_access_layer/__init__.py       lambda_packages/weekly_reminder/support/data_access_layer/__init__.py
 	cp app/support/data_access_layer/get_records.py    lambda_packages/weekly_reminder/support/data_access_layer/get_records.py
-	cp app/support/data_access_layer/helpers.py        lambda_packages/weekly_reminder/support/data_access_layer/helpers.py
 
 	cp app/support/data_access_layer/records/__init__.py            lambda_packages/weekly_reminder/support/data_access_layer/records/__init__.py
 	cp app/support/data_access_layer/records/pet_table_models.py    lambda_packages/weekly_reminder/support/data_access_layer/records/pet_table_models.py

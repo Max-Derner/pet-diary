@@ -21,56 +21,65 @@ pdt-help() {
     echo "Usage: pdt [COMMAND]"
     echo
     echo "COMMANDS:"
-    echo -e "\033[0;33m"
-    echo -e "\033[0;33m    aws-login"
-    echo -e "\033[0;33m        This logs you in via SSO after selecting a profile from you AWS config"
-    echo -e "\033[0;33m"
-    echo -e "\033[0;33m    sam-deploy"
-    echo -e "\033[0;33m        This will deploy you application"
-    echo -e "\033[0;33m"
-    echo -e "\033[0;33m    sam-destroy"
-    echo -e "\033[0;33m        This will tear down the application leaving nothing in AWS"
-    echo -e "\033[0;33m"
-    echo -e "\033[0;33m    describe-deployment"
-    echo -e "\033[0;33m        This will tell you what you have deplyed in the cloud"
-    echo -e "\033[0;33m"
-    echo -e "\033[0;33m    lint-sam"
-    echo -e "\033[0;33m        This will validate your SAM template for you, using the alerady available SAM tooling."
+
+    # Blue: cloud stuff
     echo -e "\033[0;34m"
-    echo -e "\033[0;34m    lint-python"
-    echo -e "\033[0;34m        This will lint your Python code using flake8,"
-    echo -e "\033[0;34m        it will start in the current directory and exclude the venv"
+    echo -e "\033[0;34m    aws-login"
+    echo -e "\033[0;34m        This logs you in via SSO after selecting a profile from you AWS config"
     echo -e "\033[0;34m"
-    echo -e "\033[0;34m    test-python"
-    echo -e "\033[0;34m        This will run pytest against the tests/ directory in very verbose mode"
+    echo -e "\033[0;34m    sam-deploy"
+    echo -e "\033[0;34m        This will deploy you application"
     echo -e "\033[0;34m"
-    echo -e "\033[0;34m    coverage-python [OPTION]"
-    echo -e "\033[0;34m        This will generate a test coverage report for you"
-    echo -e "\033[0;34m        OPTIONS:"
-    echo -e "\033[0;34m            html"
-    echo -e "\033[0;34m                - Generates an interactive coverage report and opens it in your browser"
-    echo -e "\033[0;34m            term"
-    echo -e "\033[0;34m                - Generates a tabular output directly to the terminal (handy if you don't have a browser)"
+    echo -e "\033[0;34m    sam-destroy"
+    echo -e "\033[0;34m        This will tear down the application leaving nothing in AWS"
+    echo -e "\033[0;34m"
+    echo -e "\033[0;34m    describe-deployment"
+    echo -e "\033[0;34m        This will tell you what you have deplyed in the cloud"
+    echo -e "\033[0;34m"
+    echo -e "\033[0;34m    lint-sam"
+    echo -e "\033[0;34m        This will validate your SAM template for you, using the alerady available SAM tooling."
+
+    # Yellow: Python stuff
+    echo -e "\033[0;33m"
+    echo -e "\033[0;33m    lint-python"
+    echo -e "\033[0;33m        This will lint your Python code using flake8,"
+    echo -e "\033[0;33m        it will start in the current directory and exclude the venv"
+    echo -e "\033[0;33m"
+    echo -e "\033[0;33m    test-python"
+    echo -e "\033[0;33m        This will run pytest against the tests/ directory in very verbose mode"
+    echo -e "\033[0;33m"
+    echo -e "\033[0;33m    coverage-python [OPTION]"
+    echo -e "\033[0;33m        This will generate a test coverage report for you"
+    echo -e "\033[0;33m        OPTIONS:"
+    echo -e "\033[0;33m            html"
+    echo -e "\033[0;33m                - Generates an interactive coverage report and opens it in your browser"
+    echo -e "\033[0;33m            term"
+    echo -e "\033[0;33m                - Generates a tabular output directly to the terminal (handy if you don't have a"
+    echo -e "\033[0;33m                  browser)"
+
+    # Red: Security stuf
     echo -e "\033[0;31m"
     echo -e "\033[0;31m    security-cloud"
     echo -e "\033[0;31m        This will run the chekov security scanner against your sam-template"
     echo -e "\033[0;31m"
     echo -e "\033[0;31m    security-libraries"
-    echo -e "\033[0;31m        This will run Grype against the project directory, which will find 3rd party security issues. These"
-    echo -e "\033[0;31m        3rd party issues will be in imported and installed libraries and such"
+    echo -e "\033[0;31m        This will run Grype against the project directory, which will find 3rd party security"
+    echo -e "\033[0;31m        issues. These 3rd party issues will be in imported and installed libraries and such"
     echo -e "\033[0;31m"
     echo -e "\033[0;31m    security-python"
-    echo -e "\033[0;31m        This will run Bandit on the app/ directory. Bandit scans your Python code for secuirty issues, it does"
-    echo -e "\033[0;31m        not check any imported or installed libraries for secuirty flaws though, that has to be done with"
-    echo -e "\033[0;31m        'pdt third-party-security-check'."
+    echo -e "\033[0;31m        This will run Bandit on the app/ directory. Bandit scans your Python code for secuirty"
+    echo -e "\033[0;31m        issues, it does not check any imported or installed libraries for secuirty flaws though,"
+    echo -e "\033[0;31m        that has to be done with 'pdt third-party-security-check'."
     echo -e "\033[0;31m"
     echo -e "\033[0;31m    security-all"
-    echo -e "\033[0;31m        This will run each of the security checks consecutively and can be redirected into a text file to form"
-    echo -e "\033[0;31m        a security audit report."
+    echo -e "\033[0;31m        This will run each of the security checks consecutively and can be redirected into a text"
+    echo -e "\033[0;31m        file to form a security audit report."
     echo -e "\033[0;31m        The included security checks are:"
     echo -e "\033[0;31m            - Bandit (for Python code)"
     echo -e "\033[0;31m            - Checkov (for SAM template)"
     echo -e "\033[0;31m            - Grype (for 3rd party vulnerabilities)"
+
+    # Green: Set-up stuff
     echo -e "\033[0;32m"
     echo -e "\033[0;32m    help"
     echo -e "\033[0;32m        Shows this message but in the 'less' reader and exits with status 0"
@@ -82,17 +91,19 @@ pdt-help() {
     echo -e "\033[0;32m        This will set up your virtual environment for you, it is the reccomended way to do so"
     echo -e "\033[0;32m"
     echo -e "\033[0;32m    aws-add-test-profile"
-    echo -e "\033[0;32m        This simply adds an exra profile to ~/.aws/config. The profile should be broken enough that it won't"
-    echo -e "\033[0;32m        work, but not so broken that botocore will refuse to make the API call. This test profile is used in"
-    echo -e "\033[0;32m        certain test scenarios."
+    echo -e "\033[0;32m        This simply adds an exra profile to ~/.aws/config. The profile should be broken enough"
+    echo -e "\033[0;32m        that it won't work, but not so broken that botocore will refuse to make the API call."
+    echo -e "\033[0;32m        This test profile is used in certain test scenarios."
     echo -e "\033[0;32m"
     echo -e "\033[0;32m    install-grype"
     echo -e "\033[0;32m        This will install the security tooling needed for 3rd party dependency checking"
-    echo -e "\033[0;32m"
-    echo -e "\033[0;32m    form-example-template"
-    echo -e "\033[0;32m        This will tmake a copy of your template.yaml called example_template.yaml,"
-    echo -e "\033[0;32m        it will hide any value associated with the value 'Endpoint'."
-    echo -e "\033[0;32m        This helps to keep the project updated as app_template.yaml is in the git ignore"
+
+    # Purple: Local use stuff
+    echo -e "\033[0;35m"
+    echo -e "\033[0;35m    subscribe-weekly"
+    echo -e "\033[0;35m        This opens up a small script which lets you submit a subscription to the weekly reminder"
+    echo -e "\033[0;35m        SNS topic. This topic sends a weekly email to remind you of anything that needs doing in"
+    echo -e "\033[0;35m        the next two weeks (i.e. medicines to administer, vet appointments to keep, etc)"
 }
 
 
@@ -146,14 +157,14 @@ pdt() {
         "install-grype")
             install-anchore-security-tools
             ;;
+        "subscribe-weekly")
+            subscribe-weekly
+            ;;
         "help")
             pdt-help | less -R
             ;;
         "alt-help")
             pdt-help
-            ;;
-        "form-example-template")
-            form-example-template
             ;;
         *)
             echo "Try 'pdt help'"

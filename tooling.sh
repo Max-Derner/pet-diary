@@ -87,14 +87,14 @@ sam-validate-template() {
 	sam validate \
     --region "$AWS_REGION" \
     --lint \
-    --template-file "app_template.yaml"
+    --template-file "template.yaml"
 }
 
 _sam-security-check() {
     echo "Checking SAM template for security faults with Checkov"
     checkov \
     --compact \
-    -f "app_template.yaml"
+    -f "template.yaml"
     return "$?"  # ensures function returns same code checkov exits with
 }
 
@@ -104,7 +104,7 @@ sam-deploy() {
     echo "Deploying application into the '$AWS_REGION' region, using the '$AWS_PROFILE' profile"
     sam deploy \
     --stack-name pet-diary-stack \
-    --template "app_template.yaml" \
+    --template "template.yaml" \
     --region "$AWS_REGION" \
     --profile "$AWS_PROFILE" \
     --capabilities CAPABILITY_NAMED_IAM \
@@ -230,17 +230,12 @@ coverage-python () {
     esac
 }
 
-form-example-template () {
-    echo "Removing old example template"
-    if [ -e 'example_template.yaml' ]; then rm 'example_template.yaml'; fi
-    echo "Copying app_template.yaml as new example template"
-    cp app_template.yaml example_template.yaml
-    echo "Removing Endpoints from example template"
-    sed -i -e 's/Endpoint:.*/Endpoint: # ! Replace this with valid endpoint !/g' 'example_template.yaml'
-}
-
 describe-deployment () {
     aws cloudformation describe-stack-resources \
     --stack-name pet-diary-stack \
     | awk 'BEGIN { printf "%-40s %-20s %s\n", "Name", "Status", "Date" } /pet-diary/ { printf "%-40s %-20s %s\n", $2, $4, $8 }'
+}
+
+subscribe-weekly () {
+    python3 app/local-use/suscribe_to_sns_topic.py
 }

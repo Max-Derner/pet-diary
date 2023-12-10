@@ -39,7 +39,7 @@ Resources:
         ScheduledEvent:
           Type: Schedule
           Properties: 
-              Description: Fire once a week
+              Description: Fire every Monday at 8am
               Enabled: true
               Schedule: cron(0 8 ? * MON *)
       # The following option may need you to increase your reserved concurrent executions limit.
@@ -124,18 +124,6 @@ Resources:
       DisplayName: PD_Weekly_Reminder
       FifoTopic: false
       KmsMasterKeyId: !GetAtt KMSAppKey.KeyId
-
- # TODO: Remove this and replace with script to subscribe you
-  EmailMeSubscription:
-    # Guide
-    #   General SNS --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
-    #   Subscription only --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-subscription.html
-    #   Dev guide --> https://docs.aws.amazon.com/sns/
-    Type: AWS::SNS::Subscription
-    Properties:
-      Endpoint: # ! Replace this with valid endpoint !
-      Protocol: email
-      TopicArn: !GetAtt WeeklyReminderTopic.TopicArn
 
   PetTable:
   # Guide:

@@ -100,10 +100,15 @@ pdt-help() {
 
     # Purple: Local use stuff
     echo -e "\033[0;35m"
-    echo -e "\033[0;35m    subscribe-weekly"
-    echo -e "\033[0;35m        This opens up a small script which lets you submit a subscription to the weekly reminder"
-    echo -e "\033[0;35m        SNS topic. This topic sends a weekly email to remind you of anything that needs doing in"
-    echo -e "\033[0;35m        the next two weeks (i.e. medicines to administer, vet appointments to keep, etc)"
+    echo -e "\033[0;35m    subscribe"
+    echo -e "\033[0;35m        This opens up a small script which lets you submit a subscription to one of the SNS"
+    echo -e "\033[0;35m        topics."
+    echo -e "\033[0;35m            - Weekly Reminder"
+    echo -e "\033[0;35m                This topic sends a weekly email to remind you of anything that needs doing in the"
+    echo -e "\033[0;35m                next two weeks (i.e. medicines to administer, vet appointments to keep, etc)."
+    echo -e "\033[0;35m            - Daily Reminder"
+    echo -e "\033[0;35m                This topic sends a text message if and only if there is something to be reminded"
+    echo -e "\033[0;35m                about for that day."
 }
 
 
@@ -157,8 +162,8 @@ pdt() {
         "install-grype")
             install-anchore-security-tools
             ;;
-        "subscribe-weekly")
-            subscribe-weekly
+        "subscribe")
+            subscribe-to-sns-topic
             ;;
         "help")
             pdt-help | less -R

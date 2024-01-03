@@ -203,7 +203,7 @@ install-anchore-security-tools () {
         echo "Looks like you're already set up"
     else
         echo "Installing Grype"
-        cat "/grype-install.sh" | sudo sh -s -- -b /usr/local/bin
+        curl -# -L https://raw.githubusercontent.com/anchore/grype/main/install.sh | sudo sh -s -- -b /usr/local/bin
     fi
 }
 
@@ -237,6 +237,6 @@ describe-deployment () {
     | awk 'BEGIN { printf "%-40s %-20s %s\n", "Name", "Status", "Date" } /pet-diary/ { printf "%-40s %-20s %s\n", $2, $4, $8 }'
 }
 
-subscribe-weekly () {
-    python3 app/local-use/suscribe_to_sns_topic.py
+subscribe-to-sns-topic () {
+    python3 app/local_use/suscribe_to_sns_topic.py
 }

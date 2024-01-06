@@ -9,3 +9,6 @@ Look into changing the format of the time fields in DynamoDB. Go from timestamp 
 
 Look at shifting that bit in the record factory "additional validation" or whatever, and make them into proper Pydantic validators (e.g. https://docs.pydantic.dev/latest/concepts/validators/#before-after-wrap-and-plain-validators)  
 Hope is just to keep everything a little cleaner and more together. Well... and to learn more about Pydantic.
+
+FIX THAT APP_README.md PAGE!!!  
+It's well out of date and needs a proper overhaul!

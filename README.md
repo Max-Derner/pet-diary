@@ -20,4 +20,5 @@ Please follow the links below to navigate to the rest of the READMEs
 * [Set up](./README_DIR/SET_UP_README.md)
 * [Project structure](./README_DIR/PROJECT_STRUCTURE_README.md)
 * [Cost Breakdown](./README_DIR/COSTS_README.md)
+* [My TODO list](./README_DIR/TODO_README.md)
 

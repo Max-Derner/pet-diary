@@ -132,33 +132,45 @@ Resources:
                 Action:
                   - dynamodb:Query
                   - dynamodb:GetItem
+
               - Sid: UseKMSKey
                 Effect: Allow
                 Resource: !GetAtt KMSAppKey.Arn
                 Action:
                   - kms:Decrypt
                   - kms:GenerateDataKey
+
               - Sid: PublishToSNSWeeklyReminder
                 Effect: Allow
                 Resource: !GetAtt WeeklyReminderTopic.TopicArn
                 Action:
                   - sns:Publish
+
+              - Sid: PublishToSNSDailyReminder
+                Effect: Allow
+                Resource: !GetAtt DailyReminderTopic.TopicArn
+                Action:
+                  - sns:Publish
+
               - Sid: SNSFindTopic
                 Effect: Allow
                 Resource: arn:aws:sns:eu-west-2:*
                 Action:
                   - sns:ListTopics
                   - sns:GetTopicAttributes
+
               - Sid: CreateLogGroups
                 Effect: Allow
                 Action: logs:CreateLogGroup
                 Resource: arn:aws:logs:eu-west-2:*
+
               - Sid: PublishLogs
                 Effect: Allow
                 Action:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: arn:aws:logs:eu-west-2:*:log-group:*:*
+
       AssumeRolePolicyDocument: 
         Version: "2012-10-17"
         Statement:

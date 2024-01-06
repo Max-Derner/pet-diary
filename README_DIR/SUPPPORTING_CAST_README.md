@@ -1,18 +1,15 @@
 [Welcome Page](../README.md)  
 [App README](./APP_README.md)  
 
+# Well out of date!
+## My apologies, this needs seriously updating
+
 ## __contents__
-* [exceptions.py](#exceptionspy)
-* [data_access_layer/]()
+* [data_access_layer/](#data_access_layer)
 * [file_interactors.py](#file_interactorspy)
 * [logger.py](#loggerpy)
 * [misc.py](#miscpy)
 * [records/](#records)
-
-#### __exceptions.py__
-This file contains custom exceptions, that's all. It's not a fancy thing.
-* [exceptions.py](../app/support/exceptions.py)
-
 #### __file_interactors.py__
 This file simply does file interactions, such as creating a directory or list of directories, and pinching the AWS region out of your .pdt-config
 * [file_interactors.py](../app/support/file_interactors.py)
@@ -25,7 +22,7 @@ The function `get_full_logger()` gives a logger which outputs any logs of level 
 * [logger.py](../app/support/logger.py)
 
 #### __misc.py__
-This file just contains the on function at the minute. I suppose it's just a file for function which I couldn't decide where they should live. It currently holds `utc_timestamp_now()`, which does what it says on the tin. The reason this simple functionality is abstracted into it's own function is that I can now patch that function and control time during tests.
+This file just contains the one function at the minute. I suppose it's just a file for function which I couldn't decide where they should live. It currently holds `utc_timestamp_now()`, which does what it says on the tin. The reason this simple functionality is abstracted into it's own function is that I can now patch that function and control time during tests.
 * [misc.py](../app/support/misc.py)
 
 #### __records/__

@@ -13,4 +13,8 @@ __DISCLAIMER__: This breakdown is only done to the best of my abilities, I canno
 * __Lambda__:
     * 1 million free requests a month
     * Up to 3.2 million seconds of free compute time per month (37 days worth of runtime)
+* __SNS__:
+    * 1 million free requests a month
+
+My personal experience so far has been costs of £1 to £1.10 a month, your mileage may vary.
 

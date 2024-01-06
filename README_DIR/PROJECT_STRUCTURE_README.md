@@ -5,11 +5,14 @@
 * [.env](#env)
 * [.gitignore](#gitignore)
 * [grype-install.sh](#gyrpeinstallsh)
+* [lambda_packages/](#lambda_packages)
+* [Makefile](#makefile)
 * [pdt](#pdt)
 * [requirements.txt](#requirementstxt)
 * [template.yaml](#templateyaml)
 * [tests/](#tests)
 * [tooling.sh](#toolingsh)
+* [tox.ini](#toxini)
 
 
 #### __template.yaml__
@@ -34,11 +37,11 @@ If you're new to the project, I suggest you run the following commands in order,
 
 * `source ./pdt`  
 * `pdt configure-venv`  
-* `pdt configure-vars`  
 
 That will ensure you have your Python virtual environment set up correctly.  
 You will also be able to make use of all of the functions available in pdt.  
-If you ever need a reminder of what functions are available to you simply give the command `pdt`.  
+If you ever need a reminder of what functions are available to you simply give the command `pdt help`.  
+
 `pdt` will become available to you anytime you activate your virtual environment provided you have used `pdt` to configure your virtual environment with the `pdt configure-venv` command.
 * [pdt](../pdt)
 
@@ -60,7 +63,17 @@ You may be surprised to find out that all of the application's code is housed wi
 You may also be surprised to find out that the `tests/` directory contains all of the tests for the files that are found in the `app/` directory.
 * [tests/](../tests/)
 
-#### __grype-install.sh__
-This script is what installs Grype for you. If you search for Anchore Grype and look up the install methods, you will find that the recommended way to install Grype is to run the command `curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin`. Now lots of people get a bit funny about piping curl commands directly into something to execute the curled script (myself included). So as an alternative, I have curled the script and dumped it into this file so it can be reviewed before running the install script.  
-Grype is used in some of the security checks, it's a solution for 3rd dependency checking.
-* [grype-install.sh](../grype-install.sh)
+#### __Makefile__
+Makefiles define what you can "make". This is typically used for compiling large suites of software, the documentation for this can be found [here](https://www.gnu.org/software/make/manual/make.html). Makefiles are well worth understanding if you don't already, so check that link out, you'll not need to read much to get the gist.  
+
+For us, we use the Makefile as a way of packaging our Lambda deployment packages. To learn more about our lambda deployment packages go to the [lambda_packages section](#lambda_packages)
+
+#### __lambda_packages/__
+Our Lambdas are packaged up for deployment as ".zip file archives", to learn more about the types of lambda deployment packages checkout [this link](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html).  
+
+They require a very distinct file hierarchy which in turn informs the file hierarchy of our `app/` directory. In the `lambda_packages/` directory, you should be able to find the directories and .zip files which relate to each of our Lambdas and the Lambda layer they use. I opted for a Lambda layer to keep all of the required pip packages in, as this keeps the lambda .zip file archives relatively slim. Keeping the size of the Lambda .zip files down allows you to edit the Lambda code directly in the AWS console. This means that you can easily check something has been deployed correctly, modify Lambdas as a quick way to experiment, etc.  
+
+This directory will not exist yet if you have not made (or attempted to make) your first deployment. If you wish to see this directory without making a deployment you can simply invoke make directly for each of the zip packages(e.g. `make lambda_packages/lambda_libraries_layer.zip`)
+
+#### __tox.ini__
+`tox.ini` is a file that contains certain configurations for various tools you may use. I could've configure things like the AWS region in here but things only end up in here by way of a path of least resistance. Hence, at the time of writing, it only configure `flake8`.

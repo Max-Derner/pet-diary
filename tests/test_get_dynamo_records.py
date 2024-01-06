@@ -1,6 +1,8 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from decimal import Decimal
 from typing import Dict, List, Optional
+from unittest.mock import patch, Mock
+
 import moto
 from pytest import mark
 
@@ -19,6 +21,7 @@ from app.support.data_access_layer.get_records import (
     get_all_of_record_type,
     get_all_records_of_medicine_in_next_due_timeframe
 )
+from app.support.find_reminders import find_reminders
 
 
 @moto.mock_dynamodb
@@ -408,3 +411,47 @@ class TestsDynamoDBCalls:
             {len(missed_results)} missed results: {missed_results}
             {len(extra_results)} extra results: {extra_results}
             """
+
+    @mark.parametrize(
+        argnames='start_date, timespan',
+        argvalues=[
+            (datetime(year=1812, month=1, day=1), timedelta(weeks=26)),
+            (datetime(year=1808, month=1, day=1), timedelta(weeks=104)),
+            (datetime(year=1808, month=4, day=6), timedelta(days=1)),
+        ]
+    )
+    @patch('app.support.find_reminders.utc_datetime_now')
+    def tests_find_reminders(self,
+                             utc_datetime_now: Mock,
+                             start_date: datetime,
+                             timespan: timedelta):
+        end_date = start_date + timespan
+        utc_datetime_now.return_value = start_date
+        self.build_mock_table_and_refresh_known_test_records()
+        records = find_reminders(timespan=timespan)
+
+    # We want to group the returned records into correctly returned or not
+        correct_records = []
+        incorrect_records = []
+        start_date = Decimal(start_date.timestamp())
+        end_date = Decimal(end_date.timestamp())
+        for record in records:
+            # we should only get records back of the following types
+            # but each gets it due date from a different field
+            if record['record_type'] == RecordType.APPOINTMENT:
+                record_date = record['date_time']
+            elif record['record_type'] == RecordType.MEDICATION:
+                record_date = record['next_due']
+            else:
+                incorrect_records.append(record)
+                continue
+            # we can now categorise the remaining records
+            # by whether they are in the appropriate timeframe
+            if start_date <= record_date <= end_date:
+                correct_records.append(record)
+            else:
+                incorrect_records.append(record)
+
+        # and now we can make assertions based on the grouping
+        assert len(records) == len(correct_records), \
+            f"Got {len(incorrect_records)} incorrect records returned: {str(incorrect_records)}"

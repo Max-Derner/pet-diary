@@ -14,15 +14,13 @@ Transform: AWS::Serverless-2016-10-31  # Mandatory declaration of SAM template
 
 Resources:
 
-  WeeklyReminder:  # TODO: Create daily reminder
+  WeeklyReminder:
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   #   dev guide --> https://docs.aws.amazon.com/lambda/
     Type: AWS::Serverless::Function
-    # TODO: the following checkov outliers
     #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
-    #checkov:skip=CKV_AWS_117: VPC will come later
-    # TODO VPC and WAF
+    #checkov:skip=CKV_AWS_117: VPC costs money and everything is secure enough for our purposes 
     Properties:
       Description: Gives weekly reminders of upcoming medications and appointments
       FunctionName: weekly_reminder
@@ -55,6 +53,46 @@ Resources:
       Timeout: 5
       Layers:
         - !Ref LambdaLibrariesLayer
+
+  DailyReminder:
+  # Guide:
+  #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  #   dev guide --> https://docs.aws.amazon.com/lambda/
+    Type: AWS::Serverless::Function
+    #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
+    #checkov:skip=CKV_AWS_117: VPC costs money and everything is secure enough for our purposes 
+    Properties:
+      Description: Gives daily reminders of upcoming medications and appointments if any for today
+      FunctionName: daily_reminder
+      Architectures: 
+        - x86_64
+      CodeUri: lambda_packages/daily_reminder.zip
+      Environment: 
+        Variables:
+          database_name: pet_table
+          sns_topic: daily_reminder
+      EphemeralStorage: 
+        Size: 512
+      Events: 
+        ScheduledEvent:
+          Type: Schedule
+          Properties: 
+              Description: Fire every morning at 8am
+              Enabled: true
+              Schedule: cron(0 8 ? * * *)
+      # The following option may need you to increase your reserved concurrent executions limit.
+      # Instructions on doing that https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html
+      # Can be commented out instead, though not as safe especially regarding DDOS attacks
+      ReservedConcurrentExecutions: 5  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
+      Handler: lambda_daily_reminder.lambda_daily_reminder
+      KmsKeyArn: !GetAtt KMSAppKey.Arn
+      MemorySize: 128
+      PackageType: Zip
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.10
+      Timeout: 5
+      Layers:
+          - !Ref LambdaLibrariesLayer
 
   LambdaLibrariesLayer:
   # Guide:
@@ -141,6 +179,18 @@ Resources:
     Properties:
       TopicName: weekly_reminder
       DisplayName: PD_Weekly_Reminder
+      FifoTopic: false
+      KmsMasterKeyId: !GetAtt KMSAppKey.KeyId
+
+  DailyReminderTopic:
+    # Guide
+    #   General SNS --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
+    #   Topic only ---> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html
+    #   Dev guide ----> https://docs.aws.amazon.com/sns/
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: daily_reminder
+      DisplayName: PD_Daily_Reminder
       FifoTopic: false
       KmsMasterKeyId: !GetAtt KMSAppKey.KeyId
 

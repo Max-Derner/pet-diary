@@ -28,6 +28,11 @@ To set up the virtual environment see the [pdt entry in the Project Structure se
 Well, if everything else has been done correctly, you should just be able to issue the following commands:
 ```
 pdt aws-login
+``````
 pdt sam-deploy
 ```
-Once the application is fully deployed, you'll want to subscribe yourself to the various topics to start getting notifications. Use `pdt subscribe` to subscribe yourself to the notifications and that's it, you should be all set.
+Once the application is fully deployed, you'll want to subscribe yourself to the various topics to start getting notifications. Use 
+```
+pdt subscribe
+```
+ to subscribe yourself to the notifications and that's it, you should be all set.

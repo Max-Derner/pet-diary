@@ -1,34 +1,27 @@
 [Welcome Page](../README.md)  
 [App README](./APP_README.md)  
 
-# Well out of date!
-## My apologies, this needs seriously updating
-
 ## __contents__
 * [data_access_layer/](#data_access_layer)
-* [file_interactors.py](#file_interactorspy)
-* [logger.py](#loggerpy)
-* [misc.py](#miscpy)
-* [records/](#records)
-#### __file_interactors.py__
-This file simply does file interactions, such as creating a directory or list of directories, and pinching the AWS region out of your .pdt-config
-* [file_interactors.py](../app/support/file_interactors.py)
+* [common/logger.py](#commonloggerpy)
+* [common/misc.py](#commonmiscpy)
+* [records/](#data_access_layerrecords)
 
-#### __logger.py__
-This file contains the code to set up our logger. It uses the logging library, and can be used to get certain loggers.  
-There are a variety of functions available and plenty of links for further reading. There are functions to set up different types of formatters, functions to set up different stream handlers, and functions to slap it all together into a cohesive logger.  
-The function `get_partial_logger()` gives a logger which only outputs messages at level `INFO` and above and it sends these logs to console output only.  
-The function `get_full_logger()` gives a logger which outputs any logs of level `INFO` or above to the console output and writes a copy of the output to file. In addition to that, it also outputs more detailed information to yet another file, this file captures all logs, including logs at the `DEBUG` level. This file will show what function has produced the log, at what time, from which file, and from which line in the file too.
-* [logger.py](../app/support/logger.py)
+This is not an exhaustive view of the `support/` directory. Instead, it just aims to provide clarity on the not immediately obvious or larger files.
 
-#### __misc.py__
-This file just contains the one function at the minute. I suppose it's just a file for function which I couldn't decide where they should live. It currently holds `utc_timestamp_now()`, which does what it says on the tin. The reason this simple functionality is abstracted into it's own function is that I can now patch that function and control time during tests.
-* [misc.py](../app/support/misc.py)
+#### __common/logger.py__
+This module sets up a logger from the logging library in a very particular way.  
+Using the logging library allows us to send out logs at different levels, then for certain purposes we can pay attention only to specific levels depending on how much detail we want. So, anything at level `INFO` or higher will go to the console output, whilst anything at `DEBUG` or higher will go to a much more detailed .log file where it can be reviewed in case of a crash.
+* [common/logger.py](../app/support/common/logger.py)
 
-#### __records/__
+#### __common/misc.py__
+This file simply contains a few small functions which don't really warrant their own module. There's time formatting, file manipulation, and a JSON encoder in here. If this file ever gets above 100 lines, I'll split it out.
+* [common/misc.py](../app/support/misc.py)
+
+#### __data_access_layer/records/__
 This directory holds all the details you need for creating and validating records.  
-Firstly, we have [`pet_table_models.py`](../app/support/records/pet_table_models.py), this file defines the pet-table DynamoDB table in a comment at the top. It then goes on to describe the fields involved in each form of record. These are Pydantic models and are used for validation, though we do not use them directly.  
-Instead we use 'record factories', each record factory inherits from `AbstractRecordFactory` in the [`abstract_record.py`](../app/support/records/abstract_record.py) module. Now, this class is not an abstract factory, it's an abstract class which when inherited from, provides the structure for a factory.  
+Firstly, we have [`pet_table_models.py`](../app/support/data_access_layer/records/pet_table_models.py), this file defines the pet-table DynamoDB table in a comment at the top. It then goes on to describe the fields involved in each form of record. These are Pydantic models and are used for validation, though we do not use them directly.  
+Instead we use 'record factories', each record factory inherits from `AbstractRecordFactory` in the [`abstract_record.py`](../app/support/data_access_layer/records/abstract_record.py) module. Now, this class is not an abstract factory, it's an abstract class which when inherited from, provides the structure for a factory.  
 The abstract factory provides methods for validation and coercing records into a valid state. It is then up to each individual record factory to implement the following methods:
 * `__init__()` Which simply needs to assign one of the models to `self.model`.
 * `produce_record()` This should take in all the values for your record and simply give you a dictionary representation of the record. Nice and easy, the only thing to bare in mind is that each record form it's sort key according to specific rules such that it can be found more easily later on, so that needs to be respected and the user should not be able to alter the sort-key at all.  
@@ -39,12 +32,13 @@ See [medication_record.py](../app/support/records/medication_record.py) for some
 * [records/](../app/support/records/)
 
 #### __data_access_layer/__
-This directory holds things which would be considered an abstraction over the `records/` directory.  
+This directory holds everything database related. The record factories and every way of interacting with the database, except for getting the initial AWS boto3 resources and clients (that's done in [common/aws_resources.py](../app/support/common/aws_resources.py)).  
 
 There's the [put_records.py](../app/support/data_access_layer/put_records.py) module.  
-Which simply contains functions to place records into DynamoDB. After passing in all the record details, these functions will; fetch a DynamoDB resource, create a RecordFactory, produce a record of the correct form, try validating the record, if the record did not validate try coercing the record into it's correct form, and then finally placing that record into DynamoDB.  
+Which simply contains functions to place records into DynamoDB. After passing in all the record details, these functions will; fetch a DynamoDB resource, create a RecordFactory, produce a record of the correct form, try validating the record, if the record did not validate try coercing the record into it's correct form, and then finally place that record into DynamoDB.  
 
-There's the [helpers.py](../app/support/data_access_layer/helpers.py) module.  
-This just keeps things which will get used across various modules in the `data_access_layer` package. Things like providing a DynamoDB resource, things of that nature.
+There's the [get_records.py](../app/support/data_access_layer/put_records.py) module.  
+Which has lots of functions which provide ways of querying the data in DynamoDB.
+
 
 * [data_access_layer/](../app/support/data_access_layer/)

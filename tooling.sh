@@ -98,6 +98,11 @@ _sam-security-check() {
     return "$?"  # ensures function returns same code checkov exits with
 }
 
+basic-db-query() {
+    _verify_venv_active
+    python3 app/local_use/basic_queries.py
+}
+
 sam-deploy() {
     echo "Creating Lambda packages"
     make lambda_packages/weekly_reminder.zip

@@ -89,6 +89,7 @@ pdt-help() {
     echo -e "\033[0;32m"
     echo -e "\033[0;32m    configure-venv"
     echo -e "\033[0;32m        This will set up your virtual environment for you, it is the reccomended way to do so"
+    echo -e "\033[0;32m        It can also be used to update your pip packages"
     echo -e "\033[0;32m"
     echo -e "\033[0;32m    aws-add-test-profile"
     echo -e "\033[0;32m        This simply adds an exra profile to ~/.aws/config. The profile should be broken enough"
@@ -109,6 +110,10 @@ pdt-help() {
     echo -e "\033[0;35m            - Daily Reminder"
     echo -e "\033[0;35m                This topic sends a text message if and only if there is something to be reminded"
     echo -e "\033[0;35m                about for that day."
+    echo -e "\033[0;35m"
+    echo -e "\033[0;35m    db-query"
+    echo -e "\033[0;35m        This opens up a small script which lets you mae simple database queries in lieu of a front end"
+
 }
 
 
@@ -164,6 +169,9 @@ pdt() {
             ;;
         "subscribe")
             subscribe-to-sns-topic
+            ;;
+        "db-query")
+            basic-db-query
             ;;
         "help")
             pdt-help | less -R

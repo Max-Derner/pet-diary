@@ -11,7 +11,7 @@ Using this application you can create records against a DynamoDB table that:
 * records vaccinations and medications administered and when they are next due
 * records any observations you may have had about them that could be useful in diagnosing health conditions (e.g. stopped eating on x date, vomited on x day, etc)  
 
-There is also scheduled lambda functions which will query the database and check if you have any upcoming appointments or need to administer any medication soon. One lambda will then e-mail you with anything you need to be aware of up to 2 weeks in advance. The other lambda will send you an SMS text message on the day.
+There are also scheduled lambda functions which will query the database and check if you have any upcoming appointments or need to administer any medication soon. One lambda will then e-mail you with anything you need to be aware of up to 2 weeks in advance. The other lambda will send you an SMS text message on the day.
 
 You will also be able to generate summary reports on your pets. These can then be sent to your vets, so they are aware of your records, and can more easily diagnose any health issues your pet may have.
 

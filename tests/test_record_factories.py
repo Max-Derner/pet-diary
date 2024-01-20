@@ -1,12 +1,14 @@
+from datetime import datetime, timedelta
+from decimal import Decimal
+
 from unittest.mock import patch
 from unittest import TestCase
+
 from app.support.data_access_layer.records.illness_record import IllnessRecordFactory
 from app.support.data_access_layer.records.details_record import DetailsRecordFactory
 from app.support.data_access_layer.records.medication_record import MedicationRecordFactory
 from app.support.data_access_layer.records.observation_record import ObservationRecordFactory
 from app.support.data_access_layer.records.appointment_record import AppointmentRecordFactory
-from datetime import datetime, timedelta
-from decimal import Decimal
 from app.support.data_access_layer.records.pet_table_models import RecordType
 from .helpers import mock_utc_timestamp_now
 

@@ -1,4 +1,8 @@
-from typing import List, Dict
+from typing import Any, List, Dict
+from logging import Logger
+from enum import Enum
+
+from .common.logger import get_full_logger
 from .common.misc import british_format_time
 from .data_access_layer.records.pet_table_models import RecordType
 
@@ -63,14 +67,17 @@ def str_to_column(string: str, column_width: int) -> str:
     string_lines = []
     while len(string) > 0:
         next_line: str = string[:column_width]
-        if (len(string) >= column_width and string[column_width] == ' ') or len(next_line) < column_width:
+        # Figure out if line is short enough to fit in column
+        if len(next_line) < column_width:
             string = string[len(next_line):].lstrip(' ')
-        elif (last_space_idx := next_line.rfind(' ')) != -1:
+        # Otherwise, try to split of space or hyphen
+        elif (last_space_idx := next_line.rfind(' ')) != -1:  # -1 is failure
             next_line = next_line[:last_space_idx]
             string = string[len(next_line):].lstrip(' ')
-        elif (last_hyphen_idx := next_line.rfind('-')) != -1:
+        elif (last_hyphen_idx := next_line.rfind('-')) != -1:  # -1 is failure
             next_line = next_line[:last_hyphen_idx + 1]
             string = string[len(next_line):]
+        # Last ditch hope is to manually put in hyphen
         else:
             next_line = next_line[:-1] + '-'
             string = string[len(next_line) - 1:]
@@ -84,3 +91,114 @@ def record_formatter(records: List[Dict]) -> str:
     for record in records:
         record_cards.append(format_record(record=record))
     return DIVIDER + f'{DIVIDER}'.join(record_cards)
+
+
+class RecordStyle(str, Enum):
+    CARD = 'card styling'
+    SMS = 'test message styling'
+
+
+class RecordFormatter:
+    _records: List[Dict]
+    _: int
+    _log: Logger
+    _card_width: int
+    _divider: str
+    _style: RecordStyle
+    _column_width: int
+
+    def __init__(self):
+        self._log = get_full_logger()
+        self._justification = 20
+        self._records = []
+        self._column_width = 40
+        self._divider = f"\n{'='.ljust(self.card_width, '=')}\n"
+        self._style = RecordStyle.CARD
+
+    @property
+    def card_width(self) -> int:
+        return self._column_width + self.justification
+
+    @property
+    def column_width(self) -> int:
+        return self._column_width
+
+    @column_width.setter
+    def column_width(self, value):
+        if isinstance(value, int):
+            self._column_width = value
+            self.log.debug(f"column_width set to: {value}")
+        else:
+            self.log.debug(
+                f"column_width not set. Expected type int, got type {type(value)}"
+            )
+
+    @property
+    def log(self) -> Logger:
+        return self._log
+
+    @property
+    def justification(self) -> int:
+        return self._justification
+
+    @justification.setter
+    def justification(self, value: int):
+        if isinstance(value, int):
+            self._justification = value
+            self.log.debug(f"justification set to: {value}")
+        else:
+            self.log.debug(
+                f"justification not set. Expected type int, got type {type(value)}"
+            )
+
+    @property
+    def style(self) -> int:
+        return self._style
+
+    @style.setter
+    def style(self, value):
+        if isinstance(value, RecordStyle):
+            self._style = value
+            self.log.debug(f"style set to: {value}")
+        else:
+            self.log.debug(
+                f"style not set. Expected type RecordStyle, got type {type(value)}"
+            )
+
+    def add_records(self, records: List[Dict]):
+        if not isinstance(records, list):
+            records = [records]
+        good_records = [record for record in records if isinstance(record, dict)]
+        if len(good_records) != len(records):
+            self.log.debug(
+                f"{len(records) - len(good_records)} records were not the correct type and will not be formatted"
+            )
+        self._records.extend(good_records)
+
+    def str_to_column(self, string: str) -> str:
+        """Forces text into a column, newspaper style"""
+        string_lines = []
+        while len(string) > 0:
+            next_line: str = string[:self.column_width]
+            # Figure out if line is short enough to fit in column
+            if len(next_line) < self.column_width:
+                string = string[len(next_line):].lstrip(' ')
+            # Otherwise, try to split on space or hyphen
+            elif (last_space_idx := next_line.rfind(' ')) != -1:  # -1 is failure
+                next_line = next_line[:last_space_idx]
+                string = string[len(next_line):].lstrip(' ')
+            elif (last_hyphen_idx := next_line.rfind('-')) != -1:  # -1 is failure
+                next_line = next_line[:last_hyphen_idx + 1]
+                string = string[len(next_line):]
+            # Last ditch hope is to forcefully put in hyphen
+            else:
+                next_line = next_line[:-1] + '-'
+                string = string[len(next_line) - 1:]
+            string_lines.append(next_line)
+        # justify column
+        if self._style == RecordStyle.CARD:
+            string_lines = [
+                ''.ljust(self.justification) + line
+                for line in string_lines
+            ]
+        return '\n'.join(string_lines)

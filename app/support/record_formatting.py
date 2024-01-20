@@ -1,4 +1,4 @@
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Optional
 from logging import Logger
 from enum import Enum
 
@@ -206,10 +206,13 @@ class RecordFormatter:
     def format_record_section(self,
                               section_title: str,
                               record: Dict,
-                              key: Any) -> str:
+                              key: Any,
+                              pre_formatter: Optional[callable] = lambda x: x) -> str:
         section_title += ':'
         section = ''
         if (record_value := record.get(key)) is not None:
+            # pre-format
+            record_value = pre_formatter(record_value)
             # create column format
             column = self.str_to_column(string=record_value)
             if self.style == RecordStyle.CARD:

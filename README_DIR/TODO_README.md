@@ -2,7 +2,7 @@
 ## This is my personal TODO list, you may look at it to see what's up and coming
 #### If you're using this application for some reason and would like to see me prioritise something, or you have some suggestions of features. Please do let me know.
 
-Give daily reminder it's own SMS formatter that's a bit more phone friendly
+Give daily reminder it's own SMS formatter that's a bit more phone friendly [branch sms-format]
 
 Look into changing the format of the time fields in DynamoDB. Go from timestamp -> utc string
 

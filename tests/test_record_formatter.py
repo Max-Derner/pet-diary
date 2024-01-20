@@ -1,5 +1,6 @@
 from logging import Logger
 from typing import Any
+from datetime import datetime
 
 from pytest import mark
 
@@ -7,6 +8,7 @@ from app.support.record_formatting import (
     RecordFormatter,
     RecordStyle,
 )
+from app.support.data_access_layer.records.pet_table_models import RecordType
 
 
 def test_initialisation():
@@ -163,3 +165,28 @@ def tests_str_to_column(style: RecordStyle):
     column = rf.str_to_column(string=long_text)
 
     assert column == expected_text
+
+
+def tests_format_record():
+    monster_record = {
+        'name': 'pet name',
+        'breed': 'pets breed',
+        'dob': datetime(year=2023, month=12, day=4).timestamp(),
+        'gender': 'pets gender',
+        'colour': 'colour of pet',
+        'microchip_number': "1",
+        'date_time': datetime(year=2023, month=1, day=1).timestamp(),
+        'medicine_name': 'precise name of medication',
+        'medicine_type': 'deflea, deworm, etc',
+        'ailment': 'vomiting, lethargy, etc',
+        'description': 'description of ailment, vet appointment, observation, etc',
+        'next_due': datetime(year=2023, month=2, day=2).timestamp(),
+        'record_type': RecordType.APPOINTMENT.value
+    }
+    with open('tests/formatted_record_example.txt', mode='r') as fileio:
+        expected_formatting = fileio.read()
+
+    fr = RecordFormatter()
+    formatted_record = fr.format_record(record=monster_record)
+
+    assert formatted_record == expected_formatting

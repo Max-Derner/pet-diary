@@ -28,7 +28,7 @@ def tests_format_record():
         'next_due': datetime(year=2023, month=2, day=2).timestamp(),
         'record_type': RecordType.APPOINTMENT.value
     }
-    with open('tests/formatted_record_example.txt', mode='r') as fileio:
+    with open('tests/old_formatted_record_example.txt', mode='r') as fileio:
         expected_formatting = fileio.read()
 
     formatted_record = format_record(record=monster_record)

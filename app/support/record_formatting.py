@@ -224,3 +224,74 @@ class RecordFormatter:
                 section = f"{section_title}\n{column}"
             section += '\n'
         return section
+
+    def format_record(self, record: Dict) -> str:
+        """formats record into a style resembling a card"""
+        fr = ''  # formatted record
+        record_type: str = record['record_type']  # record_type is in every record
+        record_title = ' ~~- -~- ' + record_type.title() + ' Record -~- -~~ '
+        fr += record_title.center(self.card_width, ' ') + '\n'
+        fr += self.format_record_section(
+            section_title='Pet',
+            key='name',
+            record=record
+        )
+        fr += self.format_record_section(
+            section_title='Breed',
+            key='breed',
+            record=record
+        )
+        fr += self.format_record_section(
+            section_title='Date of Birth',
+            key='dob',
+            record=record,
+            pre_formatter=british_format_time
+        )
+        fr += self.format_record_section(
+            section_title='Gender',
+            key='gender',
+            record=record
+        )
+        fr += self.format_record_section(
+            section_title='Colour',
+            key='colour',
+            record=record
+        )
+        fr += self.format_record_section(
+            section_title='Microchip number',
+            key='microchip_number',
+            record=record
+        )
+        fr += self.format_record_section(
+            section_title='Name of medicine',
+            key='medicine_name',
+            record=record
+        )
+        fr += self.format_record_section(
+            section_title='Type of medicine',
+            key='medicine_type',
+            record=record
+        )
+        fr += self.format_record_section(
+            section_title='Record creation date' if record_type is RecordType.DETAILS else 'Date and time',
+            key='date_time',
+            record=record,
+            pre_formatter=british_format_time
+        )
+        fr += self.format_record_section(
+            section_title='Next due',
+            key='next_due',
+            record=record,
+            pre_formatter=british_format_time
+        )
+        fr += self.format_record_section(
+            section_title='Ailment',
+            key='ailment',
+            record=record
+        )
+        fr += self.format_record_section(
+            section_title='Description',
+            key='description',
+            record=record
+        )
+        return fr

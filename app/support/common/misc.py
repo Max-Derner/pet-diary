@@ -24,7 +24,9 @@ def utc_datetime_now() -> datetime:
 
 
 def british_format_time(timestamp: float) -> str:
-    # Gives format in the style: Friday, 24 November 2023 - 05:35PM
+    """Gives format in the style: Friday, 24 November 2023 - 05:35PM"""
+    if not isinstance(timestamp, float):
+        timestamp = float(timestamp)  # Don't error catch, what's the alternative?
     return datetime.fromtimestamp(timestamp).strftime('%A, %-d %B %Y - %I:%M %p')
 
 

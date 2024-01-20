@@ -196,9 +196,28 @@ class RecordFormatter:
                 string = string[len(next_line) - 1:]
             string_lines.append(next_line)
         # justify column
-        if self._style == RecordStyle.CARD:
+        if self.style == RecordStyle.CARD:
             string_lines = [
                 ''.ljust(self.justification) + line
                 for line in string_lines
             ]
         return '\n'.join(string_lines)
+
+    def format_record_section(self,
+                              section_title: str,
+                              record: Dict,
+                              key: Any) -> str:
+        section_title += ':'
+        section = ''
+        if (record_value := record.get(key)) is not None:
+            # create column format
+            column = self.str_to_column(string=record_value)
+            if self.style == RecordStyle.CARD:
+                # Force title in line with first line of column
+                split_col = column.split('\n')
+                split_col[0] = section_title + split_col[0][len(section_title):]
+                section = '\n'.join(split_col)
+            elif self.style == RecordStyle.SMS:
+                section = f"{section_title}\n{column}"
+            section += '\n'
+        return section

@@ -110,17 +110,28 @@ def test_add_records():
     assert rf._records == expected_records
 
 
-def test_format_record_line():
+@mark.parametrize('style',
+                  [
+                      RecordStyle.CARD,
+                      RecordStyle.SMS
+                  ])
+def test_format_record_section(style):
     rf = RecordFormatter()
-    record = {'key': 'all the details and whatnot'}
+    rf.justification = 20
+    rf.column_width = 20
+    rf.style = style
+    record = {'key': 'All the details and whatnot'}
 
-    line = rf.format_record_line(
-        display_name='DISPLAY NAME',
+    line = rf.format_record_section(
+        section_title='DISPLAY NAME',
         record=record,
         key='key'
     )
 
-    assert line == "DISPLAY NAME:       All The Details And Whatnot\n"
+    if style == RecordStyle.CARD:
+        assert line == "DISPLAY NAME:       All the details and\n                    whatnot\n"
+    elif style == RecordStyle.SMS:
+        assert line == "DISPLAY NAME:\nAll the details and\nwhatnot\n"
 
 
 @mark.parametrize('style',

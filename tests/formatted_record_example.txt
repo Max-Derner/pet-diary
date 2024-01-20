@@ -10,5 +10,5 @@ Type of medicine:   Deflea, Deworm, Etc
 Date and time:      Sunday, 1 January 2023 - 12:00 AM
 Next due:           Thursday, 2 February 2023 - 12:00 AM
 Ailment:            Vomiting, Lathargy, Etc
-Description:        description of ailment, vet appointment,
-                    observation, etc
+Description:        description of ailment, vet
+                    appointment, observation, etc

@@ -29,7 +29,7 @@ def tests_format_record():
         'record_type': RecordType.APPOINTMENT.value
     }
     with open('tests/formatted_record_example.txt', mode='r') as fileio:
-        expected_formatting = ''.join(fileio.readlines())
+        expected_formatting = fileio.read()
 
     formatted_record = format_record(record=monster_record)
 

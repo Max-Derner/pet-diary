@@ -146,4 +146,3 @@ def tests_str_to_column(style: RecordStyle):
     column = rf.str_to_column(string=long_text)
 
     assert column == expected_text
-

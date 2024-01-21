@@ -9,7 +9,7 @@ from app.support.data_access_layer.get_records import (
     get_all_records_of_medicine_in_next_due_timeframe
 )
 from app.support.data_access_layer.records.pet_table_models import RecordType
-from app.support.record_formatting import record_formatter
+from app.support.record_formatting import RecordFormatter
 
 logger = get_full_logger()
 
@@ -100,7 +100,9 @@ def main():
     else:
         logger.info("Invalid choice!")
         exit(1)
-    logger.info(record_formatter(records=records))
+
+    rf = RecordFormatter()
+    logger.info(rf.format_records(records=records))
 
 
 if __name__ == "__main__":

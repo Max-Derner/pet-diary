@@ -1,19 +1,15 @@
 name: Python Testing
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push, pull_request]
 
 jobs:
   Linting:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -24,14 +20,15 @@ jobs:
     - name: Analysing the code with Flake8
       run: |
         . ./pdt activate 1>/dev/null && python-lint
+
   Unit_Tests:
     needs: Linting
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:

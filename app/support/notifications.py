@@ -6,7 +6,7 @@ from support.common.aws_resources import (
     get_daily_reminder_topic
 )
 from support.common.logger import get_full_logger
-from support.record_formatting import record_formatter, DIVIDER
+from support.record_formatting import RecordFormatter, RecordStyle
 from support.common.misc import current_date
 
 
@@ -47,16 +47,6 @@ Pet Health Diary (part of Derner Industries)
 """
 
 
-def _format_reminders(records: List[Dict]):
-
-    if len(records) == 0:
-        reminders = 'There are no reminders for this period.'
-    else:
-        reminders = record_formatter(records)
-        reminders += DIVIDER
-    return reminders
-
-
 def format_reminder_email(records: List[Dict], timespan: timedelta) -> Tuple[str, str]:
     """
     returns -> (subject, message)
@@ -68,7 +58,12 @@ Hello,
     These are your reminders for this period:
 
 """
-    message += _format_reminders(records=records)
+    if len(records) == 0:
+        reminders = 'There are no reminders for this period.'
+    else:
+        rf = RecordFormatter()
+        reminders = rf.format_records(records=records)
+    message += reminders
     message += message_sign_off
     return subject, message
 
@@ -79,6 +74,13 @@ Hello,
     These are your reminders for {timespan.days} days, from {current_date()}:
 
 """
-    message += _format_reminders(records=records)
+    if len(records) == 0:
+        reminders = 'There are no reminders for this period.'
+    else:
+        rf = RecordFormatter()
+        rf.style = RecordStyle.SMS
+        rf.column_width = 35
+        reminders = rf.format_records(records=records)
+    message += reminders
     message += message_sign_off
     return message

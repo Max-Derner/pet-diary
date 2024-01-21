@@ -18,7 +18,7 @@ def test_initialisation():
     assert isinstance(rf.justification, int)
     assert rf._records == []
     assert isinstance(rf.card_width, int)
-    assert isinstance(rf._divider, str)
+    assert isinstance(rf.divider, str)
     assert isinstance(rf._style, RecordStyle)
     assert isinstance(rf.column_width, int)
 

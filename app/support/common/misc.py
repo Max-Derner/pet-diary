@@ -31,7 +31,7 @@ def british_format_time(timestamp: float) -> str:
 
 
 def current_date() -> str:
-    # Gives format in the style: Friday, 24 November 2023
+    """Gives format in the style: Friday, 24 November 2023"""
     current_date = utc_datetime_now().date()
     return current_date.strftime('%A, %-d %B %Y')
 

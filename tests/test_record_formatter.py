@@ -190,3 +190,12 @@ def tests_format_record():
     formatted_record = fr.format_record(record=monster_record)
 
     assert formatted_record == expected_formatting
+
+
+def tests_justification_zero_when_in_sms_style():
+    rf = RecordFormatter()
+    rf.justification = 20
+
+    rf.style = RecordStyle.SMS
+
+    assert rf.justification == 0

@@ -108,12 +108,12 @@ class RecordFormatter:
     _column_width: int
 
     def __init__(self):
-        self._log = get_full_logger()
+        self._style = RecordStyle.CARD
         self._justification = 20
+        self._log = get_full_logger()
         self._records = []
         self._column_width = 40
         self._divider = f"\n{'='.ljust(self.card_width, '=')}\n"
-        self._style = RecordStyle.CARD
 
     @property
     def card_width(self) -> int:
@@ -139,6 +139,8 @@ class RecordFormatter:
 
     @property
     def justification(self) -> int:
+        if self.style == RecordStyle.SMS:
+            return 0
         return self._justification
 
     @justification.setter

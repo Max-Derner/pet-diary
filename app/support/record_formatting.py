@@ -17,7 +17,6 @@ class RecordFormatter:
     justification: 20
     column width: 40
     style: card"""
-    _records: List[Dict]
     _: int
     _log: Logger
     _card_width: int
@@ -29,7 +28,6 @@ class RecordFormatter:
         self._style = RecordStyle.CARD
         self._justification = 20
         self._log = get_full_logger()
-        self._records = []
         self._column_width = 40
 
     @property
@@ -87,16 +85,6 @@ class RecordFormatter:
             self.log.debug(
                 f"style not set. Expected type RecordStyle, got type {type(value)}"
             )
-
-    def add_records(self, records: List[Dict]):
-        if not isinstance(records, list):
-            records = [records]
-        good_records = [record for record in records if isinstance(record, dict)]
-        if len(good_records) != len(records):
-            self.log.debug(
-                f"{len(records) - len(good_records)} records were not the correct type and will not be formatted"
-            )
-        self._records.extend(good_records)
 
     def str_to_column(self, string: str) -> str:
         """Forces text into a column, newspaper style"""

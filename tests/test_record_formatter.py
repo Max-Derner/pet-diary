@@ -16,7 +16,6 @@ def test_initialisation():
 
     assert isinstance(rf.log, Logger)
     assert isinstance(rf.justification, int)
-    assert rf._records == []
     assert isinstance(rf.card_width, int)
     assert isinstance(rf.divider, str)
     assert isinstance(rf._style, RecordStyle)
@@ -77,39 +76,6 @@ def test_style_setter(input_val: Any, expected_to_work: bool):
         assert rf.style == input_val
     else:
         assert rf.style == old_style
-
-
-def test_add_records():
-    bad_records = [
-        1,
-        'hi',
-        True,
-        ('c', 3),
-    ]
-    good_records = [
-        {'a': 1},
-        {'b': 2},
-    ]
-    more_good_records = [
-        {'d': 4},
-        {'e': 5}
-    ]
-    single_record = {'f': 6}
-    input_records = []
-    input_records.extend(bad_records)
-    input_records.extend(good_records)
-    expected_records = []
-    expected_records.extend(good_records)
-    expected_records.extend(more_good_records)
-    expected_records.append(single_record)
-    rf = RecordFormatter()
-
-    rf.add_records(records=input_records)
-    rf.add_records(records=more_good_records)
-    rf.add_records(records='all those ones')
-    rf.add_records(records=single_record)
-
-    assert rf._records == expected_records
 
 
 @mark.parametrize('style, pre_formatter',

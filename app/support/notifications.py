@@ -79,6 +79,7 @@ Hello,
     else:
         rf = RecordFormatter()
         rf.style = RecordStyle.SMS
+        rf.column_width = 35
         reminders = rf.format_records(records=records)
     message += reminders
     message += message_sign_off

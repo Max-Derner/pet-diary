@@ -1,6 +1,8 @@
-from unittest.mock import patch, Mock
 from datetime import datetime
 from decimal import Decimal
+
+from unittest.mock import patch, Mock
+
 from app.support.data_access_layer.put_records import (
     put_appointment_record,
     put_details_record,

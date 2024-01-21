@@ -7,8 +7,6 @@
 * [common/misc.py](#commonmiscpy)
 * [records/](#data_access_layerrecords)
 
-This is not an exhaustive view of the `support/` directory. Instead, it just aims to provide clarity on the not immediately obvious or larger files.
-
 #### __common/logger.py__
 This module sets up a logger from the logging library in a very particular way.  
 Using the logging library allows us to send out logs at different levels, then for certain purposes we can pay attention only to specific levels depending on how much detail we want. So, anything at level `INFO` or higher will go to the console output, whilst anything at `DEBUG` or higher will go to a much more detailed .log file where it can be reviewed in case of a crash.
@@ -42,3 +40,17 @@ Which has lots of functions which provide ways of querying the data in DynamoDB.
 
 
 * [data_access_layer/](../app/support/data_access_layer/)
+
+#### __find_reminders.py__
+This is a nice and simple module.  
+All it does is find records for which you should get a reminder out of the lambdas.
+* [find_reminders.py](../app/support/find_reminders.py)
+
+#### __notifications.py__
+This module is all about sending notifications and formatting those notifications.
+* [notifications.py](../app/support/notifications.py)
+
+#### __record_formatting.py__
+This module houses the RecordFormatter class.  
+This class is responsible for all record formatting. You can format into a style which suits emails or SMS messages. You can dictate certain aspects of the formatting style by setting variables in the class.
+* [record_formatting.py](../app/support/record_formatting.py)

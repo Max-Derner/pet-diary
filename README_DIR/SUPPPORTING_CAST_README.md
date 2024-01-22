@@ -2,10 +2,13 @@
 [App README](./APP_README.md)  
 
 ## __contents__
-* [data_access_layer/](#data_access_layer)
 * [common/logger.py](#commonloggerpy)
 * [common/misc.py](#commonmiscpy)
+* [data_access_layer/](#data_access_layer)
 * [records/](#data_access_layerrecords)
+* [find_reminders.py](#find_reminderspy)
+* [notifications.py](#notificationspy)
+* [record_formatting.py](#record_formattingpy)
 
 #### __common/logger.py__
 This module sets up a logger from the logging library in a very particular way.  

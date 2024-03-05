@@ -19,7 +19,7 @@ _aws_exports() {
     export AWS_REGION
 }
 
-_verify_venv_active() {
+_verify_venv_active() {  # TODO: swap this out and make it so it checks CWD, and scrapes out the project path
     if [ -z "${VIRTUAL_ENV}" ];
         then echo "Activate the venv than try again";
         return 1;

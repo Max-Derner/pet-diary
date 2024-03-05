@@ -24,7 +24,7 @@ from app.support.data_access_layer.get_records import (
 from app.support.find_reminders import find_reminders
 
 
-@moto.mock_dynamodb
+@moto.mock_aws
 class TestsDynamoDBCalls:
 
     all_test_records: List[Dict]

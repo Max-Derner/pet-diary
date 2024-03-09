@@ -9,7 +9,7 @@ Give daily reminder it's own SMS formatter that's a bit more phone friendly
 Look at shifting that bit in the record factory "additional validation" or whatever, and make them into proper Pydantic validators (e.g. https://docs.pydantic.dev/latest/concepts/validators/#before-after-wrap-and-plain-validators)  
 Hope is just to keep everything a little cleaner and more together. Well... and to learn more about Pydantic.
 * [branch pedant] --> abandoned
-* [branch pydant]
+* [branch pydant] DONE
 
 Look into changing the format of the time fields in DynamoDB. Go from timestamp -> utc string
 

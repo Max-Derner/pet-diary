@@ -342,6 +342,21 @@ class TestsMedicationRecordFactory:
 
         assert result is True
 
+    def tests_validation_failure_for_repeat_items_with_no_next_due_set(self):
+        medication_factory = MedicationRecordFactory()
+        record = medication_factory.produce_record(
+            pet_name='me',
+            time_of_administration=datetime.now(),
+            name_of_medicine='poo better laxative tm',
+            type_of_medicine='laxative',
+            next_due=datetime.now()
+        )
+        del record['next_due']
+
+        result = medication_factory.validate_record(record=record)
+
+        assert result is False
+
 
 class TestsObservationRecordFactory:
 

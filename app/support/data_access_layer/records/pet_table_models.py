@@ -28,7 +28,10 @@ from enum import Enum
 from typing_extensions import Annotated
 from numbers import Number
 
-from pydantic import BaseModel
+from pydantic import (
+    BaseModel,
+    model_validator
+)
 from pydantic.functional_validators import AfterValidator
 
 
@@ -72,6 +75,13 @@ class MedicationRecordModel(BaseModel):
     repeat: bool
     next_due: Optional[Decimal] = None
     record_type: str
+
+    @model_validator(mode='after')
+    def check_repeat_and_next_due(self) -> 'MedicationRecordModel':
+        if self.repeat is True and self.next_due is None:
+            # Record must have next_due attribute if repeat is True
+            raise ValueError('Medication is a repeat item but next_due has nt been set')
+        return self
 
 
 class IllnessRecordModel(BaseModel):

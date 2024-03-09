@@ -1,2 +1,3 @@
 pydantic
+typing_extensions
  -r ./security_patch_requirements.txt

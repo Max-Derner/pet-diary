@@ -22,11 +22,14 @@
 #  Record Types = Details, Medication, Illness, Observation, Appointment
 #
 
-from typing import Optional
+from typing import Any, Optional
 from decimal import Decimal
 from enum import Enum
+from typing_extensions import Annotated
+from numbers import Number
 
 from pydantic import BaseModel
+from pydantic.functional_validators import AfterValidator
 
 
 class RecordType(str, Enum):
@@ -37,6 +40,17 @@ class RecordType(str, Enum):
     OBSERVATION = 'observation'
 
 
+def _check_microchip_number(v: Any) -> Decimal:
+    # Dynamo needs type: Decimal, microchip has to be positive integer
+    if isinstance(v, Number) and v >= 0 and v % 1 == 0:
+        return v
+    else:
+        raise ValueError("Microchip number needs to be a positive whole number")
+
+
+MICROCHIP_NUM = Annotated[Decimal, AfterValidator(_check_microchip_number)]
+
+
 class DetailsRecordModel(BaseModel):
     name: str
     sort_key: str
@@ -45,7 +59,7 @@ class DetailsRecordModel(BaseModel):
     date_time: Decimal
     gender: str
     colour: str
-    microchip_number: Decimal
+    microchip_number: MICROCHIP_NUM
     record_type: str
 
 

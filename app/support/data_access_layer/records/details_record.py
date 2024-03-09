@@ -37,12 +37,3 @@ class DetailsRecordFactory(AbstractRecordFactory):
             'record_type': RecordType.DETAILS.value
         }
         return details_record
-
-    def _extra_record_validation(self, record: Dict) -> bool:
-        try:
-            # Dynamo requires all numbers are Decimal, but this needs to be a
-            # whole number. So we'll do a little extra validation
-            int(record['microchip_number'])
-        except ValueError:
-            return False
-        return True

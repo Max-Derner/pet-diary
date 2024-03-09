@@ -40,17 +40,7 @@ class MedicationRecordFactory(AbstractRecordFactory):
             "date_time": Decimal(time_of_administration.astimezone(tz=timezone.utc).timestamp()),
             "medicine_name": name_of_medicine,
             "medicine_type": type_of_medicine,
-            "repeat": True if next_due is not None else False,
             'record_type': RecordType.MEDICATION.value,
             **next_due_section
         }
         return medicine_record
-
-    def _extra_record_validation(self, record: Dict) -> bool:
-        valid = True
-        if (repeat := record.get('repeat')) is None:
-            valid = False
-        if repeat is True and record.get('next_due') is None:
-            # Record must have next_due attribute if repeat is True
-            valid = False
-        return valid

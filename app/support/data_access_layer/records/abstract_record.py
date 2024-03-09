@@ -19,31 +19,18 @@ class AbstractRecordFactory():
     def produce_record(self) -> Dict:
         raise NotImplementedError()
 
-    def _extra_record_validation(self, record: Dict) -> bool:
-        """
-        Use this function to perform additional validation on your model.
-        It is always called by validate_record, and as default, does nothing.
-        """
-        return True
-
     def validate_record(self, record: Dict) -> bool:
         logger.info(f"Received request to validate the record: {record}")
-        logger.info("Validating record, stage 1/2")
         try:
             self.model.model_validate(
                 obj=record,
                 strict=True
                 )
+            logger.info("Record valid")
+            return True
         except ValidationError as e:
             logger.warning("Record failed validation")
             logger.warning(str(e))
-            return False
-        logger.info("Validating record, stage 2/2")
-        if self._extra_record_validation(record=record):
-            logger.info("Record successfully validated")
-            return True
-        else:
-            logger.warning("Record failed validation")
             return False
 
     def coerce_record_to_valid_state(self, record: Dict) -> Union[None, Dict]:

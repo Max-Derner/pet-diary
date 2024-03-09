@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 
 from unittest.mock import patch
-from unittest import TestCase
+import pytest
 
 from app.support.data_access_layer.records.illness_record import IllnessRecordFactory
 from app.support.data_access_layer.records.details_record import DetailsRecordFactory
@@ -15,7 +15,7 @@ from .helpers import mock_utc_timestamp_now
 RECORDS_MODULE = 'app.support.data_access_layer.records'
 
 
-class TestsIllnessRecordFactory(TestCase):
+class TestsIllnessRecordFactory:
 
     date_time = datetime(year=2023, month=10, day=14)
 
@@ -94,7 +94,7 @@ class TestsIllnessRecordFactory(TestCase):
         assert validation_result is True
 
 
-class TestsDetailsRecordFactory(TestCase):
+class TestsDetailsRecordFactory:
 
     date_of_birth = datetime(year=1805, month=12, day=12)
 
@@ -185,8 +185,29 @@ class TestsDetailsRecordFactory(TestCase):
 
         assert validation_result is True
 
+    @pytest.mark.parametrize('microchip_number, validity',
+                             [
+                                 (1, True),
+                                 (1.1, False),
+                                 (-1, False),
+                             ])
+    def tests_microchip_number_must_be_int(self, microchip_number, validity):
+        details_factory = DetailsRecordFactory()
+        record = details_factory.produce_record(
+            pet_name='me',
+            date_of_birth=self.date_of_birth,
+            colour='good',
+            gender='yes',
+            breed='people',
+            microchip_number=microchip_number
+        )
 
-class TestsMedicationRecordFactory(TestCase):
+        validation_result = details_factory.validate_record(record=record)
+
+        assert validation_result is validity, f"A microchip number of type: {type(microchip_number)} and value '{microchip_number}' is {'' if validity else 'not '}supposed to be valid"
+
+
+class TestsMedicationRecordFactory:
 
     administered = datetime(year=2023, month=12, day=2)
 
@@ -321,8 +342,23 @@ class TestsMedicationRecordFactory(TestCase):
 
         assert result is True
 
+    def tests_validation_failure_for_repeat_items_with_no_next_due_set(self):
+        medication_factory = MedicationRecordFactory()
+        record = medication_factory.produce_record(
+            pet_name='me',
+            time_of_administration=datetime.now(),
+            name_of_medicine='poo better laxative tm',
+            type_of_medicine='laxative',
+            next_due=datetime.now()
+        )
+        del record['next_due']
 
-class TestsObservationRecordFactory(TestCase):
+        result = medication_factory.validate_record(record=record)
+
+        assert result is False
+
+
+class TestsObservationRecordFactory:
 
     observed_date_time = datetime(year=2023, month=10, day=14)
 
@@ -396,7 +432,7 @@ class TestsObservationRecordFactory(TestCase):
         assert validation_result is True
 
 
-class TestsAppointmentRecordFactory(TestCase):
+class TestsAppointmentRecordFactory:
 
     date_time = datetime(year=2023, month=10, day=14)
 

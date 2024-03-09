@@ -27,9 +27,6 @@ The abstract factory provides methods for validation and coercing records into a
 * `__init__()` Which simply needs to assign one of the models to `self.model`.
 * `produce_record()` This should take in all the values for your record and simply give you a dictionary representation of the record. Nice and easy, the only thing to bare in mind is that each record form it's sort key according to specific rules such that it can be found more easily later on, so that needs to be respected and the user should not be able to alter the sort-key at all.  
 
-You may also optionally implement the `_extra_record_validation()` method, which is automatically run by the `validate_record()` method after it has been approved by the Pydantic model. By default, it simply accepts a dictionary and returns true (see [abstract_record.py](../app/support/records/abstract_record.py)), so it is necessary that you also accept the following args and kwargs `(self, record: Dict)`. You may feel free to implement any supplemental validation you choose.
-
-See [medication_record.py](../app/support/records/medication_record.py) for some ideas on how to implement those methods.  
 * [records/](../app/support/records/)
 
 #### __data_access_layer/__

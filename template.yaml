@@ -59,11 +59,20 @@ Resources:
   #    SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-url.html
     Type: AWS::Lambda::Url
     Properties: 
+    #checkov:skip=CKV_AWS_258: No Authorisation... yet
+  #    Further reading on AuthType: https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html
       AuthType: NONE
-      # Cors: 
-      #   Cors
-      # Qualifier: String
       TargetFunctionArn: !GetAtt WeeklyReminder.Arn
+
+  PermissionsToUseWeeklyReminder:
+  # Guide:
+  #    SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref WeeklyReminder
+      Action: lambda:InvokeFunctionUrl
+      Principal: "*"
+      FunctionUrlAuthType: NONE
 
   DailyReminder:
   # Guide:

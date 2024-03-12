@@ -53,6 +53,17 @@ Resources:
       Timeout: 5
       Layers:
         - !Ref LambdaLibrariesLayer
+  
+  WeeklyReminderEndpoint:
+  # Guide:
+  #    SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-url.html
+    Type: AWS::Lambda::Url
+    Properties: 
+      AuthType: NONE
+      # Cors: 
+      #   Cors
+      # Qualifier: String
+      TargetFunctionArn: !GetAtt WeeklyReminder.Arn
 
   DailyReminder:
   # Guide:

@@ -19,10 +19,21 @@ _aws_exports() {
     export AWS_REGION
 }
 
-_verify_venv_active() {  # TODO: swap this out and make it so it checks CWD, and scrapes out the project path
+_verify_venv_active() {
     if [ -z "${VIRTUAL_ENV}" ];
         then echo "Activate the venv than try again";
         return 1;
+    else
+        return 0
+    fi
+}
+
+_check_dir() {
+    if pwd | grep -q -E 'pet-diary$'; then
+        return 0
+    else
+        echo "It doesn't appear as though you are in the right directory, try navigating to the root of the project"
+        return 1
     fi
 }
 
@@ -100,7 +111,8 @@ _sam-security-check() {
 
 basic-db-query() {
     _verify_venv_active
-    python3 app/local_use/basic_queries.py
+    _check_dir
+    python3 ./app/local_use/basic_queries.py
 }
 
 sam-deploy() {
@@ -143,16 +155,18 @@ python-lint() {
 
 python-security-check() {
     _verify_venv_active
+    _check_dir
     echo "Checking app/ for Python security issues with Bandit"
     bandit \
     -x __pycache__ \
-    -r "${VIRTUAL_ENV}/../app/"
+    -r ./app/
     return "$?"  # ensures function returns same code bandit exits with
 }
 
 python-test() {
     _verify_venv_active
-    pytest "${VIRTUAL_ENV}/../tests" -vv
+    _check_dir
+    pytest ./tests -vv
 }
 
 configure-venv() {
@@ -196,8 +210,9 @@ configure-venv() {
 
 third-party-security-check () {
     _verify_venv_active
+    _check_dir
     echo "Scanning project for 3rd party dependency issues using Grype"
-    grype dir:"${VIRTUAL_ENV}/.." -q
+    grype dir:'./' -q
     return "$?"  # ensures function returns same code grype exits with
 }
 

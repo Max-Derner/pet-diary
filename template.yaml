@@ -66,7 +66,7 @@ Resources:
     Properties:
       Description: Is the REST API for our pet-diary
       FunctionName: lambda_api
-      Architecdtures: 
+      Architectures: 
         - x86_64
       CodeUri: lambda_packages/lambda_api.zip
       EphemeralStorage: 
@@ -94,6 +94,7 @@ Resources:
   #    Further reading on AuthType: https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html
       AuthType: NONE
       TargetFunctionArn: !GetAtt LambdaAPI.Arn
+
 
   PermissionsToUseAPI:
   # Guide:

@@ -1,6 +1,7 @@
 lambda_packages: lambda_packages/weekly_reminder.zip \
 		 		 lambda_packages/lambda_api.zip \
-		 		 lambda_packages/daily_reminder.zip
+		 		 lambda_packages/daily_reminder.zip \
+				 lambda_packages/lambda_libraries_layer.zip
 
 lambda_packages/weekly_reminder.zip: app/lambda_weekly_reminder.py \
 									 app/support/record_formatting.py \

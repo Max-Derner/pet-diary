@@ -18,6 +18,7 @@ Resources:
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   #   dev guide --> https://docs.aws.amazon.com/lambda/
+  #   python handler --> https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html#python-handler-how
     Type: AWS::Serverless::Function
     #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
     #checkov:skip=CKV_AWS_117: VPC costs money and everything is secure enough for our purposes 
@@ -43,7 +44,7 @@ Resources:
       # The following option may need you to increase your reserved concurrent executions limit.
       # Instructions on doing that https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html
       # Can be commented out instead, though not as safe especially regarding DDOS attacks
-      ReservedConcurrentExecutions: 5  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
+      ReservedConcurrentExecutions: 1  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
       Handler: lambda_weekly_reminder.lambda_weekly_reminder
       KmsKeyArn: !GetAtt KMSAppKey.Arn
       MemorySize: 128
@@ -53,8 +54,38 @@ Resources:
       Timeout: 5
       Layers:
         - !Ref LambdaLibrariesLayer
+
+  LambdaAPI:
+  # Guide:
+  #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  #   dev guide --> https://docs.aws.amazon.com/lambda/
+  #   python handler --> https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html#python-handler-how
+    Type: AWS::Serverless::Function
+    #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
+    #checkov:skip=CKV_AWS_117: VPC costs money and everything is secure enough for our purposes 
+    Properties:
+      Description: Is the REST API for our pet-diary
+      FunctionName: lambda_api
+      Architecdtures: 
+        - x86_64
+      CodeUri: lambda_packages/lambda_api.zip
+      EphemeralStorage: 
+        Size: 512
+      # The following option may need you to increase your reserved concurrent executions limit.
+      # Instructions on doing that https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html
+      # Can be commented out instead, though not as safe especially regarding DDOS attacks
+      ReservedConcurrentExecutions: 1  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
+      Handler: lambda_api.lambda_api
+      KmsKeyArn: !GetAtt KMSAppKey.Arn
+      MemorySize: 128
+      PackageType: Zip
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.10
+      Timeout: 5
+      Layers:
+        - !Ref LambdaLibrariesLayer
   
-  WeeklyReminderEndpoint:
+  APIEndpoint:
   # Guide:
   #    SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-url.html
     Type: AWS::Lambda::Url
@@ -62,14 +93,14 @@ Resources:
     #checkov:skip=CKV_AWS_258: No Authorisation... yet
   #    Further reading on AuthType: https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html
       AuthType: NONE
-      TargetFunctionArn: !GetAtt WeeklyReminder.Arn
+      TargetFunctionArn: !GetAtt LambdaAPI.Arn
 
-  PermissionsToUseWeeklyReminder:
+  PermissionsToUseAPI:
   # Guide:
   #    SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
     Type: AWS::Lambda::Permission
     Properties:
-      FunctionName: !Ref WeeklyReminder
+      FunctionName: !Ref LambdaAPI
       Action: lambda:InvokeFunctionUrl
       Principal: "*"
       FunctionUrlAuthType: NONE
@@ -103,7 +134,7 @@ Resources:
       # The following option may need you to increase your reserved concurrent executions limit.
       # Instructions on doing that https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html
       # Can be commented out instead, though not as safe especially regarding DDOS attacks
-      ReservedConcurrentExecutions: 5  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
+      ReservedConcurrentExecutions: 1  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
       Handler: lambda_daily_reminder.lambda_daily_reminder
       KmsKeyArn: !GetAtt KMSAppKey.Arn
       MemorySize: 128

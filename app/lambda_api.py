@@ -1,24 +1,74 @@
 import json
+from datetime import datetime
+from pprint import pformat
 
+from support.record_formatting import RecordFormatter
+from support.data_access_layer.records.pet_table_models import RecordType
 from support.common.logger import get_full_logger
 from support.common.misc import DynamoItemJSONEncoder
+from support.data_access_layer.get_records import (
+    get_all_of_pets_record_type,
+    get_all_of_pets_record_type_after_point_in_time,
+    get_all_of_pets_records
+)
 
 
 logger = get_full_logger()
 
 
 def lambda_api(event, context):
-    logger.info("I am logger!")
-    logger.info(f"event: {event}")
-    logger.info(f"context: {context}")
+    logger.info(f"event:\n{pformat(event)}")
+    match event.get('queryStringParameters'):
+        case {"name": name, "record_type": record_type, "date": date}:
+            logger.info("case path 1")
+            point_in_time = datetime.strptime(date, "%Y-%m-%d")
+            records = get_all_of_pets_record_type_after_point_in_time(
+                pet_name=name,
+                record_type=record_type,
+                point_in_time=point_in_time,
+            )
+        case {"name": name, "record_type": record_type}:
+            logger.info("case path 2")
+            records = get_all_of_pets_record_type(
+                pet_name=name,
+                record_type=record_type,
+            )
+        case {"name": name}:
+            logger.info("case path 3")
+            records = get_all_of_pets_records(
+                pet_name=name,
+            )
+        case _:
+            logger.info("case path default")
+            record_type_options = " | ".join([record_type for record_type in iter(RecordType)])
+            return {
+                'statusCode': 400,
+                'body': json.dumps(
+                    obj={
+                        'message': 'invalid request',
+                        'query parameters': 'name, record_type, date',
+                        'name format': 'str',
+                        "record_type format": f'string literal: {record_type_options}',
+                        "date": "YYYY-MM-DD"
+                    },
+                    cls=DynamoItemJSONEncoder
+                )
+            }
+    rf = RecordFormatter()
+    formatted_records = rf.format_records(records=records)
+    spreadable_records = {f"line#{idx + 1}": line for idx, line in enumerate(formatted_records.split("\n"))}
+    return_obj = {
+        'query': str(event.get("queryStringParameters")),
+        **spreadable_records,
+    }
+
+    logger.info(f"return object:\n{pformat(return_obj)}")
 
     return {
         'statusCode': 200,
         'body': json.dumps(
-            obj={
-                'records': 'hi'
-            },
-            cls=DynamoItemJSONEncoder
+            obj=return_obj,
+            cls=DynamoItemJSONEncoder,
         )
     }
 

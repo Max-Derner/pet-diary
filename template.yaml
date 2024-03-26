@@ -15,14 +15,14 @@ Transform: AWS::Serverless-2016-10-31  # Mandatory declaration of SAM template
 Resources:
 
   WeeklyReminder:
+    Type: AWS::Serverless::Function
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   #   dev guide --> https://docs.aws.amazon.com/lambda/
   #   python handler --> https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html#python-handler-how
-    Type: AWS::Serverless::Function
+    Properties:
     #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
     #checkov:skip=CKV_AWS_117: VPC costs money and everything is secure enough for our purposes 
-    Properties:
       Description: Gives weekly reminders of upcoming medications and appointments
       FunctionName: weekly_reminder
       Architectures: 
@@ -56,14 +56,14 @@ Resources:
         - !Ref LambdaLibrariesLayer
 
   LambdaAPI:
+    Type: AWS::Serverless::Function
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   #   dev guide --> https://docs.aws.amazon.com/lambda/
   #   python handler --> https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html#python-handler-how
-    Type: AWS::Serverless::Function
+    Properties:
     #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
     #checkov:skip=CKV_AWS_117: VPC costs money and everything is secure enough for our purposes 
-    Properties:
       Description: Is the REST API for our pet-diary
       FunctionName: lambda_api
       Architectures: 
@@ -86,20 +86,26 @@ Resources:
         - !Ref LambdaLibrariesLayer
   
   APIEndpoint:
+    Type: AWS::Lambda::Url
   # Guide:
   #    SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-url.html
-    Type: AWS::Lambda::Url
     Properties: 
     #checkov:skip=CKV_AWS_258: No Authorisation... yet
   #    Further reading on AuthType: https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html
       AuthType: NONE
       TargetFunctionArn: !GetAtt LambdaAPI.Arn
+      Cors:  # Cors doesn't restrict access, it's simply ensures it
+      # CORS guide: --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-url-cors.html
+        AllowMethods:
+          - GET
+        AllowOrigins:
+          - "*"
 
 
   PermissionsToUseAPI:
+    Type: AWS::Lambda::Permission
   # Guide:
   #    SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
-    Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref LambdaAPI
       Action: lambda:InvokeFunctionUrl
@@ -107,10 +113,10 @@ Resources:
       FunctionUrlAuthType: NONE
 
   DailyReminder:
+    Type: AWS::Serverless::Function
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   #   dev guide --> https://docs.aws.amazon.com/lambda/
-    Type: AWS::Serverless::Function
     #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
     #checkov:skip=CKV_AWS_117: VPC costs money and everything is secure enough for our purposes 
     Properties:
@@ -147,10 +153,10 @@ Resources:
           - !Ref LambdaLibrariesLayer
 
   LambdaLibrariesLayer:
+    Type: AWS::Serverless::LayerVersion
   # Guide:
   #   Example ----> https://docs.aws.amazon.com/lambda/latest/dg/layers-sam.html
   #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
-    Type: AWS::Serverless::LayerVersion
     Properties:
       CompatibleArchitectures: 
         - x86_64
@@ -164,9 +170,9 @@ Resources:
         - python3.10
 
   LambdaRole:
+    Type: AWS::IAM::Role
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
-    Type: AWS::IAM::Role
     Properties:
       Description: Allows Lambdas read access to DynamoDB, and publish to SNS topics
       RoleName: lambda-role
@@ -235,11 +241,11 @@ Resources:
       MaxSessionDuration: 3600
 
   WeeklyReminderTopic:
+    Type: AWS::SNS::Topic
     # Guide
     #   General SNS --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
     #   Topic only ---> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html
     #   Dev guide ----> https://docs.aws.amazon.com/sns/
-    Type: AWS::SNS::Topic
     Properties:
       TopicName: weekly_reminder
       DisplayName: PD_Weekly_Reminder
@@ -247,11 +253,11 @@ Resources:
       KmsMasterKeyId: !GetAtt KMSAppKey.KeyId
 
   DailyReminderTopic:
+    Type: AWS::SNS::Topic
     # Guide
     #   General SNS --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
     #   Topic only ---> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html
     #   Dev guide ----> https://docs.aws.amazon.com/sns/
-    Type: AWS::SNS::Topic
     Properties:
       TopicName: daily_reminder
       DisplayName: PD_Daily_Reminder
@@ -259,10 +265,10 @@ Resources:
       KmsMasterKeyId: !GetAtt KMSAppKey.KeyId
 
   PetTable:
+    Type: AWS::DynamoDB::Table
   # Guide:
   #   SAM Guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
   #   Dev guide --> https://docs.aws.amazon.com/dynamodb
-    Type: AWS::DynamoDB::Table
     Properties: 
       TableName: pet_table
       AttributeDefinitions: 
@@ -319,9 +325,9 @@ Resources:
         SSEType: KMS
 
   KMSAppKey:
+    Type: AWS::KMS::Key  # costs $1 per creation, gets 20,000 requests a year free for encrypting/decrypting
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kms-key.html
-    Type: AWS::KMS::Key  # costs $1 per creation, gets 20,000 requests a year free for encrypting/decrypting
     Properties: 
       Description: For symmetric encryption of all the applications resources
       Enabled: true

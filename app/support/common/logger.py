@@ -1,6 +1,5 @@
 import logging
 import os
-from typing import List, Union
 from .misc import ensure_directories_present
 
 
@@ -48,7 +47,7 @@ _FULL_DEBUG_OUTPUT_FILE_PATH = f'{_ROOT_DIR_PATH}/{_RELATIVE_DEBUG_OUTPUT_FILE_P
 _CONSOLE_LOG_LEVEL = logging.INFO
 _DEBUG_FILE_LOG_LEVEL = logging.DEBUG
 
-handlers: List[logging.Handler]
+handlers: list[logging.Handler]
 
 config_message = 'logger configured:\n'
 config_message += 'logging will go to 2 output files\n'
@@ -97,7 +96,7 @@ def _get_file_handler(
 def _get_handlers(create_console_stream_handler: bool = True,
                   create_console_file_handler: bool = True,
                   create_debug_file_handler: bool = True
-                  ) -> List[Union[None, logging.Handler]]:
+                  ) -> list[None | logging.Handler]:
     console_stream_handler, console_file_handler, debug_file_handler = None, None, None
     if create_console_stream_handler or create_console_file_handler:
         console_output_formatter = _get_console_output_formatter()
@@ -126,11 +125,7 @@ def _get_handlers(create_console_stream_handler: bool = True,
 
 
 def _add_handlers(
-        handlers: Union[
-            None,
-            List[logging.FileHandler],
-            List[logging.StreamHandler]
-            ],
+        handlers: None | list[logging.FileHandler] | list[logging.StreamHandler],
         logger: logging.Logger
         ):
     for handler in handlers:
@@ -156,7 +151,7 @@ def _set_up_logger(logger: logging.Logger,
         logger.info(config_message)
 
 
-def get_output_directories() -> List[str]:
+def get_output_directories() -> list[str]:
     return_list = []
     output_files = [
         _RELATIVE_CONSOLE_OUTPUT_FILE_PATH,

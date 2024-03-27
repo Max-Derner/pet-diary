@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Optional
 
 from support.common.logger import get_full_logger
 from support.common.aws_resources import get_pet_table_resource
@@ -112,7 +112,7 @@ def put_observation_record(pet_name: str,
 
 
 def _validate_record_then_put_in_pet_table(factory: AbstractRecordFactory,
-                                           record: Dict):
+                                           record: dict):
     logger.info("Validating record")
     if not factory.validate_record(record=record):
         record = factory.coerce_record_to_valid_state(record=record)

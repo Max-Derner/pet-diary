@@ -1,4 +1,4 @@
-from typing import Any, List, Dict, Optional, Tuple
+from typing import Any, Optional
 from datetime import timedelta
 
 from support.common.aws_resources import (
@@ -47,7 +47,7 @@ Pet Health Diary (part of Derner Industries)
 """
 
 
-def format_reminder_email(records: List[Dict], timespan: timedelta) -> Tuple[str, str]:
+def format_reminder_email(records: list[dict], timespan: timedelta) -> tuple[str, str]:
     """
     returns -> (subject, message)
     """
@@ -68,7 +68,7 @@ Hello,
     return subject, message
 
 
-def format_reminder_sms(records: List[Dict], timespan: timedelta) -> str:
+def format_reminder_sms(records: list[dict], timespan: timedelta) -> str:
     message = f"""
 Hello,
     These are your reminders for {timespan.days} days, from {current_date()}:

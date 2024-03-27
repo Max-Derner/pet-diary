@@ -1,5 +1,4 @@
 import yaml
-from typing import Dict
 from os import environ
 
 from app.support.data_access_layer.put_records import (
@@ -9,9 +8,9 @@ from app.support.data_access_layer.put_records import (
     put_medication_record,
     put_observation_record
 )
-from support.common.aws_resources import get_pet_table_resource
+from app.support.common.aws_resources import get_pet_table_resource
 from tests.mock_pet_table_data import test_data
-from support.common.logger import get_full_logger
+from app.support.common.logger import get_full_logger
 
 logger = get_full_logger()
 
@@ -20,7 +19,7 @@ def mock_utc_timestamp_now():
     return 123456.789
 
 
-def _get_sam_template() -> Dict:
+def _get_sam_template() -> dict:
     loader = yaml.Loader
     # The following line is some ropey business, just don't access any values
     # that are populated by the '!GetAtt' or '!Ref' functions and you'll be fine.
@@ -33,7 +32,7 @@ def _get_sam_template() -> Dict:
     return full_template
 
 
-def get_pet_table_properties() -> Dict:
+def get_pet_table_properties() -> dict:
     full_template = _get_sam_template()
     # No get functions here, we want this to blow up if it can't find the table
     pet_table_properties = full_template['Resources']['PetTable']['Properties']

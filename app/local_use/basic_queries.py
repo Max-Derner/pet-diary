@@ -1,4 +1,3 @@
-from typing import Dict, List
 from datetime import datetime
 
 from app.support.common.logger import get_full_logger
@@ -14,7 +13,7 @@ from app.support.record_formatting import RecordFormatter
 logger = get_full_logger()
 
 
-def user_driven_get_all_of_pets_records() -> List[Dict]:
+def user_driven_get_all_of_pets_records() -> list[dict]:
     logger.info("Please enter the name of the pet whose records you wish to see:")
     pet_name = input()
     logger.info(f"You entered '{pet_name}'")
@@ -22,7 +21,7 @@ def user_driven_get_all_of_pets_records() -> List[Dict]:
     return records
 
 
-def user_driven_get_all_of_pets_record_type() -> List[Dict]:
+def user_driven_get_all_of_pets_record_type() -> list[dict]:
     logger.info("Please enter the name of the pet whose records you wish to see:")
     pet_name = input()
     logger.info(f"You entered '{pet_name}'")
@@ -40,7 +39,7 @@ def user_driven_get_all_of_pets_record_type() -> List[Dict]:
     return records
 
 
-def upcoming_records_after_point_in_time(point_in_time: datetime) -> List[Dict]:
+def upcoming_records_after_point_in_time(point_in_time: datetime) -> list[dict]:
     records = []
     records.extend(
         get_all_records_of_appointment_in_timeframe(
@@ -57,13 +56,13 @@ def upcoming_records_after_point_in_time(point_in_time: datetime) -> List[Dict]:
     return records
 
 
-def upcoming_records() -> List[Dict]:
+def upcoming_records() -> list[dict]:
     return upcoming_records_after_point_in_time(
         point_in_time=datetime.now()
     )
 
 
-def user_driven_upcoming_records_after_point_in_time() -> List[Dict]:
+def user_driven_upcoming_records_after_point_in_time() -> list[dict]:
     logger.info("Please enter a year: ")
     year = int(input())
     logger.info("Please enter a month: ")

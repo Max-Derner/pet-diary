@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Dict
+from typing import Any, Callable
 from logging import Logger
 from enum import Enum
 
@@ -116,7 +116,7 @@ class RecordFormatter:
 
     def format_record_section(self,
                               section_title: str,
-                              record: Dict,
+                              record: dict,
                               key: Any,
                               pre_formatter: Callable[[Any], str] = lambda x: x) -> str:
         section_title += ':'
@@ -136,7 +136,7 @@ class RecordFormatter:
             section += '\n'
         return section
 
-    def format_record(self, record: Dict) -> str:
+    def format_record(self, record: dict) -> str:
         """formats record into a style resembling a card"""
         fr = ''  # formatted record
         record_type: str = record['record_type']  # record_type is in every record
@@ -208,7 +208,7 @@ class RecordFormatter:
         )
         return fr
 
-    def format_records(self, records: List[Dict]) -> str:
+    def format_records(self, records: list[dict]) -> str:
         """formats multiple records into a style resembling a card"""
         record_cards = []
         for record in records:

@@ -1,4 +1,3 @@
-from typing import Dict, Union
 from datetime import datetime
 from decimal import Decimal
 
@@ -24,7 +23,7 @@ class DetailsRecordFactory(AbstractRecordFactory):
             gender: str,
             breed: str,
             microchip_number: int
-    ) -> Dict[str, Union[str, Decimal]]:
+    ) -> dict[str, str | Decimal]:
         details_record = {
             "name": pet_name,
             "sort_key": RecordType.DETAILS.value,

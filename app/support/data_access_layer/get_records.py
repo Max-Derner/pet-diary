@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from decimal import Decimal
-from typing import List, Dict, Optional
+from typing import Optional
 
 from boto3.dynamodb.conditions import Key, Attr
 
@@ -8,7 +8,7 @@ from support.common.aws_resources import get_pet_table_resource
 from support.data_access_layer.records.pet_table_models import RecordType
 
 
-def _arbitrary_pet_table_query(**kwargs) -> List[Dict]:
+def _arbitrary_pet_table_query(**kwargs) -> list[dict]:
     """
     This function handles everything around DynamoDB queries,
     all you have to do is supply the args and kwargs for a query.
@@ -27,7 +27,7 @@ def _arbitrary_pet_table_query(**kwargs) -> List[Dict]:
     return items
 
 
-def get_all_of_pets_records(pet_name: str) -> List[Dict]:
+def get_all_of_pets_records(pet_name: str) -> list[dict]:
     query_params = {
         'KeyConditionExpression': Key('name').eq(pet_name),
     }
@@ -37,7 +37,7 @@ def get_all_of_pets_records(pet_name: str) -> List[Dict]:
 def get_all_of_pets_record_type(
         pet_name: str,
         record_type: RecordType
-        ) -> List[Dict]:
+        ) -> list[dict]:
     query_params = {
         'KeyConditionExpression': Key('name').eq(pet_name) & Key('sort_key').begins_with(record_type.value)
     }
@@ -48,7 +48,7 @@ def get_all_of_pets_record_type_after_point_in_time(
         pet_name: str,
         point_in_time: datetime,
         record_type: RecordType
-        ) -> List[Dict]:
+        ) -> list[dict]:
     query_params = {
         'KeyConditionExpression': Key('name').eq(pet_name) & Key('sort_key').begins_with(record_type.value),
         'FilterExpression': Attr('date_time').gt(Decimal(point_in_time.astimezone(tz=timezone.utc).timestamp()))

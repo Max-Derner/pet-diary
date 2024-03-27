@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-from typing import Dict, Union
 from decimal import Decimal
 
 from app.support.data_access_layer.records.abstract_record import AbstractRecordFactory
@@ -21,7 +20,7 @@ class AppointmentRecordFactory(AbstractRecordFactory):
             pet_name: str,
             appointment_time: datetime,
             description: str
-            ) -> Dict[str, Union[str, Decimal]]:
+            ) -> dict[str, str | Decimal]:
         sort_key = f"{RecordType.APPOINTMENT.value}#{utc_timestamp_now()}"
         illness_record = {
             "name": pet_name,

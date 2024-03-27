@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Optional
 from datetime import datetime, timezone
 from decimal import Decimal
 
@@ -23,7 +23,7 @@ class MedicationRecordFactory(AbstractRecordFactory):
             name_of_medicine: str,
             type_of_medicine: str,
             next_due: Optional[datetime]
-    ) -> Dict[str, str | Decimal | bool]:
+    ) -> dict[str, str | Decimal | bool]:
         sort_key = f"{RecordType.MEDICATION.value}#{type_of_medicine}#{utc_timestamp_now()}"
         if next_due is None:
             next_due_section = {

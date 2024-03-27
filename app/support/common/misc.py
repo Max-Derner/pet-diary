@@ -1,11 +1,10 @@
 from datetime import datetime, timezone
 import os
-from typing import List
 from json import JSONEncoder
 from decimal import Decimal
 
 
-def ensure_directories_present(directories: List[str]):
+def ensure_directories_present(directories: list[str]):
     for directory in directories:
         ensure_directory_present(dir=directory)
 

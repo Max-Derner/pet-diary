@@ -1,6 +1,6 @@
 from datetime import datetime, timezone, timedelta
 from decimal import Decimal
-from typing import Dict, List, Optional
+from typing import Optional
 from unittest.mock import patch, Mock
 
 import moto
@@ -10,7 +10,7 @@ from tests.helpers import (
     setup_test_dynamo_with_data
 )
 from app.support.data_access_layer.records.pet_table_models import RecordType
-from support.common.aws_resources import get_pet_table_resource
+from app.support.common.aws_resources import get_pet_table_resource
 from app.support.data_access_layer.get_records import (
     get_all_of_pets_records,
     get_all_of_pets_record_type,
@@ -27,12 +27,12 @@ from app.support.find_reminders import find_reminders
 @moto.mock_aws
 class TestsDynamoDBCalls:
 
-    all_test_records: List[Dict]
-    details_test_records: List[Dict]
-    appointment_test_records: List[Dict]
-    observation_test_records: List[Dict]
-    illness_test_records: List[Dict]
-    medication_test_records: List[Dict]
+    all_test_records: list[dict]
+    details_test_records: list[dict]
+    appointment_test_records: list[dict]
+    observation_test_records: list[dict]
+    illness_test_records: list[dict]
+    medication_test_records: list[dict]
 
     def build_mock_table_and_refresh_known_test_records(self):
         setup_test_dynamo_with_data()

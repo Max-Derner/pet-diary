@@ -1,8 +1,6 @@
 
 from datetime import timedelta
 
-from typing import List, Dict
-
 from support.common.misc import utc_datetime_now
 from support.data_access_layer.get_records import (
     get_all_records_of_medicine_in_next_due_timeframe,
@@ -33,7 +31,7 @@ def find_reminders(timespan: timedelta):
     )
     logger.info(f"Found {len(medicines_to_remind)} medicines")
 
-    records_to_remind: List[Dict] = []
+    records_to_remind: list[dict] = []
     records_to_remind.extend(appointments_to_remind)
     records_to_remind.extend(medicines_to_remind)
 

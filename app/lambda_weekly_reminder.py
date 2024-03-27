@@ -28,11 +28,15 @@ def lambda_weekly_reminder(*args, **kwargs):
         message=message
     )
 
+    message_lines = message.split('\n')
+    spreadable_message = {f"line#{idx + 1}": line for idx, line in enumerate(message_lines)}
+
     return {
         'statusCode': 200,
         'body': json.dumps(
             obj={
-                'records': records_to_remind
+                'subject': subject,
+                **spreadable_message
             },
             cls=DynamoItemJSONEncoder
         )

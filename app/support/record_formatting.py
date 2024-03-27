@@ -1,4 +1,4 @@
-from typing import Any, List, Dict, Optional
+from typing import Any, Callable, List, Dict
 from logging import Logger
 from enum import Enum
 
@@ -118,7 +118,7 @@ class RecordFormatter:
                               section_title: str,
                               record: Dict,
                               key: Any,
-                              pre_formatter: Optional[callable] = lambda x: x) -> str:
+                              pre_formatter: Callable[[Any], str] = lambda x: x) -> str:
         section_title += ':'
         section = ''
         if (record_value := record.get(key)) is not None:
@@ -171,7 +171,8 @@ class RecordFormatter:
         fr += self.format_record_section(
             section_title='Microchip number',
             key='microchip_number',
-            record=record
+            record=record,
+            pre_formatter=lambda x: str(x),
         )
         fr += self.format_record_section(
             section_title='Name of medicine',

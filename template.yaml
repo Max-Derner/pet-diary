@@ -15,13 +15,14 @@ Transform: AWS::Serverless-2016-10-31  # Mandatory declaration of SAM template
 Resources:
 
   WeeklyReminder:
+    Type: AWS::Serverless::Function
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   #   dev guide --> https://docs.aws.amazon.com/lambda/
-    Type: AWS::Serverless::Function
+  #   python handler --> https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html#python-handler-how
+    Properties:
     #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
     #checkov:skip=CKV_AWS_117: VPC costs money and everything is secure enough for our purposes 
-    Properties:
       Description: Gives weekly reminders of upcoming medications and appointments
       FunctionName: weekly_reminder
       Architectures: 
@@ -43,7 +44,7 @@ Resources:
       # The following option may need you to increase your reserved concurrent executions limit.
       # Instructions on doing that https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html
       # Can be commented out instead, though not as safe especially regarding DDOS attacks
-      ReservedConcurrentExecutions: 5  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
+      ReservedConcurrentExecutions: 1  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
       Handler: lambda_weekly_reminder.lambda_weekly_reminder
       KmsKeyArn: !GetAtt KMSAppKey.Arn
       MemorySize: 128
@@ -54,11 +55,68 @@ Resources:
       Layers:
         - !Ref LambdaLibrariesLayer
 
-  DailyReminder:
+  LambdaAPI:
+    Type: AWS::Serverless::Function
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
   #   dev guide --> https://docs.aws.amazon.com/lambda/
+  #   python handler --> https://docs.aws.amazon.com/lambda/latest/dg/python-handler.html#python-handler-how
+    Properties:
+    #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
+    #checkov:skip=CKV_AWS_117: VPC costs money and everything is secure enough for our purposes 
+      Description: Is the REST API for our pet-diary
+      FunctionName: lambda_api
+      Architectures: 
+        - x86_64
+      CodeUri: lambda_packages/lambda_api.zip
+      EphemeralStorage: 
+        Size: 512
+      # The following option may need you to increase your reserved concurrent executions limit.
+      # Instructions on doing that https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html
+      # Can be commented out instead, though not as safe especially regarding DDOS attacks
+      ReservedConcurrentExecutions: 1  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
+      Handler: lambda_api.lambda_api
+      KmsKeyArn: !GetAtt KMSAppKey.Arn
+      MemorySize: 128
+      PackageType: Zip
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.10
+      Timeout: 5
+      Layers:
+        - !Ref LambdaLibrariesLayer
+  
+  APIEndpoint:
+    Type: AWS::Lambda::Url
+  # Guide:
+  #    SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-url.html
+    Properties: 
+    #checkov:skip=CKV_AWS_258: No Authorisation... yet
+  #    Further reading on AuthType: https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html
+      AuthType: NONE
+      TargetFunctionArn: !GetAtt LambdaAPI.Arn
+      Cors:  # Cors doesn't restrict access, it's simply ensures it
+      # CORS guide: --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-url-cors.html
+        AllowMethods:
+          - GET
+        AllowOrigins:
+          - "*"
+
+
+  PermissionsToUseAPI:
+    Type: AWS::Lambda::Permission
+  # Guide:
+  #    SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
+    Properties:
+      FunctionName: !Ref LambdaAPI
+      Action: lambda:InvokeFunctionUrl
+      Principal: "*"
+      FunctionUrlAuthType: NONE
+
+  DailyReminder:
     Type: AWS::Serverless::Function
+  # Guide:
+  #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+  #   dev guide --> https://docs.aws.amazon.com/lambda/
     #checkov:skip=CKV_AWS_116: This is not mission critical, we don't need a dead letter queue
     #checkov:skip=CKV_AWS_117: VPC costs money and everything is secure enough for our purposes 
     Properties:
@@ -83,7 +141,7 @@ Resources:
       # The following option may need you to increase your reserved concurrent executions limit.
       # Instructions on doing that https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html
       # Can be commented out instead, though not as safe especially regarding DDOS attacks
-      ReservedConcurrentExecutions: 5  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
+      ReservedConcurrentExecutions: 1  # limit on concurrency, ProvisionedConcurrencyConfig is what actually reserves a spot for your lambda and keeps it warm
       Handler: lambda_daily_reminder.lambda_daily_reminder
       KmsKeyArn: !GetAtt KMSAppKey.Arn
       MemorySize: 128
@@ -95,10 +153,10 @@ Resources:
           - !Ref LambdaLibrariesLayer
 
   LambdaLibrariesLayer:
+    Type: AWS::Serverless::LayerVersion
   # Guide:
   #   Example ----> https://docs.aws.amazon.com/lambda/latest/dg/layers-sam.html
   #   SAM guide --> https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
-    Type: AWS::Serverless::LayerVersion
     Properties:
       CompatibleArchitectures: 
         - x86_64
@@ -112,9 +170,9 @@ Resources:
         - python3.10
 
   LambdaRole:
+    Type: AWS::IAM::Role
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
-    Type: AWS::IAM::Role
     Properties:
       Description: Allows Lambdas read access to DynamoDB, and publish to SNS topics
       RoleName: lambda-role
@@ -183,11 +241,11 @@ Resources:
       MaxSessionDuration: 3600
 
   WeeklyReminderTopic:
+    Type: AWS::SNS::Topic
     # Guide
     #   General SNS --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
     #   Topic only ---> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html
     #   Dev guide ----> https://docs.aws.amazon.com/sns/
-    Type: AWS::SNS::Topic
     Properties:
       TopicName: weekly_reminder
       DisplayName: PD_Weekly_Reminder
@@ -195,11 +253,11 @@ Resources:
       KmsMasterKeyId: !GetAtt KMSAppKey.KeyId
 
   DailyReminderTopic:
+    Type: AWS::SNS::Topic
     # Guide
     #   General SNS --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_SNS.html
     #   Topic only ---> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sns-topic.html
     #   Dev guide ----> https://docs.aws.amazon.com/sns/
-    Type: AWS::SNS::Topic
     Properties:
       TopicName: daily_reminder
       DisplayName: PD_Daily_Reminder
@@ -207,10 +265,10 @@ Resources:
       KmsMasterKeyId: !GetAtt KMSAppKey.KeyId
 
   PetTable:
+    Type: AWS::DynamoDB::Table
   # Guide:
   #   SAM Guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
   #   Dev guide --> https://docs.aws.amazon.com/dynamodb
-    Type: AWS::DynamoDB::Table
     Properties: 
       TableName: pet_table
       AttributeDefinitions: 
@@ -267,9 +325,9 @@ Resources:
         SSEType: KMS
 
   KMSAppKey:
+    Type: AWS::KMS::Key  # costs $1 per creation, gets 20,000 requests a year free for encrypting/decrypting
   # Guide:
   #   SAM guide --> https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-kms-key.html
-    Type: AWS::KMS::Key  # costs $1 per creation, gets 20,000 requests a year free for encrypting/decrypting
     Properties: 
       Description: For symmetric encryption of all the applications resources
       Enabled: true

@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict
 
 from pydantic import ValidationError, BaseModel
 
@@ -33,7 +33,7 @@ class AbstractRecordFactory():
             logger.warning(str(e))
             return False
 
-    def coerce_record_to_valid_state(self, record: Dict) -> Union[None, Dict]:
+    def coerce_record_to_valid_state(self, record: Dict) -> None | Dict:
         """Returns None if record cannot be coerced into valid state,
         else returns newly valid record"""
         logger.info(f"Received request to coerce record: {record}")

@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import List, Union
+from typing import List
 from .misc import ensure_directories_present
 
 
@@ -97,7 +97,7 @@ def _get_file_handler(
 def _get_handlers(create_console_stream_handler: bool = True,
                   create_console_file_handler: bool = True,
                   create_debug_file_handler: bool = True
-                  ) -> List[Union[None, logging.Handler]]:
+                  ) -> List[None | logging.Handler]:
     console_stream_handler, console_file_handler, debug_file_handler = None, None, None
     if create_console_stream_handler or create_console_file_handler:
         console_output_formatter = _get_console_output_formatter()
@@ -126,11 +126,7 @@ def _get_handlers(create_console_stream_handler: bool = True,
 
 
 def _add_handlers(
-        handlers: Union[
-            None,
-            List[logging.FileHandler],
-            List[logging.StreamHandler]
-            ],
+        handlers: None | List[logging.FileHandler] | List[logging.StreamHandler],
         logger: logging.Logger
         ):
     for handler in handlers:

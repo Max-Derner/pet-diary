@@ -20,7 +20,7 @@ def lambda_api(event, context):
     logger.info(f"event:\n{pformat(event)}")
     match event.get('queryStringParameters'):
         case {"name": name, "record_type": record_type, "date": date}:
-            logger.info("case path 1")
+            logger.info(F"Querying for {name=}, {record_type=}, on and after {date=}")
             point_in_time = datetime.strptime(date, "%Y-%m-%d")
             records = get_all_of_pets_record_type_after_point_in_time(
                 pet_name=name,
@@ -28,18 +28,18 @@ def lambda_api(event, context):
                 point_in_time=point_in_time,
             )
         case {"name": name, "record_type": record_type}:
-            logger.info("case path 2")
+            logger.info(F"Querying for {name=}, {record_type=}, on any date")
             records = get_all_of_pets_record_type(
                 pet_name=name,
                 record_type=record_type,
             )
         case {"name": name}:
-            logger.info("case path 3")
+            logger.info(F"Querying for {name=}, any record type, on any date")
             records = get_all_of_pets_records(
                 pet_name=name,
             )
         case _:
-            logger.info("case path default")
+            logger.info("Invalid query")
             record_type_options = " | ".join([record_type for record_type in iter(RecordType)])
             return {
                 'statusCode': 400,

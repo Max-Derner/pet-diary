@@ -16,7 +16,7 @@ from support.data_access_layer.get_records import (
 logger = get_full_logger()
 
 
-def lambda_api(event, context):
+def lambda_query_api(event, context):
     logger.info(f"event:\n{pformat(event)}")
     match event.get('queryStringParameters'):
         case {"name": name, "record_type": record_type, "date": date}:
